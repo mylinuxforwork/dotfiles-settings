@@ -1,9 +1,9 @@
-#  __  __ _    _  ___        __  ____       _   _   _                 
-# |  \/  | |  | || \ \      / / / ___|  ___| |_| |_(_)_ __   __ _ ___ 
-# | |\/| | |  | || |\ \ /\ / /  \___ \ / _ \ __| __| | '_ \ / _` / __|
-# | |  | | |__|__   _\ V  V /    ___) |  __/ |_| |_| | | | | (_| \__ \
-# |_|  |_|_____| |_|  \_/\_/    |____/ \___|\__|\__|_|_| |_|\__, |___/
-#                                                           |___/     
+#  __  __ _    _  ___        __      _       _    __ _ _           
+# |  \/  | |  | || \ \      / /   __| | ___ | |_ / _(_) | ___  ___ 
+# | |\/| | |  | || |\ \ /\ / /   / _` |/ _ \| __| |_| | |/ _ \/ __|
+# | |  | | |__|__   _\ V  V /   | (_| | (_) | |_|  _| | |  __/\__ \
+# |_|  |_|_____| |_|  \_/\_/     \__,_|\___/ \__|_| |_|_|\___||___/
+#                                                                 
                                                              
 import sys
 import gi
@@ -39,6 +39,12 @@ class MainWindow(Adw.PreferencesWindow):
     waybar_show_systray = Gtk.Template.Child()
     waybar_show_screenlock = Gtk.Template.Child()
     rofi_bordersize = Gtk.Template.Child()
+    waybar_workspaces = Gtk.Template.Child()
+    default_browser = Gtk.Template.Child()
+    default_filemanager = Gtk.Template.Child()
+    default_networkmanager = Gtk.Template.Child()
+    default_softwaremanager = Gtk.Template.Child()
+    default_terminal = Gtk.Template.Child()
 
     # Get objects from template
     def __init__(self, *args, **kwargs):
@@ -72,6 +78,7 @@ class MyApp(Adw.Application):
         self.create_action('waybar_show_chatgpt', self.on_waybar_show_chatgpt)
         self.create_action('waybar_show_systray', self.on_waybar_show_systray)
         self.create_action('rofi_bordersize', self.on_rofi_bordersize)
+        self.create_action('waybar_workspaces', self.on_waybar_workspaces)
 
     def do_activate(self):
         # Define main window
@@ -91,35 +98,88 @@ class MyApp(Adw.Application):
         self.waybar_show_chatgpt = win.waybar_show_chatgpt
         self.waybar_show_systray = win.waybar_show_systray
         self.waybar_show_screenlock = win.waybar_show_screenlock
+        self.waybar_workspaces = win.waybar_workspaces
         self.rofi_bordersize = win.rofi_bordersize
-
+        self.default_browser = win.default_browser
+        self.default_filemanager = win.default_filemanager
+        self.default_networkmanager = win.default_networkmanager
+        self.default_softwaremanager = win.default_softwaremanager
+        self.default_terminal = win.default_terminal
+        self.waybar_workspaces.get_adjustment().connect("value-changed", self.on_waybar_workspaces)
         self.rofi_bordersize.get_adjustment().connect("value-changed", self.on_rofi_bordersize)
+        self.default_browser.connect("apply", self.on_default_browser)
+        self.default_filemanager.connect("apply", self.on_default_filemanager)
+        self.default_networkmanager.connect("apply", self.on_default_networkmanager)
+        self.default_softwaremanager.connect("apply", self.on_default_softwaremanager)
+        self.default_terminal.connect("apply", self.on_default_terminal)
         
         print(self.settings)
 
-        # Network
-        if self.settings["waybar_network"]:
-            self.waybar_show_network.set_active(True)
-        else:
-            self.waybar_show_network.set_active(False)
+        # Waybar Network
+        if "waybar_network" in self.settings:
+            if self.settings["waybar_network"]:
+                self.waybar_show_network.set_active(True)
+            else:
+                self.waybar_show_network.set_active(False)
 
-        # ChatGPT
-        if self.settings["waybar_chatgpt"]:
-            self.waybar_show_chatgpt.set_active(True)
-        else:
-            self.waybar_show_chatgpt.set_active(False)
+        # Waybar ChatGPT
+        if "waybar_chatgpt" in self.settings:
+            if self.settings["waybar_chatgpt"]:
+                self.waybar_show_chatgpt.set_active(True)
+            else:
+                self.waybar_show_chatgpt.set_active(False)
 
-        # Systray
-        if self.settings["waybar_systray"]:
-            self.waybar_show_systray.set_active(True)
-        else:
-            self.waybar_show_systray.set_active(False)
+        # Waybar Systray
+        if "waybar_systray" in self.settings:
+            if self.settings["waybar_systray"]:
+                self.waybar_show_systray.set_active(True)
+            else:
+                self.waybar_show_systray.set_active(False)
 
-        # Screenlock
-        if self.settings["waybar_screenlock"]:
-            self.waybar_show_screenlock.set_active(True)
-        else:
-            self.waybar_show_screenlock.set_active(False)
+        # Waybar Screenlock
+        if "waybar_screenlock" in self.settings:
+            if self.settings["waybar_screenlock"]:
+                self.waybar_show_screenlock.set_active(True)
+            else:
+                self.waybar_show_screenlock.set_active(False)
+
+        # Waybar Workspaces
+        if "waybar_workspaces" in self.settings:
+            self.waybar_workspaces.get_adjustment().set_value(self.settings["waybar_workspaces"])        
+
+        # Rofi Bordersize
+        if "rofi_bordersize" in self.settings:
+            self.rofi_bordersize.get_adjustment().set_value(self.settings["rofi_bordersize"])        
+
+        # Default Browser
+        with open(self.dotfiles + ".settings/browser.sh", 'r') as file:
+            value = file.read()
+        self.default_browser.set_text(value.strip())
+        self.default_browser.set_show_apply_button(True)
+
+        # Default Filemanager
+        with open(self.dotfiles + ".settings/filemanager.sh", 'r') as file:
+            value = file.read()
+        self.default_filemanager.set_text(value.strip())
+        self.default_filemanager.set_show_apply_button(True)
+
+        # Default Networkmanager
+        with open(self.dotfiles + ".settings/networkmanager.sh", 'r') as file:
+            value = file.read()
+        self.default_networkmanager.set_text(value.strip())
+        self.default_networkmanager.set_show_apply_button(True)
+
+        # Default Softwaremanager
+        with open(self.dotfiles + ".settings/software.sh", 'r') as file:
+            value = file.read()
+        self.default_softwaremanager.set_text(value.strip())
+        self.default_softwaremanager.set_show_apply_button(True)
+
+        # Default Terminal
+        with open(self.dotfiles + ".settings/terminal.sh", 'r') as file:
+            value = file.read()
+        self.default_terminal.set_text(value.strip())
+        self.default_terminal.set_show_apply_button(True)
 
         self.block_reload = False
 
@@ -127,8 +187,32 @@ class MyApp(Adw.Application):
         win.present()
         print (":: Welcome to ML4W Dotfiles Settings App")
 
+    def on_default_browser(self, widget):
+        self.overwriteFile(".settings/browser.sh",widget.get_text())
+
+    def on_default_filemanager(self, widget):
+        self.overwriteFile(".settings/filemanager.sh",widget.get_text())
+
+    def on_default_networkmanager(self, widget):
+        self.overwriteFile(".settings/networkmanager.sh",widget.get_text())
+
+    def on_default_softwaremanager(self, widget):
+        self.overwriteFile(".settings/software.sh",widget.get_text())
+
+    def on_default_terminal(self, widget):
+        self.overwriteFile(".settings/terminal.sh",widget.get_text())
+
+    def on_waybar_workspaces(self, widget):
+        value = int(widget.get_value())
+        text = '"*": ' + str(value) + '\n'
+        self.replaceInFileNext("waybar/modules.json", "// START WORKSPACES", text)
+        self.reloadWaybar()
+
     def on_rofi_bordersize(self, widget):
-        print(widget.get_value())
+        value = int(widget.get_value())
+        text = "* { border-width: " + str(value) + "px; }"
+        self.overwriteFile(".settings/rofi-border.rasi",text)
+        self.updateSettings("rofi_bordersize", value)
 
     def on_waybar_show_network(self, widget, _):
         if not self.block_reload:
@@ -196,6 +280,12 @@ class MyApp(Adw.Application):
             else:
                 return False
 
+    # Overwrite Text in File
+    def overwriteFile(self, f, text):
+        file=open(self.dotfiles + f,"w+")
+        file.write(text)
+        file.close()
+
     # Replace Text in File
     def replaceInFile(self, f, search, replace):
         file = open(self.dotfiles + f, 'r')
@@ -207,7 +297,6 @@ class MyApp(Adw.Application):
             count += 1
             if search in l:
                 found = count
-                print("Found in " + str(found))
         if found > 0:
             lines[found - 1] = replace + "\n"
             with open(self.dotfiles + f, 'w') as file:
@@ -224,7 +313,6 @@ class MyApp(Adw.Application):
             count += 1
             if search in l:
                 found = count
-                print("Found in " + str(found))
         if found > 0:
             lines[found] = replace + "\n"
             with open(self.dotfiles + f, 'w') as file:
