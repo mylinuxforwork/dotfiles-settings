@@ -10,6 +10,96 @@
       <object class="AdwPreferencesPage" id="settings_page">
         <property name="title">ML4W Dotfiles Settings</property>
         <property name="icon-name">settings-symbolic</property>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="true">Waybar Clock Format</property>
+            <property name="description" translatable="true">Choose from some default clock formats or enter your own.</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="open_timeformatspecifications">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="label">Format Specifications</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="true">Time Format</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_timeformats">
+                    <property name="enable-search">true</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="true">Date Format</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_dateformats">
+                    <property name="enable-search">true</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwEntryRow" id="custom_time_format">
+                <property name="title" translatable="true">Custom Time Format</property>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="true">Animation Variations</property>
+            <property name="description" translatable="true">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="open_animations">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">folder-open-symbolic</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="true">Animations</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_animations">
+                    <property name="enable-search">true</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList" id="animations_list">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="true">Waybar Settings</property>
@@ -85,82 +175,6 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="true">Configuration Variations</property>
-            <property name="description" translatable="true">Choose from the available variations of your Hyprland configuration.</property>
-
-            <child>
-              <object class="AdwActionRow">
-                <property name="title" translatable="true">Animations</property>
-                <child type="suffix">
-                  <object class="GtkDropDown" id="dd_animations">
-                    <property name="enable-search">true</property>
-                    <property name="halign">3</property>
-                    <property name="valign">3</property>
-                    <property name="model">
-                      <object class="GtkStringList">
-                        <items>
-                          <item>Grapes</item>
-                          <item>Apples</item>
-                          <item>Bananas</item>
-                          <item>Tomatoes</item>
-                        </items>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-              </object>
-            </child>
-
-            <child>
-              <object class="AdwActionRow">
-                <property name="title" translatable="true">Environments</property>
-                <child type="suffix">
-                  <object class="GtkDropDown" id="dd_environments">
-                    <property name="enable-search">true</property>
-                    <property name="halign">3</property>
-                    <property name="valign">3</property>
-                    <property name="model">
-                      <object class="GtkStringList">
-                        <items>
-                          <item>Grapes</item>
-                          <item>Apples</item>
-                          <item>Bananas</item>
-                          <item>Tomatoes</item>
-                        </items>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-              </object>
-            </child>
-
-            <child>
-              <object class="AdwActionRow">
-                <property name="title" translatable="true">Monitors</property>
-                <child type="suffix">
-                  <object class="GtkDropDown" id="dd_monitors">
-                    <property name="enable-search">true</property>
-                    <property name="halign">3</property>
-                    <property name="valign">3</property>
-                    <property name="model">
-                      <object class="GtkStringList">
-                        <items>
-                          <item>Grapes</item>
-                          <item>Apples</item>
-                          <item>Bananas</item>
-                          <item>Tomatoes</item>
-                        </items>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-              </object>
-            </child>
-
-          </object>
-        </child>
-        <child>
-          <object class="AdwPreferencesGroup">
             <property name="title" translatable="true">Waybar Default Applications</property>
             <property name="description" translatable="true">Choose the default applications for Waybar.</property>
 
@@ -191,6 +205,72 @@
             <child>
               <object class="AdwEntryRow" id="default_terminal">
                 <property name="title" translatable="true">Terminal</property>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="true">Environment Variations</property>
+            <property name="description" translatable="true">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="open_environments">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">folder-open-symbolic</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="true">Environments</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_environments">
+                    <property name="enable-search">true</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="true">Monitor Variations</property>
+            <property name="description" translatable="true">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="open_monitors">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">folder-open-symbolic</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="true">Monitors</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_monitors">
+                    <property name="enable-search">true</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
               </object>
             </child>
 

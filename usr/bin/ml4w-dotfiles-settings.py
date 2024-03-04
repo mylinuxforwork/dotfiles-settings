@@ -45,6 +45,14 @@ class MainWindow(Adw.PreferencesWindow):
     default_networkmanager = Gtk.Template.Child()
     default_softwaremanager = Gtk.Template.Child()
     default_terminal = Gtk.Template.Child()
+    open_animations = Gtk.Template.Child()
+    open_environments = Gtk.Template.Child()
+    open_monitors = Gtk.Template.Child()
+    dd_animations = Gtk.Template.Child()
+    dd_environments = Gtk.Template.Child()
+    dd_monitors = Gtk.Template.Child()
+    dd_timeformats = Gtk.Template.Child()
+    dd_dateformats = Gtk.Template.Child()
 
     # Get objects from template
     def __init__(self, *args, **kwargs):
@@ -67,6 +75,25 @@ class MyApp(Adw.Application):
         "ml4w-blur",
         "ml4w-blur-bottom",
         "ml4w-bottom"
+    ]
+
+    # {: time date}
+    timeformats = [
+        "%H:%M",
+        "%I:%M",
+        "%I:%M %p"
+    ]
+
+    dateformats = [
+        "%a",
+        "%A",
+        "%a %Od",
+        "%Od.%Om.%y",
+        "%Od.%Om.%Y",
+        "%a %Od.%Om.%y",
+        "%a %Od.%Om.%Y",
+        "%Om/%Od/%y",
+        "%Om/%Od/%Y"
     ]
 
     def __init__(self, **kwargs):
@@ -105,6 +132,15 @@ class MyApp(Adw.Application):
         self.default_networkmanager = win.default_networkmanager
         self.default_softwaremanager = win.default_softwaremanager
         self.default_terminal = win.default_terminal
+        self.open_animations = win.open_animations
+        self.open_environments = win.open_environments
+        self.open_monitors = win.open_monitors
+        self.dd_animations = win.dd_animations
+        self.dd_environments = win.dd_environments
+        self.dd_monitors = win.dd_monitors
+        self.dd_timeformats = win.dd_timeformats
+        self.dd_dateformats = win.dd_dateformats
+
         self.waybar_workspaces.get_adjustment().connect("value-changed", self.on_waybar_workspaces)
         self.rofi_bordersize.get_adjustment().connect("value-changed", self.on_rofi_bordersize)
         self.default_browser.connect("apply", self.on_default_browser)
@@ -112,8 +148,24 @@ class MyApp(Adw.Application):
         self.default_networkmanager.connect("apply", self.on_default_networkmanager)
         self.default_softwaremanager.connect("apply", self.on_default_softwaremanager)
         self.default_terminal.connect("apply", self.on_default_terminal)
-        
-        print(self.settings)
+
+        self.open_animations.connect("clicked", self.on_open_animations)
+        self.open_environments.connect("clicked", self.on_open_environments)
+        self.open_monitors.connect("clicked", self.on_open_monitors)
+
+        self.dd_animations.connect("notify::selected-item", self.on_animation_changed)
+        self.dd_monitors.connect("notify::selected-item", self.on_monitor_changed)
+        self.dd_environments.connect("notify::selected-item", self.on_environment_changed)
+
+        self.dd_timeformats.connect("notify::selected-item", self.on_timeformats_changed)
+        self.dd_dateformats.connect("notify::selected-item", self.on_dateformats_changed)
+
+        self.loadVariations(self.dd_animations,"animation")
+        self.loadVariations(self.dd_environments,"environment")
+        self.loadVariations(self.dd_monitors,"monitor")
+
+        self.loadDropDown(self.dd_timeformats,self.timeformats,1)
+        self.loadDropDown(self.dd_dateformats,self.dateformats,1)
 
         # Waybar Network
         if "waybar_network" in self.settings:
@@ -187,6 +239,61 @@ class MyApp(Adw.Application):
         win.present()
         print (":: Welcome to ML4W Dotfiles Settings App")
 
+    def on_animation_changed(self,widget,_):
+        if not self.block_reload:
+            value = widget.get_selected_item().get_string()
+            self.overwriteFile("hypr/conf/animation.conf", "source = ~/dotfiles/hypr/conf/animations/" + value)
+
+    def on_monitor_changed(self,widget,_):
+        if not self.block_reload:
+            value = widget.get_selected_item().get_string()
+            self.overwriteFile("hypr/conf/monitor.conf", "source = ~/dotfiles/hypr/conf/monitors/" + value)
+
+    def on_environment_changed(self,widget,_):
+        if not self.block_reload:
+            value = widget.get_selected_item().get_string()
+            self.overwriteFile("hypr/conf/environment.conf", "source = ~/dotfiles/hypr/conf/environment/" + value)
+
+    def loadDropDown(self,dd,d,v):
+        store = Gtk.StringList()
+        for f in d:
+            print(f)
+            store.append(f)
+        dd.set_model(store)
+
+    def loadVariations(self,dd,v):
+        files_arr = os.listdir(self.dotfiles + "hypr/conf/" + v + "s")
+        store = Gtk.StringList()
+        with open(self.dotfiles + "hypr/conf/" + v + ".conf", 'r') as file:
+            value = file.read()
+        selected = 0
+        counter = 0
+        for f in files_arr:
+            store.append(f)
+            if f in value:
+                selected = counter
+            counter+=1
+        dd.set_model(store)
+        dd.set_selected(selected)
+
+
+    def on_timeformats_changed(self,widget,_):
+        if not self.block_reload:
+            print("drin")
+
+    def on_dateformats_changed(self,widget,_):
+        if not self.block_reload:
+            print("drin")
+
+    def on_open_animations(self,widget):
+        subprocess.Popen(["xdg-open", self.dotfiles + "hypr/conf/animations"])
+
+    def on_open_environments(self,widget):
+        subprocess.Popen(["xdg-open", self.dotfiles + "hypr/conf/environments"])
+
+    def on_open_monitors(self,widget):
+        subprocess.Popen(["xdg-open", self.dotfiles + "hypr/conf/monitors"])
+
     def on_default_browser(self, widget):
         self.overwriteFile(".settings/browser.sh",widget.get_text())
 
@@ -203,10 +310,12 @@ class MyApp(Adw.Application):
         self.overwriteFile(".settings/terminal.sh",widget.get_text())
 
     def on_waybar_workspaces(self, widget):
-        value = int(widget.get_value())
-        text = '"*": ' + str(value) + '\n'
-        self.replaceInFileNext("waybar/modules.json", "// START WORKSPACES", text)
-        self.reloadWaybar()
+        if not self.block_reload:
+            value = int(widget.get_value())
+            text = '"*": ' + str(value) + '\n'
+            self.replaceInFileNext("waybar/modules.json", "// START WORKSPACES", text)
+            self.reloadWaybar()
+            self.updateSettings("waybar_workspaces", value)
 
     def on_rofi_bordersize(self, widget):
         value = int(widget.get_value())
