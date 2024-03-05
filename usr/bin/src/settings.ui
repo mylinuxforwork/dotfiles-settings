@@ -59,8 +59,8 @@
               </object>
             </child>
             <child>
-              <object class="AdwEntryRow" id="custom_time_format">
-                <property name="title" translatable="true">Custom Time Format</property>
+              <object class="AdwEntryRow" id="custom_datetime">
+                <property name="title" translatable="true">Custom Date/Time Format</property>
               </object>
             </child>
 
@@ -104,6 +104,13 @@
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="true">Waybar Settings</property>
             <property name="description" translatable="true">Change the color-scheme of the application.</property>
+
+            <child>
+              <object class="AdwSwitchRow" id="waybar_show_window">
+                <property name="title" translatable="true">Show Window Module</property>
+                <property name="action-name">app.waybar_show_window</property>
+              </object>
+            </child>
 
             <child>
               <object class="AdwSwitchRow" id="waybar_show_screenlock">

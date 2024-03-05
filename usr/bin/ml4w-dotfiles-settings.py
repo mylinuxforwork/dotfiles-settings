@@ -38,6 +38,7 @@ class MainWindow(Adw.PreferencesWindow):
     waybar_show_chatgpt = Gtk.Template.Child()
     waybar_show_systray = Gtk.Template.Child()
     waybar_show_screenlock = Gtk.Template.Child()
+    waybar_show_window = Gtk.Template.Child()
     rofi_bordersize = Gtk.Template.Child()
     waybar_workspaces = Gtk.Template.Child()
     default_browser = Gtk.Template.Child()
@@ -53,6 +54,7 @@ class MainWindow(Adw.PreferencesWindow):
     dd_monitors = Gtk.Template.Child()
     dd_timeformats = Gtk.Template.Child()
     dd_dateformats = Gtk.Template.Child()
+    custom_datetime = Gtk.Template.Child()
 
     # Get objects from template
     def __init__(self, *args, **kwargs):
@@ -96,6 +98,9 @@ class MyApp(Adw.Application):
         "%Om/%Od/%Y"
     ]
 
+    timeformat = ""
+    dateformat = ""
+
     def __init__(self, **kwargs):
         super().__init__(application_id='com.ml4w.dotfilessettings',
                          flags=Gio.ApplicationFlags.DEFAULT_FLAGS)
@@ -104,6 +109,7 @@ class MyApp(Adw.Application):
         self.create_action('waybar_show_screenlock', self.on_waybar_show_screenlock)
         self.create_action('waybar_show_chatgpt', self.on_waybar_show_chatgpt)
         self.create_action('waybar_show_systray', self.on_waybar_show_systray)
+        self.create_action('waybar_show_window', self.on_waybar_show_window)
         self.create_action('rofi_bordersize', self.on_rofi_bordersize)
         self.create_action('waybar_workspaces', self.on_waybar_workspaces)
 
@@ -125,6 +131,7 @@ class MyApp(Adw.Application):
         self.waybar_show_chatgpt = win.waybar_show_chatgpt
         self.waybar_show_systray = win.waybar_show_systray
         self.waybar_show_screenlock = win.waybar_show_screenlock
+        self.waybar_show_window = win.waybar_show_window
         self.waybar_workspaces = win.waybar_workspaces
         self.rofi_bordersize = win.rofi_bordersize
         self.default_browser = win.default_browser
@@ -140,9 +147,11 @@ class MyApp(Adw.Application):
         self.dd_monitors = win.dd_monitors
         self.dd_timeformats = win.dd_timeformats
         self.dd_dateformats = win.dd_dateformats
+        self.custom_datetime = win.custom_datetime
 
         self.waybar_workspaces.get_adjustment().connect("value-changed", self.on_waybar_workspaces)
         self.rofi_bordersize.get_adjustment().connect("value-changed", self.on_rofi_bordersize)
+
         self.default_browser.connect("apply", self.on_default_browser)
         self.default_filemanager.connect("apply", self.on_default_filemanager)
         self.default_networkmanager.connect("apply", self.on_default_networkmanager)
@@ -164,8 +173,19 @@ class MyApp(Adw.Application):
         self.loadVariations(self.dd_environments,"environment")
         self.loadVariations(self.dd_monitors,"monitor")
 
-        self.loadDropDown(self.dd_timeformats,self.timeformats,1)
-        self.loadDropDown(self.dd_dateformats,self.dateformats,1)
+        self.loadDropDown(self.dd_timeformats,self.timeformats,"waybar_timeformat")
+        self.loadDropDown(self.dd_dateformats,self.dateformats,"waybar_dateformat")
+        self.custom_datetime.set_show_apply_button(True)
+        self.custom_datetime.set_text(self.settings["waybar_custom_timedateformat"])
+
+        self.custom_datetime.connect("apply", self.on_custom_datetime)
+
+        # Waybar Window
+        if "waybar_window" in self.settings:
+            if self.settings["waybar_window"]:
+                self.waybar_show_window.set_active(True)
+            else:
+                self.waybar_show_window.set_active(False)
 
         # Waybar Network
         if "waybar_network" in self.settings:
@@ -256,10 +276,16 @@ class MyApp(Adw.Application):
 
     def loadDropDown(self,dd,d,v):
         store = Gtk.StringList()
+        selected = 0
+        counter = 0
+        value = self.settings[v]
         for f in d:
-            print(f)
             store.append(f)
+            if f == value:
+                selected = counter
+            counter+=1
         dd.set_model(store)
+        dd.set_selected(selected)
 
     def loadVariations(self,dd,v):
         files_arr = os.listdir(self.dotfiles + "hypr/conf/" + v + "s")
@@ -279,11 +305,35 @@ class MyApp(Adw.Application):
 
     def on_timeformats_changed(self,widget,_):
         if not self.block_reload:
-            print("drin")
+            value = widget.get_selected_item().get_string()
+            dateformat = self.dd_dateformats.get_selected_item().get_string()
+            timedate = '"format": "{:' + value + ' - ' + dateformat + '}",'
+            self.updateSettings("waybar_timeformat", value)
+            self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
+            self.reloadWaybar()
 
     def on_dateformats_changed(self,widget,_):
         if not self.block_reload:
-            print("drin")
+            value = widget.get_selected_item().get_string()
+            timeformat = self.dd_timeformats.get_selected_item().get_string()
+            timedate = '"format": "{:' + timeformat + ' - ' + value + '}",'
+            self.updateSettings("waybar_dateformat", value)
+            self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
+            self.reloadWaybar()
+
+    def on_custom_datetime(self, widget):
+        value = widget.get_text()
+        if value != "":
+            self.updateSettings("waybar_custom_timedateformat", value)
+            timedate = '"format": "{:' + value + '}",'
+            self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
+        else:
+            dateformat = self.dd_dateformats.get_selected_item().get_string()
+            timeformat = self.dd_timeformats.get_selected_item().get_string()
+            timedate = '"format": "{:' + timeformat + ' - ' + dateformat + '}",'
+            self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
+            self.updateSettings("waybar_custom_timedateformat", "")
+        self.reloadWaybar()
 
     def on_open_animations(self,widget):
         subprocess.Popen(["xdg-open", self.dotfiles + "hypr/conf/animations"])
@@ -333,6 +383,18 @@ class MyApp(Adw.Application):
                 for t in self.waybar_themes:
                     self.replaceInFile("waybar/themes/" + t + "/config",'"network"','//"network",')
                 self.updateSettings("waybar_network", False)
+            self.reloadWaybar()
+
+    def on_waybar_show_window(self, widget, _):
+        if not self.block_reload:
+            if self.waybar_show_window.get_active():
+                for t in self.waybar_themes:
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"hyprland/window"','"hyprland/window",')
+                self.updateSettings("waybar_window", True)
+            else:
+                for t in self.waybar_themes:
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"hyprland/window"','//"hyprland/window",')
+                self.updateSettings("waybar_window", False)
             self.reloadWaybar()
 
     def on_waybar_show_systray(self, widget, _):
@@ -397,6 +459,7 @@ class MyApp(Adw.Application):
 
     # Replace Text in File
     def replaceInFile(self, f, search, replace):
+        print(f)
         file = open(self.dotfiles + f, 'r')
         lines = file.readlines()
         count = 0
@@ -407,6 +470,7 @@ class MyApp(Adw.Application):
             if search in l:
                 found = count
         if found > 0:
+            print (found - 1)
             lines[found - 1] = replace + "\n"
             with open(self.dotfiles + f, 'w') as file:
                 file.writelines(lines)
