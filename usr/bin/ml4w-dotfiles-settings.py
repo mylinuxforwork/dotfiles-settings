@@ -69,7 +69,13 @@ class MyApp(Adw.Application):
     homeFolder = os.path.expanduser('~') # Path to home folder
     dotfiles = homeFolder + "/dotfiles/"
     block_reload = True
-    settings = {}
+    settings = {
+        "waybar_timeformat": "%H:%M",
+        "waybar_dateformat": "%a",
+        "waybar_custom_timedateformat": "",
+        "waybar_workspaces": 5,
+        "rofi_bordersize": 3
+    }
 
     waybar_themes = [
         "ml4w-minimal",
@@ -177,87 +183,41 @@ class MyApp(Adw.Application):
         self.loadDropDown(self.dd_dateformats,self.dateformats,"waybar_dateformat")
         self.custom_datetime.set_show_apply_button(True)
         self.custom_datetime.set_text(self.settings["waybar_custom_timedateformat"])
-
         self.custom_datetime.connect("apply", self.on_custom_datetime)
 
-        # Waybar Window
-        if "waybar_window" in self.settings:
-            if self.settings["waybar_window"]:
-                self.waybar_show_window.set_active(True)
-            else:
-                self.waybar_show_window.set_active(False)
+        self.loadShowModule("waybar_window",self.waybar_show_window)
+        self.loadShowModule("waybar_network",self.waybar_show_network)
+        self.loadShowModule("waybar_chatgpt",self.waybar_show_chatgpt)
+        self.loadShowModule("waybar_systray",self.waybar_show_systray)
+        self.loadShowModule("waybar_screenlock",self.waybar_show_screenlock)
 
-        # Waybar Network
-        if "waybar_network" in self.settings:
-            if self.settings["waybar_network"]:
-                self.waybar_show_network.set_active(True)
-            else:
-                self.waybar_show_network.set_active(False)
+        self.waybar_workspaces.get_adjustment().set_value(self.settings["waybar_workspaces"])        
+        self.rofi_bordersize.get_adjustment().set_value(self.settings["rofi_bordersize"])        
 
-        # Waybar ChatGPT
-        if "waybar_chatgpt" in self.settings:
-            if self.settings["waybar_chatgpt"]:
-                self.waybar_show_chatgpt.set_active(True)
-            else:
-                self.waybar_show_chatgpt.set_active(False)
-
-        # Waybar Systray
-        if "waybar_systray" in self.settings:
-            if self.settings["waybar_systray"]:
-                self.waybar_show_systray.set_active(True)
-            else:
-                self.waybar_show_systray.set_active(False)
-
-        # Waybar Screenlock
-        if "waybar_screenlock" in self.settings:
-            if self.settings["waybar_screenlock"]:
-                self.waybar_show_screenlock.set_active(True)
-            else:
-                self.waybar_show_screenlock.set_active(False)
-
-        # Waybar Workspaces
-        if "waybar_workspaces" in self.settings:
-            self.waybar_workspaces.get_adjustment().set_value(self.settings["waybar_workspaces"])        
-
-        # Rofi Bordersize
-        if "rofi_bordersize" in self.settings:
-            self.rofi_bordersize.get_adjustment().set_value(self.settings["rofi_bordersize"])        
-
-        # Default Browser
-        with open(self.dotfiles + ".settings/browser.sh", 'r') as file:
-            value = file.read()
-        self.default_browser.set_text(value.strip())
-        self.default_browser.set_show_apply_button(True)
-
-        # Default Filemanager
-        with open(self.dotfiles + ".settings/filemanager.sh", 'r') as file:
-            value = file.read()
-        self.default_filemanager.set_text(value.strip())
-        self.default_filemanager.set_show_apply_button(True)
-
-        # Default Networkmanager
-        with open(self.dotfiles + ".settings/networkmanager.sh", 'r') as file:
-            value = file.read()
-        self.default_networkmanager.set_text(value.strip())
-        self.default_networkmanager.set_show_apply_button(True)
-
-        # Default Softwaremanager
-        with open(self.dotfiles + ".settings/software.sh", 'r') as file:
-            value = file.read()
-        self.default_softwaremanager.set_text(value.strip())
-        self.default_softwaremanager.set_show_apply_button(True)
-
-        # Default Terminal
-        with open(self.dotfiles + ".settings/terminal.sh", 'r') as file:
-            value = file.read()
-        self.default_terminal.set_text(value.strip())
-        self.default_terminal.set_show_apply_button(True)
+        self.loadDefaultApp(".settings/browser.sh",self.default_browser)
+        self.loadDefaultApp(".settings/filemanager.sh",self.default_filemanager)
+        self.loadDefaultApp(".settings/networkmanager.sh",self.default_networkmanager)
+        self.loadDefaultApp(".settings/software.sh",self.default_softwaremanager)
+        self.loadDefaultApp(".settings/terminal.sh",self.default_terminal)
 
         self.block_reload = False
 
         # Show Application Window
         win.present()
         print (":: Welcome to ML4W Dotfiles Settings App")
+
+    def loadShowModule(self,f,d):
+       if f in self.settings:
+            if self.settings[f]:
+                d.set_active(True)
+            else:
+                d.set_active(False)
+
+    def loadDefaultApp(self,f,d):
+        with open(self.dotfiles + f, 'r') as file:
+            value = file.read()
+        d.set_text(value.strip())
+        d.set_show_apply_button(True)
 
     def on_animation_changed(self,widget,_):
         if not self.block_reload:
