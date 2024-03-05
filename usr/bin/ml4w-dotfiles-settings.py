@@ -49,9 +49,17 @@ class MainWindow(Adw.PreferencesWindow):
     open_animations = Gtk.Template.Child()
     open_environments = Gtk.Template.Child()
     open_monitors = Gtk.Template.Child()
+    open_decorations = Gtk.Template.Child()
+    open_windows = Gtk.Template.Child()
+    open_windowrules = Gtk.Template.Child()
+    open_keybindings = Gtk.Template.Child()
     dd_animations = Gtk.Template.Child()
     dd_environments = Gtk.Template.Child()
     dd_monitors = Gtk.Template.Child()
+    dd_decorations = Gtk.Template.Child()
+    dd_windows = Gtk.Template.Child()
+    dd_windowrules = Gtk.Template.Child()
+    dd_keybindings = Gtk.Template.Child()
     dd_timeformats = Gtk.Template.Child()
     dd_dateformats = Gtk.Template.Child()
     custom_datetime = Gtk.Template.Child()
@@ -148,9 +156,17 @@ class MyApp(Adw.Application):
         self.open_animations = win.open_animations
         self.open_environments = win.open_environments
         self.open_monitors = win.open_monitors
+        self.open_decorations = win.open_decorations
+        self.open_windows = win.open_windows
+        self.open_windowrules = win.open_windowrules
+        self.open_keybindings = win.open_keybindings
         self.dd_animations = win.dd_animations
         self.dd_environments = win.dd_environments
         self.dd_monitors = win.dd_monitors
+        self.dd_decorations = win.dd_decorations
+        self.dd_windows = win.dd_windows
+        self.dd_windowrules = win.dd_windowrules
+        self.dd_keybindings = win.dd_keybindings
         self.dd_timeformats = win.dd_timeformats
         self.dd_dateformats = win.dd_dateformats
         self.custom_datetime = win.custom_datetime
@@ -167,10 +183,18 @@ class MyApp(Adw.Application):
         self.open_animations.connect("clicked", self.on_open_animations)
         self.open_environments.connect("clicked", self.on_open_environments)
         self.open_monitors.connect("clicked", self.on_open_monitors)
+        self.open_decorations.connect("clicked", self.on_open_decorations)
+        self.open_windows.connect("clicked", self.on_open_windows)
+        self.open_windowrules.connect("clicked", self.on_open_windowrules)
+        self.open_keybindings.connect("clicked", self.on_open_keybindings)
 
         self.dd_animations.connect("notify::selected-item", self.on_animation_changed)
         self.dd_monitors.connect("notify::selected-item", self.on_monitor_changed)
         self.dd_environments.connect("notify::selected-item", self.on_environment_changed)
+        self.dd_decorations.connect("notify::selected-item", self.on_decoration_changed)
+        self.dd_windows.connect("notify::selected-item", self.on_window_changed)
+        self.dd_windowrules.connect("notify::selected-item", self.on_windowrule_changed)
+        self.dd_keybindings.connect("notify::selected-item", self.on_keybinding_changed)
 
         self.dd_timeformats.connect("notify::selected-item", self.on_timeformats_changed)
         self.dd_dateformats.connect("notify::selected-item", self.on_dateformats_changed)
@@ -178,6 +202,10 @@ class MyApp(Adw.Application):
         self.loadVariations(self.dd_animations,"animation")
         self.loadVariations(self.dd_environments,"environment")
         self.loadVariations(self.dd_monitors,"monitor")
+        self.loadVariations(self.dd_decorations,"decoration")
+        self.loadVariations(self.dd_windows,"window")
+        self.loadVariations(self.dd_windowrules,"windowrule")
+        self.loadVariations(self.dd_keybindings,"keybinding")
 
         self.loadDropDown(self.dd_timeformats,self.timeformats,"waybar_timeformat")
         self.loadDropDown(self.dd_dateformats,self.dateformats,"waybar_dateformat")
@@ -232,7 +260,27 @@ class MyApp(Adw.Application):
     def on_environment_changed(self,widget,_):
         if not self.block_reload:
             value = widget.get_selected_item().get_string()
-            self.overwriteFile("hypr/conf/environment.conf", "source = ~/dotfiles/hypr/conf/environment/" + value)
+            self.overwriteFile("hypr/conf/environment.conf", "source = ~/dotfiles/hypr/conf/environments/" + value)
+
+    def on_decoration_changed(self,widget,_):
+        if not self.block_reload:
+            value = widget.get_selected_item().get_string()
+            self.overwriteFile("hypr/conf/decoration.conf", "source = ~/dotfiles/hypr/conf/decorations/" + value)
+
+    def on_window_changed(self,widget,_):
+        if not self.block_reload:
+            value = widget.get_selected_item().get_string()
+            self.overwriteFile("hypr/conf/window.conf", "source = ~/dotfiles/hypr/conf/windows/" + value)
+
+    def on_windowrule_changed(self,widget,_):
+        if not self.block_reload:
+            value = widget.get_selected_item().get_string()
+            self.overwriteFile("hypr/conf/windowrule.conf", "source = ~/dotfiles/hypr/conf/windowrules/" + value)
+
+    def on_keybinding_changed(self,widget,_):
+        if not self.block_reload:
+            value = widget.get_selected_item().get_string()
+            self.overwriteFile("hypr/conf/keybinding.conf", "source = ~/dotfiles/hypr/conf/keybindings/" + value)
 
     def loadDropDown(self,dd,d,v):
         store = Gtk.StringList()
@@ -303,6 +351,18 @@ class MyApp(Adw.Application):
 
     def on_open_monitors(self,widget):
         subprocess.Popen(["xdg-open", self.dotfiles + "hypr/conf/monitors"])
+
+    def on_open_decorations(self,widget):
+        subprocess.Popen(["xdg-open", self.dotfiles + "hypr/confdecorations"])
+
+    def on_open_windows(self,widget):
+        subprocess.Popen(["xdg-open", self.dotfiles + "hypr/conf/windows"])
+
+    def on_open_windowrules(self,widget):
+        subprocess.Popen(["xdg-open", self.dotfiles + "hypr/conf/windowrules"])
+
+    def on_open_keybindings(self,widget):
+        subprocess.Popen(["xdg-open", self.dotfiles + "hypr/conf/keybindings"])
 
     def on_default_browser(self, widget):
         self.overwriteFile(".settings/browser.sh",widget.get_text())

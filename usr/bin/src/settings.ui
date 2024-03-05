@@ -280,7 +280,134 @@
                 </child>
               </object>
             </child>
+          </object>
+        </child>
 
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="true">Decoration Variations</property>
+            <property name="description" translatable="true">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="open_decorations">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">folder-open-symbolic</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="true">Decorations</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_decorations">
+                    <property name="enable-search">true</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="true">Window Variations</property>
+            <property name="description" translatable="true">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="open_windows">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">folder-open-symbolic</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="true">Windows</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_windows">
+                    <property name="enable-search">true</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="true">Windowrule Variations</property>
+            <property name="description" translatable="true">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="open_windowrules">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">folder-open-symbolic</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="true">Windowrules</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_windowrules">
+                    <property name="enable-search">true</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="true">Keybinding Variations</property>
+            <property name="description" translatable="true">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="open_keybindings">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">folder-open-symbolic</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="true">Keybindings</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_keybindings">
+                    <property name="enable-search">true</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
         </child>
 
