@@ -1,6 +1,7 @@
 [Desktop Entry]
-Name=ML4W Hyprland Settings
-Exec=AppRun.sh
-Icon=icon
 Type=Application
+Name=ML4W Dotfiles Settings
+Exec=AppRun
+Icon=ml4w-icon
+Terminal=false
 Categories=Utility

@@ -82,7 +82,12 @@ class MyApp(Adw.Application):
         "waybar_dateformat": "%a",
         "waybar_custom_timedateformat": "",
         "waybar_workspaces": 5,
-        "rofi_bordersize": 3
+        "rofi_bordersize": 3,
+        "waybar_network": True,
+        "waybar_chatgpt": True,
+        "waybar_systray": True,
+        "waybar_screenlock": True,
+        "waybar_window": True
     }
 
     waybar_themes = [
@@ -133,9 +138,14 @@ class MyApp(Adw.Application):
         if not win:
             win = MainWindow(application=self)
 
-        # Load settings
+        # Setup settings
         if not os.path.exists(self.dotfiles + ".settings/settings.json"):
-            shutil.copy(self.path_name + '/settings.json', self.dotfiles + ".settings/")
+            result = []
+            for k, v in self.settings.items():
+                result.append({'key': k, 'value': v})
+            self.writeToSettings(result)
+
+        # Load settings
         settings_file = open(self.dotfiles + ".settings/settings.json")
         settings_arr = json.load(settings_file)
         for row in settings_arr:
@@ -188,13 +198,13 @@ class MyApp(Adw.Application):
         self.open_windowrules.connect("clicked", self.on_open_windowrules)
         self.open_keybindings.connect("clicked", self.on_open_keybindings)
 
-        self.dd_animations.connect("notify::selected-item", self.on_animation_changed)
-        self.dd_monitors.connect("notify::selected-item", self.on_monitor_changed)
-        self.dd_environments.connect("notify::selected-item", self.on_environment_changed)
-        self.dd_decorations.connect("notify::selected-item", self.on_decoration_changed)
-        self.dd_windows.connect("notify::selected-item", self.on_window_changed)
-        self.dd_windowrules.connect("notify::selected-item", self.on_windowrule_changed)
-        self.dd_keybindings.connect("notify::selected-item", self.on_keybinding_changed)
+        self.dd_animations.connect("notify::selected-item", self.on_variation_changed,"animation")
+        self.dd_monitors.connect("notify::selected-item", self.on_variation_changed,"monitor")
+        self.dd_environments.connect("notify::selected-item", self.on_variation_changed,"environment")
+        self.dd_decorations.connect("notify::selected-item", self.on_variation_changed,"decoration")
+        self.dd_windows.connect("notify::selected-item", self.on_variation_changed,"window")
+        self.dd_windowrules.connect("notify::selected-item", self.on_variation_changed,"windowrule")
+        self.dd_keybindings.connect("notify::selected-item", self.on_variation_changed,"keybinding")
 
         self.dd_timeformats.connect("notify::selected-item", self.on_timeformats_changed)
         self.dd_dateformats.connect("notify::selected-item", self.on_dateformats_changed)
@@ -247,40 +257,10 @@ class MyApp(Adw.Application):
         d.set_text(value.strip())
         d.set_show_apply_button(True)
 
-    def on_animation_changed(self,widget,_):
+    def on_variation_changed(self,widget,*data):
         if not self.block_reload:
             value = widget.get_selected_item().get_string()
-            self.overwriteFile("hypr/conf/animation.conf", "source = ~/dotfiles/hypr/conf/animations/" + value)
-
-    def on_monitor_changed(self,widget,_):
-        if not self.block_reload:
-            value = widget.get_selected_item().get_string()
-            self.overwriteFile("hypr/conf/monitor.conf", "source = ~/dotfiles/hypr/conf/monitors/" + value)
-
-    def on_environment_changed(self,widget,_):
-        if not self.block_reload:
-            value = widget.get_selected_item().get_string()
-            self.overwriteFile("hypr/conf/environment.conf", "source = ~/dotfiles/hypr/conf/environments/" + value)
-
-    def on_decoration_changed(self,widget,_):
-        if not self.block_reload:
-            value = widget.get_selected_item().get_string()
-            self.overwriteFile("hypr/conf/decoration.conf", "source = ~/dotfiles/hypr/conf/decorations/" + value)
-
-    def on_window_changed(self,widget,_):
-        if not self.block_reload:
-            value = widget.get_selected_item().get_string()
-            self.overwriteFile("hypr/conf/window.conf", "source = ~/dotfiles/hypr/conf/windows/" + value)
-
-    def on_windowrule_changed(self,widget,_):
-        if not self.block_reload:
-            value = widget.get_selected_item().get_string()
-            self.overwriteFile("hypr/conf/windowrule.conf", "source = ~/dotfiles/hypr/conf/windowrules/" + value)
-
-    def on_keybinding_changed(self,widget,_):
-        if not self.block_reload:
-            value = widget.get_selected_item().get_string()
-            self.overwriteFile("hypr/conf/keybinding.conf", "source = ~/dotfiles/hypr/conf/keybindings/" + value)
+            self.overwriteFile("hypr/conf/" + data[1] + ".conf", "source = ~/dotfiles/hypr/conf/" + data[1] + "s/" + value)
 
     def loadDropDown(self,dd,d,v):
         store = Gtk.StringList()
@@ -333,12 +313,12 @@ class MyApp(Adw.Application):
         value = widget.get_text()
         if value != "":
             self.updateSettings("waybar_custom_timedateformat", value)
-            timedate = '"format": "{:' + value + '}",'
+            timedate = '        "format": "{:' + value + '}",'
             self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
         else:
             dateformat = self.dd_dateformats.get_selected_item().get_string()
             timeformat = self.dd_timeformats.get_selected_item().get_string()
-            timedate = '"format": "{:' + timeformat + ' - ' + dateformat + '}",'
+            timedate = '        "format": "{:' + timeformat + ' - ' + dateformat + '}",'
             self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
             self.updateSettings("waybar_custom_timedateformat", "")
         self.reloadWaybar()
@@ -382,7 +362,7 @@ class MyApp(Adw.Application):
     def on_waybar_workspaces(self, widget):
         if not self.block_reload:
             value = int(widget.get_value())
-            text = '"*": ' + str(value) + '\n'
+            text = '            "*": ' + str(value)
             self.replaceInFileNext("waybar/modules.json", "// START WORKSPACES", text)
             self.reloadWaybar()
             self.updateSettings("waybar_workspaces", value)
@@ -397,11 +377,11 @@ class MyApp(Adw.Application):
         if not self.block_reload:
             if self.waybar_show_network.get_active():
                 for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"network"','"network",')
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"network"','        "network",')
                 self.updateSettings("waybar_network", True)
             else:
                 for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"network"','//"network",')
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"network"','        //"network",')
                 self.updateSettings("waybar_network", False)
             self.reloadWaybar()
 
@@ -409,11 +389,11 @@ class MyApp(Adw.Application):
         if not self.block_reload:
             if self.waybar_show_window.get_active():
                 for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"hyprland/window"','"hyprland/window",')
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"hyprland/window"','        "hyprland/window",')
                 self.updateSettings("waybar_window", True)
             else:
                 for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"hyprland/window"','//"hyprland/window",')
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"hyprland/window"','        //"hyprland/window",')
                 self.updateSettings("waybar_window", False)
             self.reloadWaybar()
 
@@ -421,36 +401,36 @@ class MyApp(Adw.Application):
         if not self.block_reload:
             if self.waybar_show_systray.get_active():
                 for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"tray"','"tray",')
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"tray"','        "tray",')
                 self.updateSettings("waybar_systray", True)
             else:
                 for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"tray"','//"tray",')
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"tray"','        //"tray",')
                 self.updateSettings("waybar_systray", False)
             self.reloadWaybar()
-
 
     def on_waybar_show_screenlock(self, widget, _):
         if not self.block_reload:
             if self.waybar_show_screenlock.get_active():
                 for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"idle_inhibitor"','"idle_inhibitor",')
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"idle_inhibitor"','        "idle_inhibitor",')
                 self.updateSettings("waybar_screenlock", True)
             else:
                 for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"idle_inhibitor"','//"idle_inhibitor",')
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"idle_inhibitor"','        //"idle_inhibitor",')
                 self.updateSettings("waybar_screenlock", False)
             self.reloadWaybar()
 
     def on_waybar_show_chatgpt(self, widget, _):
         if not self.block_reload:
             if self.waybar_show_chatgpt.get_active():
-                self.replaceInFile("waybar/modules.json",'"custom/chatgpt"','"custom/chatgpt",')
+                self.replaceInFile("waybar/modules.json",'"custom/chatgpt"','            "custom/chatgpt",')
                 self.updateSettings("waybar_chatgpt", True)
             else:
-                self.replaceInFile("waybar/modules.json",'"custom/chatgpt"','//"custom/chatgpt",')
+                self.replaceInFile("waybar/modules.json",'"custom/chatgpt"','            //"custom/chatgpt",')
                 self.updateSettings("waybar_chatgpt", False)
             self.reloadWaybar()
+
 
     def updateSettings(self,keyword,value):
         result = []
@@ -460,7 +440,7 @@ class MyApp(Adw.Application):
         self.writeToSettings(result)
 
     def writeToSettings(self,result):
-        with open(self.dotfiles + '.settings/settings.json', 'w', encoding='utf-8') as f:
+        with open(self.dotfiles + '.settings/settings.json', 'w+', encoding='utf-8') as f:
             json.dump(result, f, ensure_ascii=False, indent=4)
 
     def searchInFile(self, f, search):
@@ -471,37 +451,30 @@ class MyApp(Adw.Application):
             else:
                 return False
 
-    # Overwrite Text in File
     def overwriteFile(self, f, text):
         file=open(self.dotfiles + f,"w+")
         file.write(text)
         file.close()
 
-    # Replace Text in File
     def replaceInFile(self, f, search, replace):
-        print(f)
         file = open(self.dotfiles + f, 'r')
         lines = file.readlines()
         count = 0
         found = 0
-        # Strips the newline character
         for l in lines:
             count += 1
             if search in l:
                 found = count
         if found > 0:
-            print (found - 1)
             lines[found - 1] = replace + "\n"
             with open(self.dotfiles + f, 'w') as file:
                 file.writelines(lines)
 
-    # Replace Text in File
     def replaceInFileNext(self, f, search, replace):
         file = open(self.dotfiles + f, 'r')
         lines = file.readlines()
         count = 0
         found = 0
-        # Strips the newline character
         for l in lines:
             count += 1
             if search in l:
@@ -511,12 +484,10 @@ class MyApp(Adw.Application):
             with open(self.dotfiles + f, 'w') as file:
                 file.writelines(lines)
 
-    # Reload Waybar
     def reloadWaybar(self):
         launch_script = self.dotfiles + "waybar/launch.sh"
         subprocess.Popen(["setsid", launch_script, "1>/dev/null" ,"2>&1" "&"])
 
-    # Add Application actions
     def create_action(self, name, callback, shortcuts=None):
         action = Gio.SimpleAction.new(name, None)
         action.connect("activate", callback)
