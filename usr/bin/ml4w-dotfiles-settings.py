@@ -53,6 +53,7 @@ class MainWindow(Adw.PreferencesWindow):
     open_windows = Gtk.Template.Child()
     open_windowrules = Gtk.Template.Child()
     open_keybindings = Gtk.Template.Child()
+    open_customconf = Gtk.Template.Child()
     dd_animations = Gtk.Template.Child()
     dd_environments = Gtk.Template.Child()
     dd_monitors = Gtk.Template.Child()
@@ -170,6 +171,7 @@ class MyApp(Adw.Application):
         self.open_windows = win.open_windows
         self.open_windowrules = win.open_windowrules
         self.open_keybindings = win.open_keybindings
+        self.open_customconf = win.open_customconf
         self.dd_animations = win.dd_animations
         self.dd_environments = win.dd_environments
         self.dd_monitors = win.dd_monitors
@@ -190,13 +192,14 @@ class MyApp(Adw.Application):
         self.default_softwaremanager.connect("apply", self.on_default_softwaremanager)
         self.default_terminal.connect("apply", self.on_default_terminal)
 
-        self.open_animations.connect("clicked", self.on_open_animations)
-        self.open_environments.connect("clicked", self.on_open_environments)
-        self.open_monitors.connect("clicked", self.on_open_monitors)
-        self.open_decorations.connect("clicked", self.on_open_decorations)
-        self.open_windows.connect("clicked", self.on_open_windows)
-        self.open_windowrules.connect("clicked", self.on_open_windowrules)
-        self.open_keybindings.connect("clicked", self.on_open_keybindings)
+        self.open_animations.connect("clicked", self.on_open,"xdg-open","hypr/conf/animations")
+        self.open_environments.connect("clicked", self.on_open,"xdg-open","hypr/conf/environments")
+        self.open_monitors.connect("clicked", self.on_open,"xdg-open","hypr/conf/monitors")
+        self.open_decorations.connect("clicked", self.on_open,"xdg-open","hypr/conf/decorations")
+        self.open_windows.connect("clicked", self.on_open,"xdg-open","hypr/conf/windows")
+        self.open_windowrules.connect("clicked", self.on_open,"xdg-open","hypr/conf/windowrules")
+        self.open_keybindings.connect("clicked", self.on_open,"xdg-open","hypr/conf/keybindings")
+        self.open_customconf.connect("clicked", self.on_open,"mousepad","hypr/conf/custom.conf")
 
         self.dd_animations.connect("notify::selected-item", self.on_variation_changed,"animation")
         self.dd_monitors.connect("notify::selected-item", self.on_variation_changed,"monitor")
@@ -323,26 +326,8 @@ class MyApp(Adw.Application):
             self.updateSettings("waybar_custom_timedateformat", "")
         self.reloadWaybar()
 
-    def on_open_animations(self,widget):
-        subprocess.Popen(["xdg-open", self.dotfiles + "hypr/conf/animations"])
-
-    def on_open_environments(self,widget):
-        subprocess.Popen(["xdg-open", self.dotfiles + "hypr/conf/environments"])
-
-    def on_open_monitors(self,widget):
-        subprocess.Popen(["xdg-open", self.dotfiles + "hypr/conf/monitors"])
-
-    def on_open_decorations(self,widget):
-        subprocess.Popen(["xdg-open", self.dotfiles + "hypr/confdecorations"])
-
-    def on_open_windows(self,widget):
-        subprocess.Popen(["xdg-open", self.dotfiles + "hypr/conf/windows"])
-
-    def on_open_windowrules(self,widget):
-        subprocess.Popen(["xdg-open", self.dotfiles + "hypr/conf/windowrules"])
-
-    def on_open_keybindings(self,widget):
-        subprocess.Popen(["xdg-open", self.dotfiles + "hypr/conf/keybindings"])
+    def on_open(self,widget,a,u):
+        subprocess.Popen([a, self.dotfiles + u])
 
     def on_default_browser(self, widget):
         self.overwriteFile(".settings/browser.sh",widget.get_text())
