@@ -13,8 +13,8 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="true">Clock Format</property>
-            <property name="description" translatable="true">Choose from some default clock formats or enter your own.</property>
+            <property name="title">Clock Format</property>
+            <property name="description">Choose from some default clock formats or enter your own.</property>
             <child type="header-suffix">
               <object class="GtkButton" id="open_timeformatspecifications">
                 <property name="halign">3</property>
@@ -24,10 +24,10 @@
             </child>
             <child>
               <object class="AdwActionRow">
-                <property name="title" translatable="true">Time Format</property>
+                <property name="title">Time Format</property>
                 <child type="suffix">
                   <object class="GtkDropDown" id="dd_timeformats">
-                    <property name="enable-search">true</property>
+                    <property name="enable-search">false</property>
                     <property name="halign">3</property>
                     <property name="valign">3</property>
                     <property name="model">
@@ -42,10 +42,10 @@
             </child>
             <child>
               <object class="AdwActionRow">
-                <property name="title" translatable="true">Date Format</property>
+                <property name="title">Date Format</property>
                 <child type="suffix">
                   <object class="GtkDropDown" id="dd_dateformats">
-                    <property name="enable-search">true</property>
+                    <property name="enable-search">false</property>
                     <property name="halign">3</property>
                     <property name="valign">3</property>
                     <property name="model">
@@ -60,7 +60,7 @@
             </child>
             <child>
               <object class="AdwEntryRow" id="custom_datetime">
-                <property name="title" translatable="true">Custom Date/Time Format</property>
+                <property name="title">Custom Date/Time Format</property>
               </object>
             </child>
 
@@ -69,47 +69,47 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="true">Modules</property>
-            <property name="description" translatable="true">Show or hide selected waybar modules.</property>
+            <property name="title">Modules</property>
+            <property name="description">Show or hide selected waybar modules.</property>
 
             <child>
               <object class="AdwSwitchRow" id="waybar_show_window">
-                <property name="title" translatable="true">Show Window Module</property>
+                <property name="title">Show Window Module</property>
                 <property name="action-name">app.waybar_show_window</property>
               </object>
             </child>
 
             <child>
               <object class="AdwSwitchRow" id="waybar_show_screenlock">
-                <property name="title" translatable="true">Show Screen Lock Module</property>
+                <property name="title">Show Screen Lock Module</property>
                 <property name="action-name">app.waybar_show_screenlock</property>
               </object>
             </child>
 
             <child>
               <object class="AdwSwitchRow" id="waybar_show_chatgpt">
-                <property name="title" translatable="true">Show ChatGPT Module</property>
+                <property name="title">Show ChatGPT Module</property>
                 <property name="action-name">app.waybar_show_chatgpt</property>
               </object>
             </child>
 
             <child>
               <object class="AdwSwitchRow" id="waybar_show_network">
-                <property name="title" translatable="true">Show Network Module</property>
+                <property name="title">Show Network Module</property>
                 <property name="action-name">app.waybar_show_network</property>
               </object>
             </child>
 
             <child>
               <object class="AdwSwitchRow" id="waybar_show_systray">
-                <property name="title" translatable="true">Show Systray Module</property>
+                <property name="title">Show Systray Module</property>
                 <property name="action-name">app.waybar_show_systray</property>
               </object>
             </child>
 
             <child>
               <object class="AdwSpinRow" id="waybar_workspaces">
-                <property name="title" translatable="true">Workspaces</property>
+                <property name="title">Workspaces</property>
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">5</property>
@@ -126,36 +126,36 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="true">Quicklinks Applications</property>
-            <property name="description" translatable="true">Choose the applications for Waybar quicklinks.</property>
+            <property name="title">Quicklinks Applications</property>
+            <property name="description">Choose the applications for Waybar quicklinks.</property>
 
             <child>
               <object class="AdwEntryRow" id="default_browser">
-                <property name="title" translatable="true">Browser</property>
+                <property name="title">Browser</property>
               </object>
             </child>
 
             <child>
               <object class="AdwEntryRow" id="default_filemanager">
-                <property name="title" translatable="true">File Manager</property>
+                <property name="title">File Manager</property>
               </object>
             </child>
 
             <child>
               <object class="AdwEntryRow" id="default_networkmanager">
-                <property name="title" translatable="true">Network Manager</property>
+                <property name="title">Network Manager</property>
               </object>
             </child>
 
             <child>
               <object class="AdwEntryRow" id="default_softwaremanager">
-                <property name="title" translatable="true">Software Manager</property>
+                <property name="title">Software Manager</property>
               </object>
             </child>
 
             <child>
               <object class="AdwEntryRow" id="default_terminal">
-                <property name="title" translatable="true">Terminal</property>
+                <property name="title">Terminal</property>
               </object>
             </child>
 
@@ -171,12 +171,12 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="true">Rofi</property>
-            <property name="description" translatable="true">Define properties for the Rofi Launcher.</property>
+            <property name="title">Rofi</property>
+            <property name="description">Define properties for the Rofi Launcher.</property>
 
             <child>
               <object class="AdwSpinRow" id="rofi_bordersize">
-                <property name="title" translatable="true">Rofi Border Size</property>
+                <property name="title">Rofi Border Size</property>
                 <property name="action-name">app.rofi_bordersize</property>
                 <property name="adjustment">
                   <object class="GtkAdjustment">
@@ -194,8 +194,8 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="true">Animation Variations</property>
-            <property name="description" translatable="true">Choose from the available variations of your Hyprland configuration.</property>
+            <property name="title">Animation Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
               <object class="GtkButton" id="open_animations">
                 <property name="halign">3</property>
@@ -205,10 +205,10 @@
             </child>
             <child>
               <object class="AdwActionRow">
-                <property name="title" translatable="true">Animations</property>
+                <property name="title">Animations</property>
                 <child type="suffix">
                   <object class="GtkDropDown" id="dd_animations">
-                    <property name="enable-search">true</property>
+                    <property name="enable-search">false</property>
                     <property name="halign">3</property>
                     <property name="valign">3</property>
                     <property name="model">
@@ -227,8 +227,8 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="true">Decoration Variations</property>
-            <property name="description" translatable="true">Choose from the available variations of your Hyprland configuration.</property>
+            <property name="title">Decoration Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
               <object class="GtkButton" id="open_decorations">
                 <property name="halign">3</property>
@@ -238,10 +238,10 @@
             </child>
             <child>
               <object class="AdwActionRow">
-                <property name="title" translatable="true">Decorations</property>
+                <property name="title">Decorations</property>
                 <child type="suffix">
                   <object class="GtkDropDown" id="dd_decorations">
-                    <property name="enable-search">true</property>
+                    <property name="enable-search">false</property>
                     <property name="halign">3</property>
                     <property name="valign">3</property>
                     <property name="model">
@@ -259,8 +259,8 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="true">Window Variations</property>
-            <property name="description" translatable="true">Choose from the available variations of your Hyprland configuration.</property>
+            <property name="title">Window Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
               <object class="GtkButton" id="open_windows">
                 <property name="halign">3</property>
@@ -270,10 +270,10 @@
             </child>
             <child>
               <object class="AdwActionRow">
-                <property name="title" translatable="true">Windows</property>
+                <property name="title">Windows</property>
                 <child type="suffix">
                   <object class="GtkDropDown" id="dd_windows">
-                    <property name="enable-search">true</property>
+                    <property name="enable-search">false</property>
                     <property name="halign">3</property>
                     <property name="valign">3</property>
                     <property name="model">
@@ -298,8 +298,8 @@
         
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="true">Monitor Variations</property>
-            <property name="description" translatable="true">Choose from the available variations of your Hyprland configuration.</property>
+            <property name="title">Monitor Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
               <object class="GtkButton" id="open_monitors">
                 <property name="halign">3</property>
@@ -309,10 +309,10 @@
             </child>
             <child>
               <object class="AdwActionRow">
-                <property name="title" translatable="true">Monitors</property>
+                <property name="title">Monitors</property>
                 <child type="suffix">
                   <object class="GtkDropDown" id="dd_monitors">
-                    <property name="enable-search">true</property>
+                    <property name="enable-search">false</property>
                     <property name="halign">3</property>
                     <property name="valign">3</property>
                     <property name="model">
@@ -330,8 +330,8 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="true">Keybinding Variations</property>
-            <property name="description" translatable="true">Choose from the available variations of your Hyprland configuration.</property>
+            <property name="title">Keybinding Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
               <object class="GtkButton" id="open_keybindings">
                 <property name="halign">3</property>
@@ -341,10 +341,10 @@
             </child>
             <child>
               <object class="AdwActionRow">
-                <property name="title" translatable="true">Keybindings</property>
+                <property name="title">Keybindings</property>
                 <child type="suffix">
                   <object class="GtkDropDown" id="dd_keybindings">
-                    <property name="enable-search">true</property>
+                    <property name="enable-search">false</property>
                     <property name="halign">3</property>
                     <property name="valign">3</property>
                     <property name="model">
@@ -362,8 +362,8 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="true">Environment Variations</property>
-            <property name="description" translatable="true">Choose from the available variations of your Hyprland configuration.</property>
+            <property name="title">Environment Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
               <object class="GtkButton" id="open_environments">
                 <property name="halign">3</property>
@@ -373,10 +373,10 @@
             </child>
             <child>
               <object class="AdwActionRow">
-                <property name="title" translatable="true">Environments</property>
+                <property name="title">Environments</property>
                 <child type="suffix">
                   <object class="GtkDropDown" id="dd_environments">
-                    <property name="enable-search">true</property>
+                    <property name="enable-search">false</property>
                     <property name="halign">3</property>
                     <property name="valign">3</property>
                     <property name="model">
@@ -395,8 +395,8 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="true">Windowrule Variations</property>
-            <property name="description" translatable="true">Choose from the available variations of your Hyprland configuration.</property>
+            <property name="title">Windowrule Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
               <object class="GtkButton" id="open_windowrules">
                 <property name="halign">3</property>
@@ -406,10 +406,10 @@
             </child>
             <child>
               <object class="AdwActionRow">
-                <property name="title" translatable="true">Windowrules</property>
+                <property name="title">Windowrules</property>
                 <child type="suffix">
                   <object class="GtkDropDown" id="dd_windowrules">
-                    <property name="enable-search">true</property>
+                    <property name="enable-search">false</property>
                     <property name="halign">3</property>
                     <property name="valign">3</property>
                     <property name="model">
