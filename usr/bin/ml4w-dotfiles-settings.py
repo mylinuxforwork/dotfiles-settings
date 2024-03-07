@@ -54,6 +54,7 @@ class MainWindow(Adw.PreferencesWindow):
     open_windowrules = Gtk.Template.Child()
     open_keybindings = Gtk.Template.Child()
     open_customconf = Gtk.Template.Child()
+    open_hypridle = Gtk.Template.Child()
     dd_animations = Gtk.Template.Child()
     dd_environments = Gtk.Template.Child()
     dd_monitors = Gtk.Template.Child()
@@ -64,6 +65,9 @@ class MainWindow(Adw.PreferencesWindow):
     dd_timeformats = Gtk.Template.Child()
     dd_dateformats = Gtk.Template.Child()
     custom_datetime = Gtk.Template.Child()
+    hypridle_hyprlock = Gtk.Template.Child()
+    hypridle_dpms = Gtk.Template.Child()
+    hypridle_suspend = Gtk.Template.Child()
 
     # Get objects from template
     def __init__(self, *args, **kwargs):
@@ -88,7 +92,10 @@ class MyApp(Adw.Application):
         "waybar_chatgpt": True,
         "waybar_systray": True,
         "waybar_screenlock": True,
-        "waybar_window": True
+        "waybar_window": True,
+        "hypridle_hyprlock_timeout": 600,
+        "hypridle_dpms_timeout": 680,
+        "hypridle_suspend_timeout": 1800
     }
 
     waybar_themes = [
@@ -158,6 +165,9 @@ class MyApp(Adw.Application):
         self.waybar_show_screenlock = win.waybar_show_screenlock
         self.waybar_show_window = win.waybar_show_window
         self.waybar_workspaces = win.waybar_workspaces
+        self.hypridle_hyprlock = win.hypridle_hyprlock
+        self.hypridle_dpms = win.hypridle_dpms
+        self.hypridle_suspend = win.hypridle_suspend
         self.rofi_bordersize = win.rofi_bordersize
         self.default_browser = win.default_browser
         self.default_filemanager = win.default_filemanager
@@ -172,6 +182,7 @@ class MyApp(Adw.Application):
         self.open_windowrules = win.open_windowrules
         self.open_keybindings = win.open_keybindings
         self.open_customconf = win.open_customconf
+        self.open_hypridle = win.open_hypridle
         self.dd_animations = win.dd_animations
         self.dd_environments = win.dd_environments
         self.dd_monitors = win.dd_monitors
@@ -185,6 +196,9 @@ class MyApp(Adw.Application):
 
         self.waybar_workspaces.get_adjustment().connect("value-changed", self.on_waybar_workspaces)
         self.rofi_bordersize.get_adjustment().connect("value-changed", self.on_rofi_bordersize)
+        self.hypridle_hyprlock.get_adjustment().connect("value-changed", self.on_hypridle_hyprlock)
+        self.hypridle_dpms.get_adjustment().connect("value-changed", self.on_hypridle_dpms)
+        self.hypridle_suspend.get_adjustment().connect("value-changed", self.on_hypridle_suspend)
 
         self.default_browser.connect("apply", self.on_default_browser)
         self.default_filemanager.connect("apply", self.on_default_filemanager)
@@ -200,6 +214,7 @@ class MyApp(Adw.Application):
         self.open_windowrules.connect("clicked", self.on_open,"xdg-open","hypr/conf/windowrules")
         self.open_keybindings.connect("clicked", self.on_open,"xdg-open","hypr/conf/keybindings")
         self.open_customconf.connect("clicked", self.on_open,"mousepad","hypr/conf/custom.conf")
+        self.open_hypridle.connect("clicked", self.on_open,"mousepad","hypr/hypridle.conf")
 
         self.dd_animations.connect("notify::selected-item", self.on_variation_changed,"animation")
         self.dd_monitors.connect("notify::selected-item", self.on_variation_changed,"monitor")
@@ -343,6 +358,41 @@ class MyApp(Adw.Application):
 
     def on_default_terminal(self, widget):
         self.overwriteFile(".settings/terminal.sh",widget.get_text())
+
+    def on_hypridle_hyprlock(self, widget):
+        if not self.block_reload:
+            value = int(widget.get_value())
+            text = '    timeout = ' + str(value)
+            self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK TIMEOUT", text)
+            if int(widget.get_value()) == 0:
+                self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK ONTIMEOUT", "    # on-timeout = hyprlock")
+            else:
+                self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK ONTIMEOUT", "    on-timeout = hyprlock")
+            self.updateSettings("hypridle_hyprlock_timeout", value)
+
+    def on_hypridle_dpms(self, widget):
+        if not self.block_reload:
+            value = int(widget.get_value())
+            text = '    timeout = ' + str(value)
+            self.replaceInFileNext("hypr/hypridle.conf", "DPMS TIMEOUT", text)
+            if int(widget.get_value()) == 0:
+                self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONTIMEOUT", "    # on-timeout = hyprctl dispatch dpms off")
+                self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONRESUME", "    # on-resume = hyprctl dispatch dpms on")
+            else:
+                self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONTIMEOUT", "    on-timeout = hyprctl dispatch dpms off")
+                self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONRESUME", "    on-resume = hyprctl dispatch dpms on")
+            self.updateSettings("hypridle_dpms_timeout", value)
+
+    def on_hypridle_suspend(self, widget):
+        if not self.block_reload:
+            value = int(widget.get_value())
+            text = '    timeout = ' + str(value)
+            self.replaceInFileNext("hypr/hypridle.conf", "SUSPEND TIMEOUT", text)
+            if int(widget.get_value()) == 0:
+                self.replaceInFileNext("hypr/hypridle.conf", "SUSPEND ONTIMEOUT", "    # on-timeout = systemctl suspend")
+            else:
+                self.replaceInFileNext("hypr/hypridle.conf", "SUSPEND ONTIMEOUT", "    on-timeout = systemctl suspend")
+            self.updateSettings("hypridle_suspend_timeout", value)
 
     def on_waybar_workspaces(self, widget):
         if not self.block_reload:
