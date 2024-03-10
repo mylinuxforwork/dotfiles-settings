@@ -13,6 +13,19 @@
 
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title">Enable Waybar</property>
+            <property name="description">Activate or deactivate the statusbar waybar</property>
+            <child>
+              <object class="AdwSwitchRow" id="waybar_toggle">
+                <property name="title">Show Waybar</property>
+                <property name="action-name">app.waybar_toggle</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title">Clock Format</property>
             <property name="description">Choose from some default clock formats or enter your own.</property>
             <child type="header-suffix">
@@ -197,10 +210,12 @@
             <property name="title">Animation Variations</property>
             <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
-              <object class="GtkButton" id="open_animations">
+              <object class="GtkMenuButton">
                 <property name="halign">3</property>
                 <property name="valign">3</property>
-                <property name="icon-name">folder-open-symbolic</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">animations_button_menu</property>
+                <property name="primary">true</property>
               </object>
             </child>
             <child>
@@ -230,10 +245,12 @@
             <property name="title">Decoration Variations</property>
             <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
-              <object class="GtkButton" id="open_decorations">
+              <object class="GtkMenuButton">
                 <property name="halign">3</property>
                 <property name="valign">3</property>
-                <property name="icon-name">folder-open-symbolic</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">decorations_button_menu</property>
+                <property name="primary">true</property>
               </object>
             </child>
             <child>
@@ -262,10 +279,12 @@
             <property name="title">Window Variations</property>
             <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
-              <object class="GtkButton" id="open_windows">
+              <object class="GtkMenuButton">
                 <property name="halign">3</property>
                 <property name="valign">3</property>
-                <property name="icon-name">folder-open-symbolic</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">windows_button_menu</property>
+                <property name="primary">true</property>
               </object>
             </child>
             <child>
@@ -367,10 +386,12 @@
             <property name="title">Monitor Variations</property>
             <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
-              <object class="GtkButton" id="open_monitors">
+              <object class="GtkMenuButton">
                 <property name="halign">3</property>
                 <property name="valign">3</property>
-                <property name="icon-name">folder-open-symbolic</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">monitors_button_menu</property>
+                <property name="primary">true</property>
               </object>
             </child>
             <child>
@@ -399,12 +420,15 @@
             <property name="title">Keybinding Variations</property>
             <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
-              <object class="GtkButton" id="open_keybindings">
+              <object class="GtkMenuButton">
                 <property name="halign">3</property>
                 <property name="valign">3</property>
-                <property name="icon-name">folder-open-symbolic</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">keybindings_button_menu</property>
+                <property name="primary">true</property>
               </object>
             </child>
+
             <child>
               <object class="AdwActionRow">
                 <property name="title">Keybindings</property>
@@ -431,12 +455,15 @@
             <property name="title">Environment Variations</property>
             <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
-              <object class="GtkButton" id="open_environments">
+              <object class="GtkMenuButton">
                 <property name="halign">3</property>
                 <property name="valign">3</property>
-                <property name="icon-name">folder-open-symbolic</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">environments_button_menu</property>
+                <property name="primary">true</property>
               </object>
             </child>
+
             <child>
               <object class="AdwActionRow">
                 <property name="title">Environments</property>
@@ -464,10 +491,12 @@
             <property name="title">Windowrule Variations</property>
             <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
-              <object class="GtkButton" id="open_windowrules">
+              <object class="GtkMenuButton">
                 <property name="halign">3</property>
                 <property name="valign">3</property>
-                <property name="icon-name">folder-open-symbolic</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">windowrules_button_menu</property>
+                <property name="primary">true</property>
               </object>
             </child>
             <child>
@@ -494,4 +523,168 @@
       </object>
     </child>
   </template>
+  
+  <menu id="animations_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_animations_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_animations</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_animations</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="decorations_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_decorations_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_decorations</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_decorations</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="windows_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_windows_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_windows</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_windows</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="monitors_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_monitors_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_monitors</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_monitors</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="keybindings_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_keybindings_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_keybindings</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_keybindings</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="environments_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_environments_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_environments</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_environments</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="windowrules_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_windowrules_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_windowrules</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_windowrules</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+
 </interface>
+

@@ -39,6 +39,7 @@ class MainWindow(Adw.PreferencesWindow):
     waybar_show_systray = Gtk.Template.Child()
     waybar_show_screenlock = Gtk.Template.Child()
     waybar_show_window = Gtk.Template.Child()
+    waybar_toggle = Gtk.Template.Child()
     rofi_bordersize = Gtk.Template.Child()
     waybar_workspaces = Gtk.Template.Child()
     default_browser = Gtk.Template.Child()
@@ -46,15 +47,10 @@ class MainWindow(Adw.PreferencesWindow):
     default_networkmanager = Gtk.Template.Child()
     default_softwaremanager = Gtk.Template.Child()
     default_terminal = Gtk.Template.Child()
-    open_animations = Gtk.Template.Child()
-    open_environments = Gtk.Template.Child()
-    open_monitors = Gtk.Template.Child()
-    open_decorations = Gtk.Template.Child()
-    open_windows = Gtk.Template.Child()
-    open_windowrules = Gtk.Template.Child()
-    open_keybindings = Gtk.Template.Child()
+
     open_customconf = Gtk.Template.Child()
     open_hypridle = Gtk.Template.Child()
+
     dd_animations = Gtk.Template.Child()
     dd_environments = Gtk.Template.Child()
     dd_monitors = Gtk.Template.Child()
@@ -88,6 +84,7 @@ class MyApp(Adw.Application):
         "waybar_custom_timedateformat": "",
         "waybar_workspaces": 5,
         "rofi_bordersize": 3,
+        "waybar_toggle": True,
         "waybar_network": True,
         "waybar_chatgpt": True,
         "waybar_systray": True,
@@ -137,8 +134,13 @@ class MyApp(Adw.Application):
         self.create_action('waybar_show_chatgpt', self.on_waybar_show_chatgpt)
         self.create_action('waybar_show_systray', self.on_waybar_show_systray)
         self.create_action('waybar_show_window', self.on_waybar_show_window)
+        self.create_action('waybar_toggle', self.on_waybar_toggle)
         self.create_action('rofi_bordersize', self.on_rofi_bordersize)
         self.create_action('waybar_workspaces', self.on_waybar_workspaces)
+
+        self.create_action('on_open_animations_folder', self.on_open_animations_folder)
+        self.create_action('on_edit_animations', self.on_edit_animations)
+        self.create_action('on_reload_animations', self.on_reload_animations)
 
     def do_activate(self):
         # Define main window
@@ -164,6 +166,7 @@ class MyApp(Adw.Application):
         self.waybar_show_systray = win.waybar_show_systray
         self.waybar_show_screenlock = win.waybar_show_screenlock
         self.waybar_show_window = win.waybar_show_window
+        self.waybar_toggle = win.waybar_toggle
         self.waybar_workspaces = win.waybar_workspaces
         self.hypridle_hyprlock = win.hypridle_hyprlock
         self.hypridle_dpms = win.hypridle_dpms
@@ -174,15 +177,10 @@ class MyApp(Adw.Application):
         self.default_networkmanager = win.default_networkmanager
         self.default_softwaremanager = win.default_softwaremanager
         self.default_terminal = win.default_terminal
-        self.open_animations = win.open_animations
-        self.open_environments = win.open_environments
-        self.open_monitors = win.open_monitors
-        self.open_decorations = win.open_decorations
-        self.open_windows = win.open_windows
-        self.open_windowrules = win.open_windowrules
-        self.open_keybindings = win.open_keybindings
+
         self.open_customconf = win.open_customconf
         self.open_hypridle = win.open_hypridle
+
         self.dd_animations = win.dd_animations
         self.dd_environments = win.dd_environments
         self.dd_monitors = win.dd_monitors
@@ -205,16 +203,6 @@ class MyApp(Adw.Application):
         self.default_networkmanager.connect("apply", self.on_default_networkmanager)
         self.default_softwaremanager.connect("apply", self.on_default_softwaremanager)
         self.default_terminal.connect("apply", self.on_default_terminal)
-
-        self.open_animations.connect("clicked", self.on_open,"xdg-open","hypr/conf/animations")
-        self.open_environments.connect("clicked", self.on_open,"xdg-open","hypr/conf/environments")
-        self.open_monitors.connect("clicked", self.on_open,"xdg-open","hypr/conf/monitors")
-        self.open_decorations.connect("clicked", self.on_open,"xdg-open","hypr/conf/decorations")
-        self.open_windows.connect("clicked", self.on_open,"xdg-open","hypr/conf/windows")
-        self.open_windowrules.connect("clicked", self.on_open,"xdg-open","hypr/conf/windowrules")
-        self.open_keybindings.connect("clicked", self.on_open,"xdg-open","hypr/conf/keybindings")
-        self.open_customconf.connect("clicked", self.on_open,"mousepad","hypr/conf/custom.conf")
-        self.open_hypridle.connect("clicked", self.on_open,"mousepad","hypr/hypridle.conf")
 
         self.dd_animations.connect("notify::selected-item", self.on_variation_changed,"animation")
         self.dd_monitors.connect("notify::selected-item", self.on_variation_changed,"monitor")
@@ -241,6 +229,7 @@ class MyApp(Adw.Application):
         self.custom_datetime.set_text(self.settings["waybar_custom_timedateformat"])
         self.custom_datetime.connect("apply", self.on_custom_datetime)
 
+        self.loadShowModule("waybar_toggle",self.waybar_toggle)
         self.loadShowModule("waybar_window",self.waybar_show_window)
         self.loadShowModule("waybar_network",self.waybar_show_network)
         self.loadShowModule("waybar_chatgpt",self.waybar_show_chatgpt)
@@ -308,7 +297,6 @@ class MyApp(Adw.Application):
         dd.set_model(store)
         dd.set_selected(selected)
 
-
     def on_timeformats_changed(self,widget,_):
         if not self.block_reload:
             value = widget.get_selected_item().get_string()
@@ -341,7 +329,18 @@ class MyApp(Adw.Application):
             self.updateSettings("waybar_custom_timedateformat", "")
         self.reloadWaybar()
 
-    def on_open(self,widget,a,u):
+    def on_open_animations_folder(self, widget, _):
+        self.on_open(widget, "thunar", "hypr/conf/animations")
+
+    def on_reload_animations(self, widget, _):
+        self.loadVariations(self.dd_animations,"animation")
+
+    def on_edit_animations(self, widget, _):
+        i = self.dd_animations.get_selected()
+        f = self.dd_animations.get_model()[i].get_string()
+        self.on_open(widget, "mousepad", "hypr/conf/animations/" + f)
+
+    def on_open(self, widget, a, u):
         subprocess.Popen([a, self.dotfiles + u])
 
     def on_default_browser(self, widget):
@@ -401,6 +400,14 @@ class MyApp(Adw.Application):
             self.replaceInFileNext("waybar/modules.json", "// START WORKSPACES", text)
             self.reloadWaybar()
             self.updateSettings("waybar_workspaces", value)
+
+    def on_waybar_toggle(self, widget, _):
+        if not self.block_reload:
+            if (os.path.exists(self.homeFolder + "/.cache/waybar-disabled")):
+                os.remove(self.homeFolder + "/.cache/waybar-disabled")
+            else:
+                file = open(self.homeFolder + "/.cache/waybar-disabled", "w+")
+            self.reloadWaybar()
 
     def on_rofi_bordersize(self, widget):
         value = int(widget.get_value())
