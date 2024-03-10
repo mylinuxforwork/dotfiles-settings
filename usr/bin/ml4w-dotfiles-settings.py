@@ -138,9 +138,37 @@ class MyApp(Adw.Application):
         self.create_action('rofi_bordersize', self.on_rofi_bordersize)
         self.create_action('waybar_workspaces', self.on_waybar_workspaces)
 
-        self.create_action('on_open_animations_folder', self.on_open_animations_folder)
-        self.create_action('on_edit_animations', self.on_edit_animations)
-        self.create_action('on_reload_animations', self.on_reload_animations)
+
+        '''
+
+        self.create_action('on_open_animations_folder', self.on_open_folder, "animation")
+        self.create_action('on_edit_animations', self.on_edit_variation, self.dd_animations, "animation")
+        self.create_action('on_reload_animations', self.on_reload_folder, self.dd_animations, "animation")
+
+        self.create_action('on_open_decorations_folder', self.on_open_decorations_folder)
+        self.create_action('on_edit_decorations', self.on_edit_decorations)
+        self.create_action('on_reload_decorations', self.on_reload_decorations)
+
+        self.create_action('on_open_windows_folder', self.on_open_windows_folder)
+        self.create_action('on_edit_windows', self.on_edit_windows)
+        self.create_action('on_reload_windows', self.on_reload_windows)
+
+        self.create_action('on_open_monitors_folder', self.on_open_monitors_folder)
+        self.create_action('on_edit_monitors', self.on_edit_monitors)
+        self.create_action('on_reload_monitors', self.on_reload_monitors)
+
+        self.create_action('on_open_keybindings_folder', self.on_open_keybindings_folder)
+        self.create_action('on_edit_keybindings', self.on_edit_keybindings)
+        self.create_action('on_reload_keybindings', self.on_reload_keybindings)
+
+        self.create_action('on_open_environments_folder', self.on_open_environments_folder)
+        self.create_action('on_edit_environments', self.on_edit_environments)
+        self.create_action('on_reload_environments', self.on_reload_environments)
+
+        self.create_action('on_open_windowrules_folder', self.on_open_windowrules_folder)
+        self.create_action('on_edit_windowrules', self.on_edit_windowrules)
+        self.create_action('on_reload_windowrules', self.on_reload_windowrules)
+        '''
 
     def do_activate(self):
         # Define main window
@@ -329,16 +357,16 @@ class MyApp(Adw.Application):
             self.updateSettings("waybar_custom_timedateformat", "")
         self.reloadWaybar()
 
-    def on_open_animations_folder(self, widget, _):
-        self.on_open(widget, "thunar", "hypr/conf/animations")
+    def on_open_folder(self, widget, v, _):
+        self.on_open(widget, "thunar", "hypr/conf/" + v + "s")
 
-    def on_reload_animations(self, widget, _):
-        self.loadVariations(self.dd_animations,"animation")
+    def on_reload_folder(self, widget, d, v, _):
+        self.loadVariations(d,v)
 
-    def on_edit_animations(self, widget, _):
-        i = self.dd_animations.get_selected()
-        f = self.dd_animations.get_model()[i].get_string()
-        self.on_open(widget, "mousepad", "hypr/conf/animations/" + f)
+    def on_edit_variation(self, widget, d, v, _):
+        i = d.get_selected()
+        f = d.get_model()[i].get_string()
+        self.on_open(widget, "mousepad", "hypr/conf/" + v + "s/" + f)
 
     def on_open(self, widget, a, u):
         subprocess.Popen([a, self.dotfiles + u])
