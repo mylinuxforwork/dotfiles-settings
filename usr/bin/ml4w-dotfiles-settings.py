@@ -357,16 +357,16 @@ class MyApp(Adw.Application):
             self.updateSettings("waybar_custom_timedateformat", "")
         self.reloadWaybar()
 
-    def on_open_folder(self, widget, v, _):
-        self.on_open(widget, "thunar", "hypr/conf/" + v + "s")
+    def on_animations_folder(self, widget, _):
+        self.on_open(widget, "thunar", "hypr/conf/animations")
 
-    def on_reload_folder(self, widget, d, v, _):
-        self.loadVariations(d,v)
+    def on_reload_animations(self, widget _):
+        self.loadVariations(self.dd_animations,"animations")
 
-    def on_edit_variation(self, widget, d, v, _):
+    def on_edit_animations(self, widget, _):
         i = d.get_selected()
         f = d.get_model()[i].get_string()
-        self.on_open(widget, "mousepad", "hypr/conf/" + v + "s/" + f)
+        self.on_open(widget, "mousepad", "hypr/conf/animations/" + f)
 
     def on_open(self, widget, a, u):
         subprocess.Popen([a, self.dotfiles + u])
