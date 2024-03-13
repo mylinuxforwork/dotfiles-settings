@@ -47,10 +47,8 @@ class MainWindow(Adw.PreferencesWindow):
     default_networkmanager = Gtk.Template.Child()
     default_softwaremanager = Gtk.Template.Child()
     default_terminal = Gtk.Template.Child()
-
     open_customconf = Gtk.Template.Child()
     open_hypridle = Gtk.Template.Child()
-
     dd_animations = Gtk.Template.Child()
     dd_environments = Gtk.Template.Child()
     dd_monitors = Gtk.Template.Child()
@@ -138,37 +136,33 @@ class MyApp(Adw.Application):
         self.create_action('rofi_bordersize', self.on_rofi_bordersize)
         self.create_action('waybar_workspaces', self.on_waybar_workspaces)
 
+        self.create_action('on_open_animations_folder', self.on_open_animations)
+        self.create_action('on_edit_animations', self.on_edit_animations)
+        self.create_action('on_reload_animations', self.on_reload_animations)
 
-        '''
-
-        self.create_action('on_open_animations_folder', self.on_open_folder, "animation")
-        self.create_action('on_edit_animations', self.on_edit_variation, self.dd_animations, "animation")
-        self.create_action('on_reload_animations', self.on_reload_folder, self.dd_animations, "animation")
-
-        self.create_action('on_open_decorations_folder', self.on_open_decorations_folder)
+        self.create_action('on_open_decorations_folder', self.on_open_decorations)
         self.create_action('on_edit_decorations', self.on_edit_decorations)
         self.create_action('on_reload_decorations', self.on_reload_decorations)
 
-        self.create_action('on_open_windows_folder', self.on_open_windows_folder)
+        self.create_action('on_open_windows_folder', self.on_open_windows)
         self.create_action('on_edit_windows', self.on_edit_windows)
         self.create_action('on_reload_windows', self.on_reload_windows)
 
-        self.create_action('on_open_monitors_folder', self.on_open_monitors_folder)
+        self.create_action('on_open_monitors_folder', self.on_open_monitors)
         self.create_action('on_edit_monitors', self.on_edit_monitors)
         self.create_action('on_reload_monitors', self.on_reload_monitors)
 
-        self.create_action('on_open_keybindings_folder', self.on_open_keybindings_folder)
+        self.create_action('on_open_keybindings_folder', self.on_open_keybindings)
         self.create_action('on_edit_keybindings', self.on_edit_keybindings)
         self.create_action('on_reload_keybindings', self.on_reload_keybindings)
 
-        self.create_action('on_open_environments_folder', self.on_open_environments_folder)
+        self.create_action('on_open_environments_folder', self.on_open_environments)
         self.create_action('on_edit_environments', self.on_edit_environments)
         self.create_action('on_reload_environments', self.on_reload_environments)
 
-        self.create_action('on_open_windowrules_folder', self.on_open_windowrules_folder)
+        self.create_action('on_open_windowrules_folder', self.on_open_windowrules)
         self.create_action('on_edit_windowrules', self.on_edit_windowrules)
         self.create_action('on_reload_windowrules', self.on_reload_windowrules)
-        '''
 
     def do_activate(self):
         # Define main window
@@ -357,16 +351,82 @@ class MyApp(Adw.Application):
             self.updateSettings("waybar_custom_timedateformat", "")
         self.reloadWaybar()
 
-    def on_animations_folder(self, widget, _):
+    def on_open_animations(self, widget, _):
         self.on_open(widget, "thunar", "hypr/conf/animations")
 
-    def on_reload_animations(self, widget _):
-        self.loadVariations(self.dd_animations,"animations")
+    def on_reload_animations(self, widget, _):
+        self.loadVariations(self.dd_animations,"animation")
 
     def on_edit_animations(self, widget, _):
-        i = d.get_selected()
-        f = d.get_model()[i].get_string()
+        i = self.dd_animations.get_selected()
+        f = self.dd_animations.get_model()[i].get_string()
         self.on_open(widget, "mousepad", "hypr/conf/animations/" + f)
+
+    def on_open_environments(self, widget, _):
+        self.on_open(widget, "thunar", "hypr/conf/environments")
+
+    def on_reload_environments(self, widget, _):
+        self.loadVariations(self.dd_environments,"environment")
+
+    def on_edit_environments(self, widget, _):
+        i = self.dd_environments.get_selected()
+        f = self.dd_environments.get_model()[i].get_string()
+        self.on_open(widget, "mousepad", "hypr/conf/environments/" + f)
+
+    def on_open_monitors(self, widget, _):
+        self.on_open(widget, "thunar", "hypr/conf/monitors")
+
+    def on_reload_monitors(self, widget, _):
+        self.loadVariations(self.dd_monitors,"monitor")
+
+    def on_edit_monitors(self, widget, _):
+        i = self.dd_monitors.get_selected()
+        f = self.dd_monitors.get_model()[i].get_string()
+        self.on_open(widget, "mousepad", "hypr/conf/monitors/" + f)
+
+    def on_open_decorations(self, widget, _):
+        self.on_open(widget, "thunar", "hypr/conf/decorations")
+
+    def on_reload_decorations(self, widget, _):
+        self.loadVariations(self.dd_decorations,"decoration")
+
+    def on_edit_decorations(self, widget, _):
+        i = self.dd_decorations.get_selected()
+        f = self.dd_decorations.get_model()[i].get_string()
+        self.on_open(widget, "mousepad", "hypr/conf/decorations/" + f)
+
+    def on_open_windows(self, widget, _):
+        self.on_open(widget, "thunar", "hypr/conf/windows")
+
+    def on_reload_windows(self, widget, _):
+        self.loadVariations(self.dd_windows,"window")
+
+    def on_edit_windows(self, widget, _):
+        i = self.dd_windows.get_selected()
+        f = self.dd_windows.get_model()[i].get_string()
+        self.on_open(widget, "mousepad", "hypr/conf/windows/" + f)
+
+    def on_open_windowrules(self, widget, _):
+        self.on_open(widget, "thunar", "hypr/conf/windowrules")
+
+    def on_reload_windowrules(self, widget, _):
+        self.loadVariations(self.dd_windowrules,"windowrule")
+
+    def on_edit_windowrules(self, widget, _):
+        i = self.dd_windowrules.get_selected()
+        f = self.dd_windowrules.get_model()[i].get_string()
+        self.on_open(widget, "mousepad", "hypr/conf/windowrules/" + f)
+
+    def on_open_keybindings(self, widget, _):
+        self.on_open(widget, "thunar", "hypr/conf/keybindings")
+
+    def on_reload_keybindings(self, widget, _):
+        self.loadVariations(self.dd_keybindings,"keybinding")
+
+    def on_edit_keybindings(self, widget, _):
+        i = self.dd_keybindings.get_selected()
+        f = self.dd_keybindings.get_model()[i].get_string()
+        self.on_open(widget, "mousepad", "hypr/conf/keybindings/" + f)
 
     def on_open(self, widget, a, u):
         subprocess.Popen([a, self.dotfiles + u])
