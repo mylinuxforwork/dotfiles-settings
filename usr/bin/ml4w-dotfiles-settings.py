@@ -137,6 +137,7 @@ class MyApp(Adw.Application):
         self.create_action('waybar_toggle', self.on_waybar_toggle)
         self.create_action('rofi_bordersize', self.on_rofi_bordersize)
         self.create_action('waybar_workspaces', self.on_waybar_workspaces)
+        self.create_action('open_about_variations', self.on_open_about_variations)
 
         self.create_action('on_open_animations_folder', self.on_open_animations)
         self.create_action('on_edit_animations', self.on_edit_animations)
@@ -281,6 +282,9 @@ class MyApp(Adw.Application):
         # Show Application Window
         win.present()
         print (":: Welcome to ML4W Dotfiles Settings App")
+
+    def on_open_about_variations(self, widget, _):
+        subprocess.Popen([self.default_browser.get_text(), "https://gitlab.com/stephan-raabe/dotfiles/-/blob/dev/hypr/conf/README.md"])
 
     def loadShowModule(self,f,d):
        if f in self.settings:
