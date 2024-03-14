@@ -139,8 +139,8 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Quicklinks Applications</property>
-            <property name="description">Choose the applications for Waybar quicklinks.</property>
+            <property name="title">Applications</property>
+            <property name="description">Choose the applications for Waybar quicklinks and Settings app.</property>
 
             <child>
               <object class="AdwEntryRow" id="default_browser">
@@ -151,6 +151,12 @@
             <child>
               <object class="AdwEntryRow" id="default_filemanager">
                 <property name="title">File Manager</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_editor">
+                <property name="title">Editor</property>
               </object>
             </child>
 
@@ -199,6 +205,12 @@
                     <property name="value">3</property>
                   </object>
                 </property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="rofi_font">
+                <property name="title">Font</property>
               </object>
             </child>
 

@@ -40,10 +40,12 @@ class MainWindow(Adw.PreferencesWindow):
     waybar_show_screenlock = Gtk.Template.Child()
     waybar_show_window = Gtk.Template.Child()
     waybar_toggle = Gtk.Template.Child()
+    rofi_font = Gtk.Template.Child()
     rofi_bordersize = Gtk.Template.Child()
     waybar_workspaces = Gtk.Template.Child()
     default_browser = Gtk.Template.Child()
     default_filemanager = Gtk.Template.Child()
+    default_editor = Gtk.Template.Child()
     default_networkmanager = Gtk.Template.Child()
     default_softwaremanager = Gtk.Template.Child()
     default_terminal = Gtk.Template.Child()
@@ -194,8 +196,10 @@ class MyApp(Adw.Application):
         self.hypridle_dpms = win.hypridle_dpms
         self.hypridle_suspend = win.hypridle_suspend
         self.rofi_bordersize = win.rofi_bordersize
+        self.rofi_font = win.rofi_font
         self.default_browser = win.default_browser
         self.default_filemanager = win.default_filemanager
+        self.default_editor = win.default_editor
         self.default_networkmanager = win.default_networkmanager
         self.default_softwaremanager = win.default_softwaremanager
         self.default_terminal = win.default_terminal
@@ -216,12 +220,14 @@ class MyApp(Adw.Application):
 
         self.waybar_workspaces.get_adjustment().connect("value-changed", self.on_waybar_workspaces)
         self.rofi_bordersize.get_adjustment().connect("value-changed", self.on_rofi_bordersize)
+        self.rofi_font.connect("apply", self.on_rofi_font)
         self.hypridle_hyprlock.get_adjustment().connect("value-changed", self.on_hypridle_hyprlock)
         self.hypridle_dpms.get_adjustment().connect("value-changed", self.on_hypridle_dpms)
         self.hypridle_suspend.get_adjustment().connect("value-changed", self.on_hypridle_suspend)
 
         self.default_browser.connect("apply", self.on_default_browser)
         self.default_filemanager.connect("apply", self.on_default_filemanager)
+        self.default_editor.connect("apply", self.on_default_editor)
         self.default_networkmanager.connect("apply", self.on_default_networkmanager)
         self.default_softwaremanager.connect("apply", self.on_default_softwaremanager)
         self.default_terminal.connect("apply", self.on_default_terminal)
@@ -263,9 +269,12 @@ class MyApp(Adw.Application):
 
         self.loadDefaultApp(".settings/browser.sh",self.default_browser)
         self.loadDefaultApp(".settings/filemanager.sh",self.default_filemanager)
+        self.loadDefaultApp(".settings/editor.sh",self.default_editor)
         self.loadDefaultApp(".settings/networkmanager.sh",self.default_networkmanager)
         self.loadDefaultApp(".settings/software.sh",self.default_softwaremanager)
         self.loadDefaultApp(".settings/terminal.sh",self.default_terminal)
+
+        self.loadRofiFont()
 
         self.block_reload = False
 
@@ -279,6 +288,13 @@ class MyApp(Adw.Application):
                 d.set_active(True)
             else:
                 d.set_active(False)
+
+    def loadRofiFont(self):
+        with open(self.dotfiles + ".settings/rofi-font.rasi", 'r') as file:
+            value = file.read().strip()
+        value = value.split('"')
+        self.rofi_font.set_text(value[1])
+        self.rofi_font.set_show_apply_button(True)
 
     def loadDefaultApp(self,f,d):
         with open(self.dotfiles + f, 'r') as file:
@@ -352,7 +368,7 @@ class MyApp(Adw.Application):
         self.reloadWaybar()
 
     def on_open_animations(self, widget, _):
-        self.on_open(widget, "thunar", "hypr/conf/animations")
+        self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/animations")
 
     def on_reload_animations(self, widget, _):
         self.loadVariations(self.dd_animations,"animation")
@@ -360,10 +376,10 @@ class MyApp(Adw.Application):
     def on_edit_animations(self, widget, _):
         i = self.dd_animations.get_selected()
         f = self.dd_animations.get_model()[i].get_string()
-        self.on_open(widget, "mousepad", "hypr/conf/animations/" + f)
+        self.on_open(widget, self.default_editor.get_text(), "hypr/conf/animations/" + f)
 
     def on_open_environments(self, widget, _):
-        self.on_open(widget, "thunar", "hypr/conf/environments")
+        self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/environments")
 
     def on_reload_environments(self, widget, _):
         self.loadVariations(self.dd_environments,"environment")
@@ -371,10 +387,10 @@ class MyApp(Adw.Application):
     def on_edit_environments(self, widget, _):
         i = self.dd_environments.get_selected()
         f = self.dd_environments.get_model()[i].get_string()
-        self.on_open(widget, "mousepad", "hypr/conf/environments/" + f)
+        self.on_open(widget, self.default_editor.get_text(), "hypr/conf/environments/" + f)
 
     def on_open_monitors(self, widget, _):
-        self.on_open(widget, "thunar", "hypr/conf/monitors")
+        self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/monitors")
 
     def on_reload_monitors(self, widget, _):
         self.loadVariations(self.dd_monitors,"monitor")
@@ -382,10 +398,10 @@ class MyApp(Adw.Application):
     def on_edit_monitors(self, widget, _):
         i = self.dd_monitors.get_selected()
         f = self.dd_monitors.get_model()[i].get_string()
-        self.on_open(widget, "mousepad", "hypr/conf/monitors/" + f)
+        self.on_open(widget, self.default_editor.get_text(), "hypr/conf/monitors/" + f)
 
     def on_open_decorations(self, widget, _):
-        self.on_open(widget, "thunar", "hypr/conf/decorations")
+        self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/decorations")
 
     def on_reload_decorations(self, widget, _):
         self.loadVariations(self.dd_decorations,"decoration")
@@ -393,10 +409,10 @@ class MyApp(Adw.Application):
     def on_edit_decorations(self, widget, _):
         i = self.dd_decorations.get_selected()
         f = self.dd_decorations.get_model()[i].get_string()
-        self.on_open(widget, "mousepad", "hypr/conf/decorations/" + f)
+        self.on_open(widget, self.default_editor.get_text(), "hypr/conf/decorations/" + f)
 
     def on_open_windows(self, widget, _):
-        self.on_open(widget, "thunar", "hypr/conf/windows")
+        self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/windows")
 
     def on_reload_windows(self, widget, _):
         self.loadVariations(self.dd_windows,"window")
@@ -404,10 +420,10 @@ class MyApp(Adw.Application):
     def on_edit_windows(self, widget, _):
         i = self.dd_windows.get_selected()
         f = self.dd_windows.get_model()[i].get_string()
-        self.on_open(widget, "mousepad", "hypr/conf/windows/" + f)
+        self.on_open(widget, self.default_editor.get_text(), "hypr/conf/windows/" + f)
 
     def on_open_windowrules(self, widget, _):
-        self.on_open(widget, "thunar", "hypr/conf/windowrules")
+        self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/windowrules")
 
     def on_reload_windowrules(self, widget, _):
         self.loadVariations(self.dd_windowrules,"windowrule")
@@ -415,10 +431,10 @@ class MyApp(Adw.Application):
     def on_edit_windowrules(self, widget, _):
         i = self.dd_windowrules.get_selected()
         f = self.dd_windowrules.get_model()[i].get_string()
-        self.on_open(widget, "mousepad", "hypr/conf/windowrules/" + f)
+        self.on_open(widget, self.default_editor.get_text(), "hypr/conf/windowrules/" + f)
 
     def on_open_keybindings(self, widget, _):
-        self.on_open(widget, "thunar", "hypr/conf/keybindings")
+        self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/keybindings")
 
     def on_reload_keybindings(self, widget, _):
         self.loadVariations(self.dd_keybindings,"keybinding")
@@ -426,7 +442,7 @@ class MyApp(Adw.Application):
     def on_edit_keybindings(self, widget, _):
         i = self.dd_keybindings.get_selected()
         f = self.dd_keybindings.get_model()[i].get_string()
-        self.on_open(widget, "mousepad", "hypr/conf/keybindings/" + f)
+        self.on_open(widget, self.default_editor.get_text(), "hypr/conf/keybindings/" + f)
 
     def on_open(self, widget, a, u):
         subprocess.Popen([a, self.dotfiles + u])
@@ -437,6 +453,9 @@ class MyApp(Adw.Application):
     def on_default_filemanager(self, widget):
         self.overwriteFile(".settings/filemanager.sh",widget.get_text())
 
+    def on_default_editor(self, widget):
+        self.overwriteFile(".settings/editor.sh",widget.get_text())
+
     def on_default_networkmanager(self, widget):
         self.overwriteFile(".settings/networkmanager.sh",widget.get_text())
 
@@ -445,6 +464,10 @@ class MyApp(Adw.Application):
 
     def on_default_terminal(self, widget):
         self.overwriteFile(".settings/terminal.sh",widget.get_text())
+
+    def on_rofi_font(self, widget):
+        value = 'configuration { font: "' + widget.get_text() + '"; }'
+        self.overwriteFile(".settings/rofi-font.rasi",value)
 
     def on_hypridle_hyprlock(self, widget):
         if not self.block_reload:
@@ -624,11 +647,6 @@ class MyApp(Adw.Application):
         self.add_action(action)
         if shortcuts:
             self.set_accels_for_action(f"app.{name}", shortcuts)
-
-    def changeTheme(self,win):
-        app = win.get_application()
-        sm = app.get_style_manager()
-        sm.set_color_scheme(Adw.ColorScheme.PREFER_DARK)
 
 # Application Start
 app = MyApp()
