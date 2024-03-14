@@ -219,6 +219,42 @@
 
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title">Background Blur</property>
+            <property name="description">Define blur properties for rofi and hyprlock background image (Active after setting a new wallpaper).</property>
+
+            <child>
+              <object class="AdwSpinRow" id="blur_radius">
+                <property name="title">Radius</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">200</property>
+                    <property name="step-increment">1</property>
+                    <property name="value">5</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwSpinRow" id="blur_sigma">
+                <property name="title">Sigma</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">200</property>
+                    <property name="step-increment">1</property>
+                    <property name="value">5</property>
+                  </object>
+                </property>
+              </object>
+            </child>            
+
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title">Animation Variations</property>
             <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">

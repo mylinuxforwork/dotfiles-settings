@@ -64,6 +64,8 @@ class MainWindow(Adw.PreferencesWindow):
     hypridle_hyprlock = Gtk.Template.Child()
     hypridle_dpms = Gtk.Template.Child()
     hypridle_suspend = Gtk.Template.Child()
+    blur_radius = Gtk.Template.Child()
+    blur_sigma = Gtk.Template.Child()
 
     # Get objects from template
     def __init__(self, *args, **kwargs):
@@ -137,6 +139,8 @@ class MyApp(Adw.Application):
         self.create_action('waybar_toggle', self.on_waybar_toggle)
         self.create_action('rofi_bordersize', self.on_rofi_bordersize)
         self.create_action('waybar_workspaces', self.on_waybar_workspaces)
+        self.create_action('blur_radius', self.on_blur_radius)
+        self.create_action('blur_sigma', self.on_blur_sigma)
         self.create_action('open_about_variations', self.on_open_about_variations)
 
         self.create_action('on_open_animations_folder', self.on_open_animations)
@@ -204,10 +208,8 @@ class MyApp(Adw.Application):
         self.default_networkmanager = win.default_networkmanager
         self.default_softwaremanager = win.default_softwaremanager
         self.default_terminal = win.default_terminal
-
         self.open_customconf = win.open_customconf
         self.open_hypridle = win.open_hypridle
-
         self.dd_animations = win.dd_animations
         self.dd_environments = win.dd_environments
         self.dd_monitors = win.dd_monitors
@@ -218,9 +220,14 @@ class MyApp(Adw.Application):
         self.dd_timeformats = win.dd_timeformats
         self.dd_dateformats = win.dd_dateformats
         self.custom_datetime = win.custom_datetime
+        self.blur_radius = win.blur_radius
+        self.blur_sigma = win.blur_sigma
 
         self.waybar_workspaces.get_adjustment().connect("value-changed", self.on_waybar_workspaces)
         self.rofi_bordersize.get_adjustment().connect("value-changed", self.on_rofi_bordersize)
+        self.blur_radius.get_adjustment().connect("value-changed", self.on_blur_radius)
+        self.blur_sigma.get_adjustment().connect("value-changed", self.on_blur_sigma)
+
         self.rofi_font.connect("apply", self.on_rofi_font)
         self.hypridle_hyprlock.get_adjustment().connect("value-changed", self.on_hypridle_hyprlock)
         self.hypridle_dpms.get_adjustment().connect("value-changed", self.on_hypridle_dpms)
@@ -276,6 +283,7 @@ class MyApp(Adw.Application):
         self.loadDefaultApp(".settings/terminal.sh",self.default_terminal)
 
         self.loadRofiFont()
+        self.loadBlurValues()
 
         self.block_reload = False
 
@@ -292,6 +300,13 @@ class MyApp(Adw.Application):
                 d.set_active(True)
             else:
                 d.set_active(False)
+
+    def loadBlurValues(self):
+        with open(self.dotfiles + ".settings/blur.sh", 'r') as file:
+            value = file.read().strip()
+        value = value.split("x")
+        self.blur_radius.get_adjustment().set_value(int(value[0]))        
+        self.blur_sigma.get_adjustment().set_value(int(value[1]))        
 
     def loadRofiFont(self):
         with open(self.dotfiles + ".settings/rofi-font.rasi", 'r') as file:
@@ -529,6 +544,20 @@ class MyApp(Adw.Application):
         text = "* { border-width: " + str(value) + "px; }"
         self.overwriteFile(".settings/rofi-border.rasi",text)
         self.updateSettings("rofi_bordersize", value)
+
+    def on_blur_radius(self, widget):
+        if not self.block_reload:
+            radius = str(int(widget.get_value()))
+            sigma = str(int(self.blur_sigma.get_adjustment().get_value()))
+            text = radius + "x" + sigma
+            self.overwriteFile(".settings/blur.sh",text)
+
+    def on_blur_sigma(self, widget):
+        if not self.block_reload:
+            sigma = str(int(widget.get_value()))
+            radius = str(int(self.blur_radius.get_adjustment().get_value()))
+            text = radius + "x" + sigma
+            self.overwriteFile(".settings/blur.sh",text)
 
     def on_waybar_show_network(self, widget, _):
         if not self.block_reload:
