@@ -67,9 +67,13 @@ class MainWindow(Adw.PreferencesWindow):
     blur_radius = Gtk.Template.Child()
     blur_sigma = Gtk.Template.Child()
 
+    block_reload = False
+
     # Get objects from template
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.block_reload = True
+
 
 # -----------------------------------------
 # Main App
@@ -79,7 +83,6 @@ class MyApp(Adw.Application):
     path_name = pathname # Path of Application
     homeFolder = os.path.expanduser('~') # Path to home folder
     dotfiles = homeFolder + "/dotfiles/"
-    block_reload = True
     settings = {
         "waybar_timeformat": "%H:%M",
         "waybar_dateformat": "%a",
@@ -130,6 +133,7 @@ class MyApp(Adw.Application):
     def __init__(self, **kwargs):
         super().__init__(application_id='com.ml4w.dotfilessettings',
                          flags=Gio.ApplicationFlags.DEFAULT_FLAGS)
+ 
         self.create_action('quit', lambda *_: self.quit(), ['<primary>q'])
         self.create_action('waybar_show_network', self.on_waybar_show_network)
         self.create_action('waybar_show_screenlock', self.on_waybar_show_screenlock)
@@ -189,6 +193,7 @@ class MyApp(Adw.Application):
         settings_arr = json.load(settings_file)
         for row in settings_arr:
             self.settings[row["key"]] = row["value"]
+        self.block_reload = True
 
         self.waybar_show_network = win.waybar_show_network
         self.waybar_show_chatgpt = win.waybar_show_chatgpt
@@ -248,9 +253,6 @@ class MyApp(Adw.Application):
         self.dd_windowrules.connect("notify::selected-item", self.on_variation_changed,"windowrule")
         self.dd_keybindings.connect("notify::selected-item", self.on_variation_changed,"keybinding")
 
-        self.dd_timeformats.connect("notify::selected-item", self.on_timeformats_changed)
-        self.dd_dateformats.connect("notify::selected-item", self.on_dateformats_changed)
-
         self.loadVariations(self.dd_animations,"animation")
         self.loadVariations(self.dd_environments,"environment")
         self.loadVariations(self.dd_monitors,"monitor")
@@ -281,6 +283,9 @@ class MyApp(Adw.Application):
         self.loadDefaultApp(".settings/networkmanager.sh",self.default_networkmanager)
         self.loadDefaultApp(".settings/software.sh",self.default_softwaremanager)
         self.loadDefaultApp(".settings/terminal.sh",self.default_terminal)
+
+        self.dd_timeformats.connect("notify::selected-item", self.on_timeformats_changed)
+        self.dd_dateformats.connect("notify::selected-item", self.on_dateformats_changed)
 
         self.loadRofiFont()
         self.loadBlurValues()
@@ -340,21 +345,23 @@ class MyApp(Adw.Application):
         dd.set_selected(selected)
 
     def loadVariations(self,dd,v):
-        files_arr = os.listdir(self.dotfiles + "hypr/conf/" + v + "s")
-        store = Gtk.StringList()
-        with open(self.dotfiles + "hypr/conf/" + v + ".conf", 'r') as file:
-            value = file.read()
-        selected = 0
-        counter = 0
-        for f in files_arr:
-            store.append(f)
-            if f in value:
-                selected = counter
-            counter+=1
-        dd.set_model(store)
-        dd.set_selected(selected)
+        if not self.block_reload:
+            files_arr = os.listdir(self.dotfiles + "hypr/conf/" + v + "s")
+            store = Gtk.StringList()
+            with open(self.dotfiles + "hypr/conf/" + v + ".conf", 'r') as file:
+                value = file.read()
+            selected = 0
+            counter = 0
+            for f in files_arr:
+                store.append(f)
+                if f in value:
+                    selected = counter
+                counter+=1
+            dd.set_model(store)
+            dd.set_selected(selected)
 
     def on_timeformats_changed(self,widget,_):
+        print(self.block_reload)
         if not self.block_reload:
             value = widget.get_selected_item().get_string()
             dateformat = self.dd_dateformats.get_selected_item().get_string()
@@ -373,18 +380,19 @@ class MyApp(Adw.Application):
             self.reloadWaybar()
 
     def on_custom_datetime(self, widget):
-        value = widget.get_text()
-        if value != "":
-            self.updateSettings("waybar_custom_timedateformat", value)
-            timedate = '        "format": "{:' + value + '}",'
-            self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
-        else:
-            dateformat = self.dd_dateformats.get_selected_item().get_string()
-            timeformat = self.dd_timeformats.get_selected_item().get_string()
-            timedate = '        "format": "{:' + timeformat + ' - ' + dateformat + '}",'
-            self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
-            self.updateSettings("waybar_custom_timedateformat", "")
-        self.reloadWaybar()
+        if not self.block_reload:
+            value = widget.get_text()
+            if value != "":
+                self.updateSettings("waybar_custom_timedateformat", value)
+                timedate = '        "format": "{:' + value + '}",'
+                self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
+            else:
+                dateformat = self.dd_dateformats.get_selected_item().get_string()
+                timeformat = self.dd_timeformats.get_selected_item().get_string()
+                timedate = '        "format": "{:' + timeformat + ' - ' + dateformat + '}",'
+                self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
+                self.updateSettings("waybar_custom_timedateformat", "")
+            self.reloadWaybar()
 
     def on_open_animations(self, widget, _):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/animations")
@@ -671,7 +679,11 @@ class MyApp(Adw.Application):
                 file.writelines(lines)
 
     def reloadWaybar(self):
+        print("Loading waybar")
+        # subprocess.Popen(["bash", "killall waybar"])
+        # subprocess.Popen(["bash", "pkill waybar"])
         launch_script = self.dotfiles + "waybar/launch.sh"
+        # subprocess.Popen(["setsid", launch_script])
         subprocess.Popen(["setsid", launch_script, "1>/dev/null" ,"2>&1" "&"])
 
     def create_action(self, name, callback, shortcuts=None):
