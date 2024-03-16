@@ -1,6 +1,5 @@
 #!/bin/bash
 p=$(ps -ef | grep ml4w-dotfiles-settings)
-string='Welcome to the world of Bash scripting!'
 if [[ $p = *'ml4w-dotfiles-settings.py'* ]]; then
     exit
 else
