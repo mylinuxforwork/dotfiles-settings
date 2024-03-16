@@ -1,5 +1,10 @@
 #!/bin/bash
-pkill -9 -f ml4w-dotfiles-settings.py
-HERE="$(dirname "$(readlink -f "${0}")")"
-EXEC="${HERE}/usr/bin/ml4w-dotfiles-settings.py"
-python ${EXEC}
+p=$(ps -ef | grep ml4w-dotfiles-settings)
+string='Welcome to the world of Bash scripting!'
+if [[ $p = *'ml4w-dotfiles-settings.py'* ]]; then
+    exit
+else
+    HERE="$(dirname "$(readlink -f "${0}")")"
+    EXEC="${HERE}/usr/bin/ml4w-dotfiles-settings.py"
+    python ${EXEC}
+fi

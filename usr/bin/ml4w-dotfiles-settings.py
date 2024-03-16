@@ -50,6 +50,7 @@ class MainWindow(Adw.PreferencesWindow):
     default_softwaremanager = Gtk.Template.Child()
     default_terminal = Gtk.Template.Child()
     open_customconf = Gtk.Template.Child()
+    open_timeformatspecifications = Gtk.Template.Child()
     open_hypridle = Gtk.Template.Child()
     dd_animations = Gtk.Template.Child()
     dd_environments = Gtk.Template.Child()
@@ -67,13 +68,9 @@ class MainWindow(Adw.PreferencesWindow):
     blur_radius = Gtk.Template.Child()
     blur_sigma = Gtk.Template.Child()
 
-    block_reload = False
-
     # Get objects from template
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.block_reload = True
-
 
 # -----------------------------------------
 # Main App
@@ -83,6 +80,7 @@ class MyApp(Adw.Application):
     path_name = pathname # Path of Application
     homeFolder = os.path.expanduser('~') # Path to home folder
     dotfiles = homeFolder + "/dotfiles/"
+    block_reload = True
     settings = {
         "waybar_timeformat": "%H:%M",
         "waybar_dateformat": "%a",
@@ -133,7 +131,6 @@ class MyApp(Adw.Application):
     def __init__(self, **kwargs):
         super().__init__(application_id='com.ml4w.dotfilessettings',
                          flags=Gio.ApplicationFlags.DEFAULT_FLAGS)
- 
         self.create_action('quit', lambda *_: self.quit(), ['<primary>q'])
         self.create_action('waybar_show_network', self.on_waybar_show_network)
         self.create_action('waybar_show_screenlock', self.on_waybar_show_screenlock)
@@ -193,7 +190,6 @@ class MyApp(Adw.Application):
         settings_arr = json.load(settings_file)
         for row in settings_arr:
             self.settings[row["key"]] = row["value"]
-        self.block_reload = True
 
         self.waybar_show_network = win.waybar_show_network
         self.waybar_show_chatgpt = win.waybar_show_chatgpt
@@ -214,6 +210,7 @@ class MyApp(Adw.Application):
         self.default_softwaremanager = win.default_softwaremanager
         self.default_terminal = win.default_terminal
         self.open_customconf = win.open_customconf
+        self.open_timeformatspecifications = win.open_timeformatspecifications
         self.open_hypridle = win.open_hypridle
         self.dd_animations = win.dd_animations
         self.dd_environments = win.dd_environments
@@ -227,6 +224,10 @@ class MyApp(Adw.Application):
         self.custom_datetime = win.custom_datetime
         self.blur_radius = win.blur_radius
         self.blur_sigma = win.blur_sigma
+
+        self.open_customconf.connect("clicked", self.on_open_customconf)
+        self.open_timeformatspecifications.connect("clicked", self.on_open_timeformatspecifications)
+        self.open_hypridle.connect("clicked", self.on_open_hypridle)
 
         self.waybar_workspaces.get_adjustment().connect("value-changed", self.on_waybar_workspaces)
         self.rofi_bordersize.get_adjustment().connect("value-changed", self.on_rofi_bordersize)
@@ -252,6 +253,9 @@ class MyApp(Adw.Application):
         self.dd_windows.connect("notify::selected-item", self.on_variation_changed,"window")
         self.dd_windowrules.connect("notify::selected-item", self.on_variation_changed,"windowrule")
         self.dd_keybindings.connect("notify::selected-item", self.on_variation_changed,"keybinding")
+
+        self.dd_timeformats.connect("notify::selected-item", self.on_timeformats_changed)
+        self.dd_dateformats.connect("notify::selected-item", self.on_dateformats_changed)
 
         self.loadVariations(self.dd_animations,"animation")
         self.loadVariations(self.dd_environments,"environment")
@@ -284,9 +288,6 @@ class MyApp(Adw.Application):
         self.loadDefaultApp(".settings/software.sh",self.default_softwaremanager)
         self.loadDefaultApp(".settings/terminal.sh",self.default_terminal)
 
-        self.dd_timeformats.connect("notify::selected-item", self.on_timeformats_changed)
-        self.dd_dateformats.connect("notify::selected-item", self.on_dateformats_changed)
-
         self.loadRofiFont()
         self.loadBlurValues()
 
@@ -295,6 +296,15 @@ class MyApp(Adw.Application):
         # Show Application Window
         win.present()
         print (":: Welcome to ML4W Dotfiles Settings App")
+
+    def on_open_hypridle(self, widget):
+        subprocess.Popen([self.default_editor.get_text(), self.dotfiles + "hypr/hypridle.conf"])
+
+    def on_open_customconf(self, widget):
+        subprocess.Popen([self.default_editor.get_text(), self.dotfiles + "hypr/conf/custom.conf"])
+
+    def on_open_timeformatspecifications(self, widget):
+        subprocess.Popen([self.default_browser.get_text(), "https://fmt.dev/latest/syntax.html#chrono-specs"])
 
     def on_open_about_variations(self, widget, _):
         subprocess.Popen([self.default_browser.get_text(), "https://gitlab.com/stephan-raabe/dotfiles/-/blob/dev/hypr/conf/README.md"])
@@ -345,23 +355,21 @@ class MyApp(Adw.Application):
         dd.set_selected(selected)
 
     def loadVariations(self,dd,v):
-        if not self.block_reload:
-            files_arr = os.listdir(self.dotfiles + "hypr/conf/" + v + "s")
-            store = Gtk.StringList()
-            with open(self.dotfiles + "hypr/conf/" + v + ".conf", 'r') as file:
-                value = file.read()
-            selected = 0
-            counter = 0
-            for f in files_arr:
-                store.append(f)
-                if f in value:
-                    selected = counter
-                counter+=1
-            dd.set_model(store)
-            dd.set_selected(selected)
+        files_arr = os.listdir(self.dotfiles + "hypr/conf/" + v + "s")
+        store = Gtk.StringList()
+        with open(self.dotfiles + "hypr/conf/" + v + ".conf", 'r') as file:
+            value = file.read()
+        selected = 0
+        counter = 0
+        for f in files_arr:
+            store.append(f)
+            if f in value:
+                selected = counter
+            counter+=1
+        dd.set_model(store)
+        dd.set_selected(selected)
 
     def on_timeformats_changed(self,widget,_):
-        print(self.block_reload)
         if not self.block_reload:
             value = widget.get_selected_item().get_string()
             dateformat = self.dd_dateformats.get_selected_item().get_string()
@@ -380,19 +388,18 @@ class MyApp(Adw.Application):
             self.reloadWaybar()
 
     def on_custom_datetime(self, widget):
-        if not self.block_reload:
-            value = widget.get_text()
-            if value != "":
-                self.updateSettings("waybar_custom_timedateformat", value)
-                timedate = '        "format": "{:' + value + '}",'
-                self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
-            else:
-                dateformat = self.dd_dateformats.get_selected_item().get_string()
-                timeformat = self.dd_timeformats.get_selected_item().get_string()
-                timedate = '        "format": "{:' + timeformat + ' - ' + dateformat + '}",'
-                self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
-                self.updateSettings("waybar_custom_timedateformat", "")
-            self.reloadWaybar()
+        value = widget.get_text()
+        if value != "":
+            self.updateSettings("waybar_custom_timedateformat", value)
+            timedate = '        "format": "{:' + value + '}",'
+            self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
+        else:
+            dateformat = self.dd_dateformats.get_selected_item().get_string()
+            timeformat = self.dd_timeformats.get_selected_item().get_string()
+            timedate = '        "format": "{:' + timeformat + ' - ' + dateformat + '}",'
+            self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
+            self.updateSettings("waybar_custom_timedateformat", "")
+        self.reloadWaybar()
 
     def on_open_animations(self, widget, _):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/animations")
@@ -679,11 +686,7 @@ class MyApp(Adw.Application):
                 file.writelines(lines)
 
     def reloadWaybar(self):
-        print("Loading waybar")
-        # subprocess.Popen(["bash", "killall waybar"])
-        # subprocess.Popen(["bash", "pkill waybar"])
         launch_script = self.dotfiles + "waybar/launch.sh"
-        # subprocess.Popen(["setsid", launch_script])
         subprocess.Popen(["setsid", launch_script, "1>/dev/null" ,"2>&1" "&"])
 
     def create_action(self, name, callback, shortcuts=None):
