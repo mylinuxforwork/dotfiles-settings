@@ -307,7 +307,7 @@ class MyApp(Adw.Application):
         subprocess.Popen([self.default_browser.get_text(), "https://fmt.dev/latest/syntax.html#chrono-specs"])
 
     def on_open_about_variations(self, widget, _):
-        subprocess.Popen([self.default_browser.get_text(), "https://gitlab.com/stephan-raabe/dotfiles/-/blob/dev/hypr/conf/README.md"])
+        subprocess.Popen([self.default_browser.get_text(), "https://gitlab.com/stephan-raabe/dotfiles/-/blob/hypr/conf/README.md"])
 
     def loadShowModule(self,f,d):
        if f in self.settings:

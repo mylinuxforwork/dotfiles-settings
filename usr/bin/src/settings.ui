@@ -220,7 +220,7 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title">Background Blur</property>
-            <property name="description">Define blur properties for rofi and hyprlock background image (Active after setting a new wallpaper).</property>
+            <property name="description">Define blur properties for rofi and hyprlock background image. Set both parameters to 0 to disable blur (Active after setting a new wallpaper).</property>
 
             <child>
               <object class="AdwSpinRow" id="blur_radius">
