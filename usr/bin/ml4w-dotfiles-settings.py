@@ -685,6 +685,30 @@ class MyApp(Adw.Application):
             with open(self.dotfiles + f, 'w') as file:
                 file.writelines(lines)
 
+    def replaceInFileCheckpoint(self, f, checkpoint, search, replace):
+        file = open(self.dotfiles + f, 'r')
+        lines = file.readlines()
+        count = 0
+        checkpoint_found = 0
+        found = 0
+        for l in lines:
+            count += 1
+            if checkpoint in l:
+                checkpoint_found = count
+
+        count = 0
+        if checkpoint_found > 0:
+            for l in lines:
+                count += 1
+                if count > checkpoint_found:
+                    if search in l:
+                        found = count
+
+        if found > 0:
+            lines[found-1] = replace + "\n"
+            with open(self.dotfiles + f, 'w') as file:
+                file.writelines(lines)
+
     def reloadWaybar(self):
         launch_script = self.dotfiles + "waybar/launch.sh"
         subprocess.Popen(["setsid", launch_script, "1>/dev/null" ,"2>&1" "&"])
