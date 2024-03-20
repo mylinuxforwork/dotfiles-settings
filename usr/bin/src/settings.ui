@@ -125,7 +125,7 @@
                 <property name="title">Workspaces</property>
                 <property name="adjustment">
                   <object class="GtkAdjustment">
-                    <property name="lower">5</property>
+                    <property name="lower">1</property>
                     <property name="upper">10</property>
                     <property name="step-increment">1</property>
                     <property name="value">5</property>
