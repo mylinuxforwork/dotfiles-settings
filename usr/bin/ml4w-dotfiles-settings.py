@@ -373,18 +373,18 @@ class MyApp(Adw.Application):
         if not self.block_reload:
             value = widget.get_selected_item().get_string()
             dateformat = self.dd_dateformats.get_selected_item().get_string()
-            timedate = '"format": "{:' + value + ' - ' + dateformat + '}",'
+            timedate = '        "format": "{:' + value + ' - ' + dateformat + '}",'
             self.updateSettings("waybar_timeformat", value)
-            self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
+            self.replaceInFileCheckpoint("waybar/modules.json", '"clock"', '"format"', timedate)
             self.reloadWaybar()
 
     def on_dateformats_changed(self,widget,_):
         if not self.block_reload:
             value = widget.get_selected_item().get_string()
             timeformat = self.dd_timeformats.get_selected_item().get_string()
-            timedate = '"format": "{:' + timeformat + ' - ' + value + '}",'
+            timedate = '        "format": "{:' + timeformat + ' - ' + value + '}",'
             self.updateSettings("waybar_dateformat", value)
-            self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
+            self.replaceInFileCheckpoint("waybar/modules.json", '"clock"', '"format"', timedate)
             self.reloadWaybar()
 
     def on_custom_datetime(self, widget):
@@ -392,12 +392,12 @@ class MyApp(Adw.Application):
         if value != "":
             self.updateSettings("waybar_custom_timedateformat", value)
             timedate = '        "format": "{:' + value + '}",'
-            self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
+            self.replaceInFileCheckpoint("waybar/modules.json", '"clock"' '"format"', timedate)
         else:
             dateformat = self.dd_dateformats.get_selected_item().get_string()
             timeformat = self.dd_timeformats.get_selected_item().get_string()
             timedate = '        "format": "{:' + timeformat + ' - ' + dateformat + '}",'
-            self.replaceInFileNext("waybar/modules.json", "TIMEDATEFORMAT", timedate)
+            self.replaceInFileCheckpoint("waybar/modules.json", '"clock"' '"format"', timedate)
             self.updateSettings("waybar_custom_timedateformat", "")
         self.reloadWaybar()
 
@@ -542,7 +542,7 @@ class MyApp(Adw.Application):
         if not self.block_reload:
             value = int(widget.get_value())
             text = '            "*": ' + str(value)
-            self.replaceInFileNext("waybar/modules.json", "// START WORKSPACES", text)
+            self.replaceInFileCheckpoint("waybar/modules.json", "persistent-workspaces",'"*"', text)
             self.reloadWaybar()
             self.updateSettings("waybar_workspaces", value)
 
@@ -666,6 +666,7 @@ class MyApp(Adw.Application):
             count += 1
             if search in l:
                 found = count
+                break
         if found > 0:
             lines[found - 1] = replace + "\n"
             with open(self.dotfiles + f, 'w') as file:
@@ -680,6 +681,7 @@ class MyApp(Adw.Application):
             count += 1
             if search in l:
                 found = count
+                break
         if found > 0:
             lines[found] = replace + "\n"
             with open(self.dotfiles + f, 'w') as file:
@@ -695,6 +697,8 @@ class MyApp(Adw.Application):
             count += 1
             if checkpoint in l:
                 checkpoint_found = count
+                break
+        print("Checkpoint: " + str(checkpoint_found))
 
         count = 0
         if checkpoint_found > 0:
@@ -703,6 +707,8 @@ class MyApp(Adw.Application):
                 if count > checkpoint_found:
                     if search in l:
                         found = count
+                        break
+        print("Found: " + str(found))
 
         if found > 0:
             lines[found-1] = replace + "\n"
