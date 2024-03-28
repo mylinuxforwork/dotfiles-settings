@@ -317,7 +317,7 @@ class MyApp(Adw.Application):
     def loadWallpaperEngine(self):
         with open(self.dotfiles + ".settings/wallpaper-engine.sh", 'r') as file:
             value = file.read()
-        engine_arr = ["swww","hyprpaper"]
+        engine_arr = ["swww","hyprpaper","disabled"]
         store = Gtk.StringList()
         selected = 0
         counter = 0
