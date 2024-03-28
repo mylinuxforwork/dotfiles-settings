@@ -61,6 +61,7 @@ class MainWindow(Adw.PreferencesWindow):
     dd_keybindings = Gtk.Template.Child()
     dd_timeformats = Gtk.Template.Child()
     dd_dateformats = Gtk.Template.Child()
+    dd_wallpaper_engines = Gtk.Template.Child()
     custom_datetime = Gtk.Template.Child()
     hypridle_hyprlock = Gtk.Template.Child()
     hypridle_dpms = Gtk.Template.Child()
@@ -221,6 +222,7 @@ class MyApp(Adw.Application):
         self.dd_keybindings = win.dd_keybindings
         self.dd_timeformats = win.dd_timeformats
         self.dd_dateformats = win.dd_dateformats
+        self.dd_wallpaper_engines = win.dd_wallpaper_engines
         self.custom_datetime = win.custom_datetime
         self.blur_radius = win.blur_radius
         self.blur_sigma = win.blur_sigma
@@ -253,6 +255,7 @@ class MyApp(Adw.Application):
         self.dd_windows.connect("notify::selected-item", self.on_variation_changed,"window")
         self.dd_windowrules.connect("notify::selected-item", self.on_variation_changed,"windowrule")
         self.dd_keybindings.connect("notify::selected-item", self.on_variation_changed,"keybinding")
+        self.dd_wallpaper_engines.connect("notify::selected-item", self.on_wallpaper_engines_changed)
 
         self.dd_timeformats.connect("notify::selected-item", self.on_timeformats_changed)
         self.dd_dateformats.connect("notify::selected-item", self.on_dateformats_changed)
@@ -264,6 +267,8 @@ class MyApp(Adw.Application):
         self.loadVariations(self.dd_windows,"window")
         self.loadVariations(self.dd_windowrules,"windowrule")
         self.loadVariations(self.dd_keybindings,"keybinding")
+        self.loadWallpaperEngine()
+
 
         self.loadDropDown(self.dd_timeformats,self.timeformats,"waybar_timeformat")
         self.loadDropDown(self.dd_dateformats,self.dateformats,"waybar_dateformat")
@@ -308,6 +313,26 @@ class MyApp(Adw.Application):
 
     def on_open_about_variations(self, widget, _):
         subprocess.Popen([self.default_browser.get_text(), "https://gitlab.com/stephan-raabe/dotfiles/-/blob/main/hypr/conf/README.md"])
+
+    def loadWallpaperEngine(self):
+        with open(self.dotfiles + ".settings/wallpaper-engine.sh", 'r') as file:
+            value = file.read()
+        engine_arr = ["swww","hyprpaper"]
+        store = Gtk.StringList()
+        selected = 0
+        counter = 0
+        for f in engine_arr:
+            store.append(f)
+            if f in value:
+                selected = counter
+            counter+=1
+        self.dd_wallpaper_engines.set_model(store)
+        self.dd_wallpaper_engines.set_selected(selected)
+
+    def on_wallpaper_engines_changed(self,widget,*data):
+        if not self.block_reload:
+            value = widget.get_selected_item().get_string()
+            self.overwriteFile(".settings/wallpaper-engine.sh", value)
 
     def loadShowModule(self,f,d):
        if f in self.settings:

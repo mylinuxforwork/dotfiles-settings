@@ -378,6 +378,31 @@
 
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title">Wallpaper Engine</property>
+            <property name="description">Choose between swww and hyprpaper. After a change, please logout and login again.</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Wallpaper Engine</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_wallpaper_engines">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child> 
+
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title">Hypridle</property>
             <property name="description">Edit timeouts in seconds for hypridle. 0 seconds = disabled.</property>
             <child type="header-suffix">
