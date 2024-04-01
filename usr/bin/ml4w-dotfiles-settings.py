@@ -534,9 +534,9 @@ class MyApp(Adw.Application):
             text = '    timeout = ' + str(value)
             self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK TIMEOUT", text)
             if int(widget.get_value()) == 0:
-                self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK ONTIMEOUT", "    # on-timeout = hyprlock")
+                self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK ONTIMEOUT", "    # on-timeout = loginctl lock-session")
             else:
-                self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK ONTIMEOUT", "    on-timeout = hyprlock")
+                self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK ONTIMEOUT", "    on-timeout = loginctl lock-session")
             self.updateSettings("hypridle_hyprlock_timeout", value)
 
     def on_hypridle_dpms(self, widget):
