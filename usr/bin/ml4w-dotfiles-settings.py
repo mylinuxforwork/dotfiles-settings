@@ -415,14 +415,16 @@ class MyApp(Adw.Application):
     def on_custom_datetime(self, widget):
         value = widget.get_text()
         if value != "":
-            self.updateSettings("waybar_custom_timedateformat", value)
             timedate = '        "format": "{:' + value + '}",'
-            self.replaceInFileCheckpoint("waybar/modules.json", '"clock"' '"format"', timedate)
+            print(timedate)
+            self.replaceInFileCheckpoint("waybar/modules.json", '"clock"', '"format"', timedate)
+            self.updateSettings("waybar_custom_timedateformat", value)
         else:
             dateformat = self.dd_dateformats.get_selected_item().get_string()
             timeformat = self.dd_timeformats.get_selected_item().get_string()
             timedate = '        "format": "{:' + timeformat + ' - ' + dateformat + '}",'
-            self.replaceInFileCheckpoint("waybar/modules.json", '"clock"' '"format"', timedate)
+            print(timedate)
+            self.replaceInFileCheckpoint("waybar/modules.json", '"clock"', '"format"', timedate)
             self.updateSettings("waybar_custom_timedateformat", "")
         self.reloadWaybar()
 
