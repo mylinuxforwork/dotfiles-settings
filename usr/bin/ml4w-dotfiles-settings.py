@@ -51,7 +51,7 @@ class MainWindow(Adw.PreferencesWindow):
     default_terminal = Gtk.Template.Child()
     open_customconf = Gtk.Template.Child()
     open_timeformatspecifications = Gtk.Template.Child()
-    open_hypridle = Gtk.Template.Child()
+    restart_hypridle = Gtk.Template.Child()
     dd_animations = Gtk.Template.Child()
     dd_environments = Gtk.Template.Child()
     dd_monitors = Gtk.Template.Child()
@@ -212,7 +212,7 @@ class MyApp(Adw.Application):
         self.default_terminal = win.default_terminal
         self.open_customconf = win.open_customconf
         self.open_timeformatspecifications = win.open_timeformatspecifications
-        self.open_hypridle = win.open_hypridle
+        self.restart_hypridle = win.restart_hypridle
         self.dd_animations = win.dd_animations
         self.dd_environments = win.dd_environments
         self.dd_monitors = win.dd_monitors
@@ -229,7 +229,7 @@ class MyApp(Adw.Application):
 
         self.open_customconf.connect("clicked", self.on_open_customconf)
         self.open_timeformatspecifications.connect("clicked", self.on_open_timeformatspecifications)
-        self.open_hypridle.connect("clicked", self.on_open_hypridle)
+        self.restart_hypridle.connect("clicked", self.on_restart_hypridle)
 
         self.waybar_workspaces.get_adjustment().connect("value-changed", self.on_waybar_workspaces)
         self.rofi_bordersize.get_adjustment().connect("value-changed", self.on_rofi_bordersize)
@@ -302,8 +302,8 @@ class MyApp(Adw.Application):
         win.present()
         print (":: Welcome to ML4W Dotfiles Settings App")
 
-    def on_open_hypridle(self, widget):
-        subprocess.Popen([self.default_editor.get_text(), self.dotfiles + "hypr/hypridle.conf"])
+    def on_restart_hypridle(self, widget):
+        subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/restart-hypridle.sh"])
 
     def on_open_customconf(self, widget):
         subprocess.Popen([self.default_editor.get_text(), self.dotfiles + "hypr/conf/custom.conf"])
@@ -333,6 +333,8 @@ class MyApp(Adw.Application):
         if not self.block_reload:
             value = widget.get_selected_item().get_string()
             self.overwriteFile(".settings/wallpaper-engine.sh", value)
+            subprocess.Popen(["notify-send", "Wallpaper engine changes to " + value, "Please logout and login to activate your change."])
+
 
     def loadShowModule(self,f,d):
        if f in self.settings:

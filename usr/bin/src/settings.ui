@@ -6,6 +6,7 @@
     <property name="default-width">800</property>
     <property name="default-height">600</property>
     <property name="title">ML4W Dotfiles Settings</property>
+
     <child>
       <object class="AdwPreferencesPage" id="waybar_page">
         <property name="title">Waybar</property>
@@ -406,10 +407,11 @@
             <property name="title">Hypridle</property>
             <property name="description">Edit timeouts in seconds for hypridle. 0 seconds = disabled.</property>
             <child type="header-suffix">
-              <object class="GtkButton" id="open_hypridle">
+              <object class="GtkButton" id="restart_hypridle">
                 <property name="halign">3</property>
                 <property name="valign">3</property>
-                <property name="icon-name">document-open-symbolic</property>
+                <property name="label">Restart</property>
+                <property name="tooltip-text">Restart hypridle to activate your changes.</property>
               </object>
             </child>
             <child>
@@ -595,6 +597,7 @@
 
       </object>
     </child>
+
   </template>
   
   <menu id="animations_button_menu">
