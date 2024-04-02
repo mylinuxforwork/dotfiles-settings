@@ -95,7 +95,7 @@ class MyApp(Adw.Application):
         "waybar_screenlock": True,
         "waybar_window": True,
         "hypridle_hyprlock_timeout": 600,
-        "hypridle_dpms_timeout": 680,
+        "hypridle_dpms_timeout": 660,
         "hypridle_suspend_timeout": 1800
     }
 
@@ -199,9 +199,11 @@ class MyApp(Adw.Application):
         self.waybar_show_window = win.waybar_show_window
         self.waybar_toggle = win.waybar_toggle
         self.waybar_workspaces = win.waybar_workspaces
+
         self.hypridle_hyprlock = win.hypridle_hyprlock
         self.hypridle_dpms = win.hypridle_dpms
         self.hypridle_suspend = win.hypridle_suspend
+        
         self.rofi_bordersize = win.rofi_bordersize
         self.rofi_font = win.rofi_font
         self.default_browser = win.default_browser
@@ -237,6 +239,7 @@ class MyApp(Adw.Application):
         self.blur_sigma.get_adjustment().connect("value-changed", self.on_blur_sigma)
 
         self.rofi_font.connect("apply", self.on_rofi_font)
+
         self.hypridle_hyprlock.get_adjustment().connect("value-changed", self.on_hypridle_hyprlock)
         self.hypridle_dpms.get_adjustment().connect("value-changed", self.on_hypridle_dpms)
         self.hypridle_suspend.get_adjustment().connect("value-changed", self.on_hypridle_suspend)
@@ -284,7 +287,11 @@ class MyApp(Adw.Application):
         self.loadShowModule("waybar_screenlock",self.waybar_show_screenlock)
 
         self.waybar_workspaces.get_adjustment().set_value(self.settings["waybar_workspaces"])        
-        self.rofi_bordersize.get_adjustment().set_value(self.settings["rofi_bordersize"])        
+        self.rofi_bordersize.get_adjustment().set_value(self.settings["rofi_bordersize"])
+           
+        self.hypridle_hyprlock.get_adjustment().set_value(self.settings["hypridle_hyprlock_timeout"])   
+        self.hypridle_dpms.get_adjustment().set_value(self.settings["hypridle_dpms_timeout"])   
+        self.hypridle_suspend.get_adjustment().set_value(self.settings["hypridle_suspend_timeout"])   
 
         self.loadDefaultApp(".settings/browser.sh",self.default_browser)
         self.loadDefaultApp(".settings/filemanager.sh",self.default_filemanager)
