@@ -272,7 +272,6 @@ class MyApp(Adw.Application):
         self.loadVariations(self.dd_keybindings,"keybinding")
         self.loadWallpaperEngine()
 
-
         self.loadDropDown(self.dd_timeformats,self.timeformats,"waybar_timeformat")
         self.loadDropDown(self.dd_dateformats,self.dateformats,"waybar_dateformat")
         self.custom_datetime.set_show_apply_button(True)
@@ -288,7 +287,7 @@ class MyApp(Adw.Application):
 
         self.waybar_workspaces.get_adjustment().set_value(self.settings["waybar_workspaces"])        
         self.rofi_bordersize.get_adjustment().set_value(self.settings["rofi_bordersize"])
-           
+
         self.hypridle_hyprlock.get_adjustment().set_value(self.settings["hypridle_hyprlock_timeout"])   
         self.hypridle_dpms.get_adjustment().set_value(self.settings["hypridle_dpms_timeout"])   
         self.hypridle_suspend.get_adjustment().set_value(self.settings["hypridle_suspend_timeout"])   
