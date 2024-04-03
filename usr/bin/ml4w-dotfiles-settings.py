@@ -161,6 +161,7 @@ class MyApp(Adw.Application):
         self.create_action('on_edit_monitors', self.on_edit_monitors)
         self.create_action('on_reload_monitors', self.on_reload_monitors)
 
+
         self.create_action('on_open_keybindings_folder', self.on_open_keybindings)
         self.create_action('on_edit_keybindings', self.on_edit_keybindings)
         self.create_action('on_reload_keybindings', self.on_reload_keybindings)
