@@ -16,6 +16,10 @@
         "value": true
     },
     {
+        "key":"waybar_taskbar",
+        "value": false
+    },
+    {
         "key":"waybar_screenlock",
         "value": true
     }

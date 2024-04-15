@@ -34,6 +34,7 @@ pathname = os.path.dirname(sys.argv[0])
 # -----------------------------------------
 class MainWindow(Adw.PreferencesWindow):
     __gtype_name__ = 'Ml4wSettingsWindow'
+    waybar_show_taskbar = Gtk.Template.Child()
     waybar_show_network = Gtk.Template.Child()
     waybar_show_chatgpt = Gtk.Template.Child()
     waybar_show_systray = Gtk.Template.Child()
@@ -89,6 +90,7 @@ class MyApp(Adw.Application):
         "waybar_workspaces": 5,
         "rofi_bordersize": 3,
         "waybar_toggle": True,
+        "waybar_taskbar": False,
         "waybar_network": True,
         "waybar_chatgpt": True,
         "waybar_systray": True,
@@ -138,6 +140,7 @@ class MyApp(Adw.Application):
         self.create_action('waybar_show_chatgpt', self.on_waybar_show_chatgpt)
         self.create_action('waybar_show_systray', self.on_waybar_show_systray)
         self.create_action('waybar_show_window', self.on_waybar_show_window)
+        self.create_action('waybar_show_taskbar', self.on_waybar_show_taskbar)
         self.create_action('waybar_toggle', self.on_waybar_toggle)
         self.create_action('rofi_bordersize', self.on_rofi_bordersize)
         self.create_action('waybar_workspaces', self.on_waybar_workspaces)
@@ -160,7 +163,6 @@ class MyApp(Adw.Application):
         self.create_action('on_open_monitors_folder', self.on_open_monitors)
         self.create_action('on_edit_monitors', self.on_edit_monitors)
         self.create_action('on_reload_monitors', self.on_reload_monitors)
-
 
         self.create_action('on_open_keybindings_folder', self.on_open_keybindings)
         self.create_action('on_edit_keybindings', self.on_edit_keybindings)
@@ -198,6 +200,7 @@ class MyApp(Adw.Application):
         self.waybar_show_systray = win.waybar_show_systray
         self.waybar_show_screenlock = win.waybar_show_screenlock
         self.waybar_show_window = win.waybar_show_window
+        self.waybar_show_taskbar = win.waybar_show_taskbar
         self.waybar_toggle = win.waybar_toggle
         self.waybar_workspaces = win.waybar_workspaces
 
@@ -280,6 +283,7 @@ class MyApp(Adw.Application):
         self.custom_datetime.connect("apply", self.on_custom_datetime)
 
         self.loadShowModule("waybar_toggle",self.waybar_toggle)
+        self.loadShowModule("waybar_taskbar",self.waybar_show_taskbar)
         self.loadShowModule("waybar_window",self.waybar_show_window)
         self.loadShowModule("waybar_network",self.waybar_show_network)
         self.loadShowModule("waybar_chatgpt",self.waybar_show_chatgpt)
@@ -609,6 +613,20 @@ class MyApp(Adw.Application):
             radius = str(int(self.blur_radius.get_adjustment().get_value()))
             text = radius + "x" + sigma
             self.overwriteFile(".settings/blur.sh",text)
+
+    def on_waybar_show_taskbar(self, widget, _):
+        if not self.block_reload:
+            if self.waybar_show_taskbar.get_active():
+                print("Taskbar True")
+                for t in self.waybar_themes:
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"wlr/taskbar"','        "wlr/taskbar",')
+                self.updateSettings("waybar_taskbar", True)
+            else:
+                print("Taskbar False")
+                for t in self.waybar_themes:
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"wlr/taskbar"','        //"wlr/taskbar",')
+                self.updateSettings("waybar_taskbar", False)
+            self.reloadWaybar()
 
     def on_waybar_show_network(self, widget, _):
         if not self.block_reload:
