@@ -679,10 +679,10 @@ class MyApp(Adw.Application):
     def on_waybar_show_chatgpt(self, widget, _):
         if not self.block_reload:
             if self.waybar_show_chatgpt.get_active():
-                self.replaceInFileCheckpoint("waybar/modules.json", 'group/settings', '"custom/chatgpt"', '            "custom/chatgpt",')
+                self.replaceInFileCheckpoint("waybar/modules.json", 'group/links', '"custom/chatgpt"', '            "custom/chatgpt",')
                 self.updateSettings("waybar_chatgpt", True)
             else:
-                self.replaceInFileCheckpoint("waybar/modules.json", 'group/settings', '"custom/chatgpt"', '//            "custom/chatgpt",')
+                self.replaceInFileCheckpoint("waybar/modules.json", 'group/links', '"custom/chatgpt"', '//            "custom/chatgpt",')
                 self.updateSettings("waybar_chatgpt", False)
             self.reloadWaybar()
 
