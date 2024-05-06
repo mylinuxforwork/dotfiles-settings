@@ -328,7 +328,7 @@ class MyApp(Adw.Application):
     def loadWallpaperEngine(self):
         with open(self.dotfiles + ".settings/wallpaper-engine.sh", 'r') as file:
             value = file.read()
-        engine_arr = ["swww","hyprpaper","disabled"]
+        engine_arr = ["hyprpaper","swww","disabled"]
         store = Gtk.StringList()
         selected = 0
         counter = 0
@@ -343,6 +343,18 @@ class MyApp(Adw.Application):
     def on_wallpaper_engines_changed(self,widget,*data):
         if not self.block_reload:
             value = widget.get_selected_item().get_string()
+            dialog = Adw.MessageDialog(
+                heading="Important",
+                body="Please make sure that swww is installed on your system. You can install it with yay -S swww",
+                close_response="okay",
+                modal=True,
+                transient_for=self.win,
+            )
+            dialog.add_response("okay", "Okay")
+
+            if value == "swww": 
+                dialog.present()
+
             self.overwriteFile(".settings/wallpaper-engine.sh", value)
             subprocess.Popen(["notify-send", "Wallpaper engine changes to " + value, "Please logout and login to activate your change."])
 
