@@ -227,8 +227,8 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Background Blur</property>
-            <property name="description">Define blur properties for rofi and hyprlock background image. Set both parameters to 0 to disable blur (Active after setting a new wallpaper).</property>
+            <property name="title">Background image effects</property>
+            <property name="description">Define blur properties for rofi and hyprlock background image. Set both parameters to 0 to disable blur (Active after setting a new wallpaper). Select an effect for your selected wallpaper.</property>
 
             <child>
               <object class="AdwSpinRow" id="blur_radius">
@@ -257,6 +257,25 @@
                 </property>
               </object>
             </child>            
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Wallpaper effect</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_wallpaper_effects">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList" id="wallpaper_effects_list">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
 
           </object>
         </child>

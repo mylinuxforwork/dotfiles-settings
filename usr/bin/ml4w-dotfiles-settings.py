@@ -53,6 +53,7 @@ class MainWindow(Adw.PreferencesWindow):
     open_customconf = Gtk.Template.Child()
     open_timeformatspecifications = Gtk.Template.Child()
     restart_hypridle = Gtk.Template.Child()
+    dd_wallpaper_effects = Gtk.Template.Child()
     dd_animations = Gtk.Template.Child()
     dd_environments = Gtk.Template.Child()
     dd_monitors = Gtk.Template.Child()
@@ -148,6 +149,8 @@ class MyApp(Adw.Application):
         self.create_action('blur_sigma', self.on_blur_sigma)
         self.create_action('open_about_variations', self.on_open_about_variations)
 
+        self.create_action('on_edit_wallpaper_effects', self.on_edit_animations)
+
         self.create_action('on_open_animations_folder', self.on_open_animations)
         self.create_action('on_edit_animations', self.on_edit_animations)
         self.create_action('on_reload_animations', self.on_reload_animations)
@@ -219,6 +222,7 @@ class MyApp(Adw.Application):
         self.open_customconf = win.open_customconf
         self.open_timeformatspecifications = win.open_timeformatspecifications
         self.restart_hypridle = win.restart_hypridle
+        self.dd_wallpaper_effects = win.dd_wallpaper_effects
         self.dd_animations = win.dd_animations
         self.dd_environments = win.dd_environments
         self.dd_monitors = win.dd_monitors
@@ -255,6 +259,8 @@ class MyApp(Adw.Application):
         self.default_softwaremanager.connect("apply", self.on_default_softwaremanager)
         self.default_terminal.connect("apply", self.on_default_terminal)
 
+        self.dd_wallpaper_effects.connect("notify::selected-item", self.on_wallpaper_effects_changed)
+
         self.dd_animations.connect("notify::selected-item", self.on_variation_changed,"animation")
         self.dd_monitors.connect("notify::selected-item", self.on_variation_changed,"monitor")
         self.dd_environments.connect("notify::selected-item", self.on_variation_changed,"environment")
@@ -266,6 +272,8 @@ class MyApp(Adw.Application):
 
         self.dd_timeformats.connect("notify::selected-item", self.on_timeformats_changed)
         self.dd_dateformats.connect("notify::selected-item", self.on_dateformats_changed)
+
+        self.loadWallpaperEffects(self.dd_wallpaper_effects)
 
         self.loadVariations(self.dd_animations,"animation")
         self.loadVariations(self.dd_environments,"environment")
@@ -404,6 +412,22 @@ class MyApp(Adw.Application):
         dd.set_model(store)
         dd.set_selected(selected)
 
+    def loadWallpaperEffects(self,dd):
+        files_arr = os.listdir(self.dotfiles + "hypr/effects/wallpaper/")
+        store = Gtk.StringList()
+        with open(self.dotfiles + ".settings/wallpaper-effect.sh", 'r') as file:
+            value = file.read()
+        selected = 0
+        counter = 1            
+        store.append("off")            
+        for f in files_arr:
+            store.append(f)
+            if f in value:
+                selected = counter
+            counter+=1
+        dd.set_model(store)
+        dd.set_selected(selected)
+
     def loadVariations(self,dd,v):
         files_arr = os.listdir(self.dotfiles + "hypr/conf/" + v + "s")
         store = Gtk.StringList()
@@ -452,6 +476,11 @@ class MyApp(Adw.Application):
             self.replaceInFileCheckpoint("waybar/modules.json", '"clock"', '"format"', timedate)
             self.updateSettings("waybar_custom_timedateformat", "")
         self.reloadWaybar()
+
+    def on_wallpaper_effects_changed(self, widget, _):
+        if not self.block_reload:
+            value = widget.get_selected_item().get_string()
+            self.overwriteFile(".settings/wallpaper-effect.sh", value)
 
     def on_open_animations(self, widget, _):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/animations")
