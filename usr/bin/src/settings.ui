@@ -198,6 +198,19 @@
 
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title">Gamemode</property>
+            <property name="description">Disable animations and blur for better performance.</property>
+            <child>
+              <object class="AdwSwitchRow" id="gamemode_toggle">
+                <property name="title">Toggle Gamemode</property>
+                <property name="action-name">app.gamemode_toggle</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title">Rofi</property>
             <property name="description">Define properties for the Rofi Launcher.</property>
 

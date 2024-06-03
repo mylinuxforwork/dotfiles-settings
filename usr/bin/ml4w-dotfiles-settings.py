@@ -41,6 +41,7 @@ class MainWindow(Adw.PreferencesWindow):
     waybar_show_screenlock = Gtk.Template.Child()
     waybar_show_window = Gtk.Template.Child()
     waybar_toggle = Gtk.Template.Child()
+    gamemode_toggle = Gtk.Template.Child()
     rofi_font = Gtk.Template.Child()
     rofi_bordersize = Gtk.Template.Child()
     waybar_workspaces = Gtk.Template.Child()
@@ -143,6 +144,7 @@ class MyApp(Adw.Application):
         self.create_action('waybar_show_window', self.on_waybar_show_window)
         self.create_action('waybar_show_taskbar', self.on_waybar_show_taskbar)
         self.create_action('waybar_toggle', self.on_waybar_toggle)
+        self.create_action('gamemode_toggle', self.on_gamemode_toggle)
         self.create_action('rofi_bordersize', self.on_rofi_bordersize)
         self.create_action('waybar_workspaces', self.on_waybar_workspaces)
         self.create_action('blur_radius', self.on_blur_radius)
@@ -206,6 +208,8 @@ class MyApp(Adw.Application):
         self.waybar_show_taskbar = win.waybar_show_taskbar
         self.waybar_toggle = win.waybar_toggle
         self.waybar_workspaces = win.waybar_workspaces
+
+        self.gamemode_toggle = win.gamemode_toggle
 
         self.hypridle_hyprlock = win.hypridle_hyprlock
         self.hypridle_dpms = win.hypridle_dpms
@@ -290,6 +294,8 @@ class MyApp(Adw.Application):
         self.custom_datetime.set_text(self.settings["waybar_custom_timedateformat"])
         self.custom_datetime.connect("apply", self.on_custom_datetime)
 
+        self.loadGamemode()
+
         self.loadShowModule("waybar_toggle",self.waybar_toggle)
         self.loadShowModule("waybar_taskbar",self.waybar_show_taskbar)
         self.loadShowModule("waybar_window",self.waybar_show_window)
@@ -367,6 +373,12 @@ class MyApp(Adw.Application):
             subprocess.Popen(["notify-send", "Wallpaper engine changes to " + value, "Please logout and login to activate your change."])
 
 
+    def loadGamemode(self):
+        if os.path.isfile(self.homeFolder + "/.cache/gamemode"):
+            self.gamemode_toggle.set_active(True)
+        else:
+            self.gamemode_toggle.set_active(False)
+    
     def loadShowModule(self,f,d):
        if f in self.settings:
             if self.settings[f]:
@@ -626,6 +638,10 @@ class MyApp(Adw.Application):
             self.replaceInFileCheckpoint("waybar/modules.json", "persistent-workspaces",'"*"', text)
             self.reloadWaybar()
             self.updateSettings("waybar_workspaces", value)
+
+    def on_gamemode_toggle(self, widget, _):
+        if not self.block_reload:
+            subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/gamemode.sh"])
 
     def on_waybar_toggle(self, widget, _):
         if not self.block_reload:
