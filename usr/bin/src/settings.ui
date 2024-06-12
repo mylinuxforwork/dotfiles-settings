@@ -147,8 +147,8 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Applications</property>
-            <property name="description">Choose the applications for Waybar quicklinks and Settings app.</property>
+            <property name="title">Applications for Quicklinks and Modules</property>
+            <property name="description">Choose the applications for Waybar quicklinks and other modules.</property>
 
             <child>
               <object class="AdwEntryRow" id="default_browser">
@@ -163,12 +163,6 @@
             </child>
 
             <child>
-              <object class="AdwEntryRow" id="default_editor">
-                <property name="title">Editor</property>
-              </object>
-            </child>
-
-            <child>
               <object class="AdwEntryRow" id="default_networkmanager">
                 <property name="title">Network Manager</property>
               </object>
@@ -177,12 +171,6 @@
             <child>
               <object class="AdwEntryRow" id="default_softwaremanager">
                 <property name="title">Software Manager</property>
-              </object>
-            </child>
-
-            <child>
-              <object class="AdwEntryRow" id="default_terminal">
-                <property name="title">Terminal</property>
               </object>
             </child>
 
@@ -240,7 +228,7 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Background image effects</property>
+            <property name="title">Blur effect for rofi and hyprlock background</property>
             <property name="description">Define blur properties for rofi and hyprlock background image. Set both parameters to 0 to disable blur (Active after setting a new wallpaper). Select an effect for your selected wallpaper.</property>
 
             <child>
@@ -270,25 +258,6 @@
                 </property>
               </object>
             </child>            
-
-            <child>
-              <object class="AdwActionRow">
-                <property name="title">Wallpaper effect</property>
-                <child type="suffix">
-                  <object class="GtkDropDown" id="dd_wallpaper_effects">
-                    <property name="enable-search">false</property>
-                    <property name="halign">3</property>
-                    <property name="valign">3</property>
-                    <property name="model">
-                      <object class="GtkStringList" id="wallpaper_effects_list">
-                        <items>
-                        </items>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-              </object>
-            </child>
 
           </object>
         </child>
@@ -398,23 +367,11 @@
 
       </object>
     </child>
+
     <child>
       <object class="AdwPreferencesPage">
-        <property name="title">System</property>
+        <property name="title">Wallpaper</property>
         <property name="icon-name">settings-symbolic</property>
-        <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title">Custom Configuration</property>
-            <property name="description">Add your custom configuration or additions to the custom.conf file.</property>
-            <child type="header-suffix">
-              <object class="GtkButton" id="open_customconf">
-                <property name="halign">3</property>
-                <property name="valign">3</property>
-                <property name="icon-name">document-open-symbolic</property>
-              </object>
-            </child>
-          </object>
-        </child>
 
         <child>
           <object class="AdwPreferencesGroup">
@@ -440,6 +397,82 @@
             </child>
           </object>
         </child> 
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Wallpaper effect</property>
+            <property name="description">Select an effect for your selected wallpaper. </property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="open_wallpaper_effects">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">document-open-symbolic</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Wallpaper effect</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_wallpaper_effects">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList" id="wallpaper_effects_list">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+      </object>
+    </child>
+
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title">System</property>
+        <property name="icon-name">settings-symbolic</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Custom Configuration</property>
+            <property name="description">Add your custom configuration or additions to the custom.conf file.</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="open_customconf">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">document-open-symbolic</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+       <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Applications for Settings App</property>
+            <property name="description">Choose the applications for the settings app.</property>
+
+            <child>
+              <object class="AdwEntryRow" id="default_editor">
+                <property name="title">Editor</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_terminal">
+                <property name="title">Terminal</property>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
 
         <child>
           <object class="AdwPreferencesGroup">

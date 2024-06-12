@@ -33,6 +33,8 @@ pathname = os.path.dirname(sys.argv[0])
 # Main Window
 # -----------------------------------------
 class MainWindow(Adw.PreferencesWindow):
+
+    # Get objects from template
     __gtype_name__ = 'Ml4wSettingsWindow'
     waybar_show_taskbar = Gtk.Template.Child()
     waybar_show_network = Gtk.Template.Child()
@@ -52,6 +54,7 @@ class MainWindow(Adw.PreferencesWindow):
     default_softwaremanager = Gtk.Template.Child()
     default_terminal = Gtk.Template.Child()
     open_customconf = Gtk.Template.Child()
+    open_wallpaper_effects = Gtk.Template.Child()
     open_timeformatspecifications = Gtk.Template.Child()
     restart_hypridle = Gtk.Template.Child()
     dd_wallpaper_effects = Gtk.Template.Child()
@@ -72,7 +75,6 @@ class MainWindow(Adw.PreferencesWindow):
     blur_radius = Gtk.Template.Child()
     blur_sigma = Gtk.Template.Child()
 
-    # Get objects from template
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -224,6 +226,9 @@ class MyApp(Adw.Application):
         self.default_softwaremanager = win.default_softwaremanager
         self.default_terminal = win.default_terminal
         self.open_customconf = win.open_customconf
+
+        self.open_wallpaper_effects = win.open_wallpaper_effects
+        
         self.open_timeformatspecifications = win.open_timeformatspecifications
         self.restart_hypridle = win.restart_hypridle
         self.dd_wallpaper_effects = win.dd_wallpaper_effects
@@ -263,6 +268,7 @@ class MyApp(Adw.Application):
         self.default_softwaremanager.connect("apply", self.on_default_softwaremanager)
         self.default_terminal.connect("apply", self.on_default_terminal)
 
+        self.open_wallpaper_effects.connect("clicked", self.on_open_wallpaper_effects_folder)
         self.dd_wallpaper_effects.connect("notify::selected-item", self.on_wallpaper_effects_changed)
 
         self.dd_animations.connect("notify::selected-item", self.on_variation_changed,"animation")
@@ -493,6 +499,10 @@ class MyApp(Adw.Application):
         if not self.block_reload:
             value = widget.get_selected_item().get_string()
             self.overwriteFile(".settings/wallpaper-effect.sh", value)
+
+    def on_open_wallpaper_effects_folder(self, widget):
+        print("drin")
+        self.on_open(widget, self.default_filemanager.get_text(), "hypr/effects/wallpaper")
 
     def on_open_animations(self, widget, _):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/animations")
