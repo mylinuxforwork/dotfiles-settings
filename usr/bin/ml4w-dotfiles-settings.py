@@ -43,6 +43,7 @@ class MainWindow(Adw.PreferencesWindow):
     waybar_show_screenlock = Gtk.Template.Child()
     waybar_show_window = Gtk.Template.Child()
     waybar_toggle = Gtk.Template.Child()
+    wallpaper_cache_toggle = Gtk.Template.Child()
     gamemode_toggle = Gtk.Template.Child()
     rofi_font = Gtk.Template.Child()
     rofi_bordersize = Gtk.Template.Child()
@@ -146,6 +147,7 @@ class MyApp(Adw.Application):
         self.create_action('waybar_show_window', self.on_waybar_show_window)
         self.create_action('waybar_show_taskbar', self.on_waybar_show_taskbar)
         self.create_action('waybar_toggle', self.on_waybar_toggle)
+        self.create_action('wallpaper_cache_toggle', self.on_wallpaper_cache_toggle)
         self.create_action('gamemode_toggle', self.on_gamemode_toggle)
         self.create_action('rofi_bordersize', self.on_rofi_bordersize)
         self.create_action('waybar_workspaces', self.on_waybar_workspaces)
@@ -154,6 +156,9 @@ class MyApp(Adw.Application):
         self.create_action('open_about_variations', self.on_open_about_variations)
 
         self.create_action('on_edit_wallpaper_effects', self.on_edit_animations)
+
+        self.create_action('on_clearcache_wallpaper', self.on_clearcache_wallpaper)
+        self.create_action('on_regenerate_wallpaper', self.on_regenerate_wallpaper)
 
         self.create_action('on_open_animations_folder', self.on_open_animations)
         self.create_action('on_edit_animations', self.on_edit_animations)
@@ -209,6 +214,7 @@ class MyApp(Adw.Application):
         self.waybar_show_window = win.waybar_show_window
         self.waybar_show_taskbar = win.waybar_show_taskbar
         self.waybar_toggle = win.waybar_toggle
+        self.wallpaper_cache_toggle = win.wallpaper_cache_toggle
         self.waybar_workspaces = win.waybar_workspaces
 
         self.gamemode_toggle = win.gamemode_toggle
@@ -293,6 +299,7 @@ class MyApp(Adw.Application):
         self.loadVariations(self.dd_windowrules,"windowrule")
         self.loadVariations(self.dd_keybindings,"keybinding")
         self.loadWallpaperEngine()
+        self.loadWallpaperCache()
 
         self.loadDropDown(self.dd_timeformats,self.timeformats,"waybar_timeformat")
         self.loadDropDown(self.dd_dateformats,self.dateformats,"waybar_dateformat")
@@ -378,13 +385,18 @@ class MyApp(Adw.Application):
             self.overwriteFile(".settings/wallpaper-engine.sh", value)
             subprocess.Popen(["notify-send", "Wallpaper engine changes to " + value, "Please logout and login to activate your change."])
 
-
     def loadGamemode(self):
         if os.path.isfile(self.homeFolder + "/.cache/gamemode"):
             self.gamemode_toggle.set_active(True)
         else:
             self.gamemode_toggle.set_active(False)
-    
+
+    def loadWallpaperCache(self):
+        if os.path.isfile(self.dotfiles + ".settings/wallpaper_cache"):
+            self.wallpaper_cache_toggle.set_active(True)
+        else:
+            self.wallpaper_cache_toggle.set_active(False)
+
     def loadShowModule(self,f,d):
        if f in self.settings:
             if self.settings[f]:
@@ -445,6 +457,12 @@ class MyApp(Adw.Application):
             counter+=1
         dd.set_model(store)
         dd.set_selected(selected)
+
+    def on_clearcache_wallpaper(self, widget, _):
+        subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/wallpaper.sh", "clearcache"])
+
+    def on_regenerate_wallpaper(self, widget, _):
+        subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/wallpaper.sh", "regenerate"])
 
     def loadVariations(self,dd,v):
         files_arr = os.listdir(self.dotfiles + "hypr/conf/" + v + "s")
@@ -652,6 +670,13 @@ class MyApp(Adw.Application):
     def on_gamemode_toggle(self, widget, _):
         if not self.block_reload:
             subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/gamemode.sh"])
+
+    def on_wallpaper_cache_toggle(self, widget, _):
+        if not self.block_reload:
+            if (os.path.exists(self.dotfiles + ".settings/wallpaper_cache")):
+                os.remove(self.dotfiles + ".settings/wallpaper_cache")
+            else:
+                file = open(self.dotfiles + ".settings/wallpaper_cache", "w+")
 
     def on_waybar_toggle(self, widget, _):
         if not self.block_reload:

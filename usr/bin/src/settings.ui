@@ -400,7 +400,7 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Wallpaper effect</property>
+            <property name="title">Wallpaper Effect</property>
             <property name="description">Select an effect for your selected wallpaper. </property>
             <child type="header-suffix">
               <object class="GtkButton" id="open_wallpaper_effects">
@@ -412,7 +412,7 @@
 
             <child>
               <object class="AdwActionRow">
-                <property name="title">Wallpaper effect</property>
+                <property name="title">Wallpaper Effect</property>
                 <child type="suffix">
                   <object class="GtkDropDown" id="dd_wallpaper_effects">
                     <property name="enable-search">false</property>
@@ -431,6 +431,29 @@
 
           </object>
         </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Wallpaper Cache</property>
+            <property name="description">Activate or deactivate the wallpaper cache. The cache will generate different versions of the current wallpaper to speed up the change between two wallpapers.</property>
+            <child type="header-suffix">
+              <object class="GtkMenuButton">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">wallpaper_cache_button_menu</property>
+                <property name="primary">true</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="wallpaper_cache_toggle">
+                <property name="title">Wallpaper Cache</property>
+                <property name="action-name">app.wallpaper_cache_toggle</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
 
       </object>
     </child>
@@ -833,6 +856,18 @@
     </section>
   </menu>
 
+  <menu id="wallpaper_cache_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Clear Cache Folder</attribute>
+        <attribute name="action">app.on_clearcache_wallpaper</attribute>
+      </item>
+      <item>
+        <attribute name="label">Regenerate Versions of Current Wallpaper</attribute>
+        <attribute name="action">app.on_regenerate_wallpaper</attribute>
+      </item>
+    </section>
+  </menu>
 
 </interface>
 
