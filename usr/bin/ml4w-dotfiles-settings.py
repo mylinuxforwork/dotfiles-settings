@@ -68,7 +68,6 @@ class MainWindow(Adw.PreferencesWindow):
     dd_keybindings = Gtk.Template.Child()
     dd_timeformats = Gtk.Template.Child()
     dd_dateformats = Gtk.Template.Child()
-    dd_wallpaper_engines = Gtk.Template.Child()
     custom_datetime = Gtk.Template.Child()
     hypridle_hyprlock = Gtk.Template.Child()
     hypridle_dpms = Gtk.Template.Child()
@@ -158,7 +157,6 @@ class MyApp(Adw.Application):
         self.create_action('on_edit_wallpaper_effects', self.on_edit_animations)
 
         self.create_action('on_clearcache_wallpaper', self.on_clearcache_wallpaper)
-        self.create_action('on_regenerate_wallpaper', self.on_regenerate_wallpaper)
 
         self.create_action('on_open_animations_folder', self.on_open_animations)
         self.create_action('on_edit_animations', self.on_edit_animations)
@@ -247,7 +245,6 @@ class MyApp(Adw.Application):
         self.dd_keybindings = win.dd_keybindings
         self.dd_timeformats = win.dd_timeformats
         self.dd_dateformats = win.dd_dateformats
-        self.dd_wallpaper_engines = win.dd_wallpaper_engines
         self.custom_datetime = win.custom_datetime
         self.blur_radius = win.blur_radius
         self.blur_sigma = win.blur_sigma
@@ -284,7 +281,6 @@ class MyApp(Adw.Application):
         self.dd_windows.connect("notify::selected-item", self.on_variation_changed,"window")
         self.dd_windowrules.connect("notify::selected-item", self.on_variation_changed,"windowrule")
         self.dd_keybindings.connect("notify::selected-item", self.on_variation_changed,"keybinding")
-        self.dd_wallpaper_engines.connect("notify::selected-item", self.on_wallpaper_engines_changed)
 
         self.dd_timeformats.connect("notify::selected-item", self.on_timeformats_changed)
         self.dd_dateformats.connect("notify::selected-item", self.on_dateformats_changed)
@@ -298,7 +294,6 @@ class MyApp(Adw.Application):
         self.loadVariations(self.dd_windows,"window")
         self.loadVariations(self.dd_windowrules,"windowrule")
         self.loadVariations(self.dd_keybindings,"keybinding")
-        self.loadWallpaperEngine()
         self.loadWallpaperCache()
 
         self.loadDropDown(self.dd_timeformats,self.timeformats,"waybar_timeformat")
@@ -351,39 +346,6 @@ class MyApp(Adw.Application):
 
     def on_open_about_variations(self, widget, _):
         subprocess.Popen([self.default_browser.get_text(), "https://gitlab.com/stephan-raabe/dotfiles/-/blob/main/hypr/conf/README.md"])
-
-    def loadWallpaperEngine(self):
-        with open(self.dotfiles + ".settings/wallpaper-engine.sh", 'r') as file:
-            value = file.read()
-        engine_arr = ["hyprpaper","swww","disabled"]
-        store = Gtk.StringList()
-        selected = 0
-        counter = 0
-        for f in engine_arr:
-            store.append(f)
-            if f in value:
-                selected = counter
-            counter+=1
-        self.dd_wallpaper_engines.set_model(store)
-        self.dd_wallpaper_engines.set_selected(selected)
-
-    def on_wallpaper_engines_changed(self,widget,*data):
-        if not self.block_reload:
-            value = widget.get_selected_item().get_string()
-            dialog = Adw.MessageDialog(
-                heading="Important",
-                body="Please make sure that swww is installed on your system. You can install it with yay -S swww",
-                close_response="okay",
-                modal=True,
-                transient_for=self.win,
-            )
-            dialog.add_response("okay", "Okay")
-
-            if value == "swww": 
-                dialog.present()
-
-            self.overwriteFile(".settings/wallpaper-engine.sh", value)
-            subprocess.Popen(["notify-send", "Wallpaper engine changes to " + value, "Please logout and login to activate your change."])
 
     def loadGamemode(self):
         if os.path.isfile(self.homeFolder + "/.cache/gamemode"):
@@ -459,10 +421,7 @@ class MyApp(Adw.Application):
         dd.set_selected(selected)
 
     def on_clearcache_wallpaper(self, widget, _):
-        subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/wallpaper.sh", "clearcache"])
-
-    def on_regenerate_wallpaper(self, widget, _):
-        subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/wallpaper.sh", "regenerate"])
+        subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/wallpaper-cache.sh", "clearcache"])
 
     def loadVariations(self,dd,v):
         files_arr = os.listdir(self.dotfiles + "hypr/conf/" + v + "s")
