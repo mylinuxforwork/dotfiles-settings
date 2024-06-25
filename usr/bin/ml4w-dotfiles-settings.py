@@ -445,6 +445,7 @@ class MyApp(Adw.Application):
             timedate = '        "format": "{:' + value + ' - ' + dateformat + '}",'
             self.updateSettings("waybar_timeformat", value)
             self.replaceInFileCheckpoint("waybar/modules.json", '"clock"', '"format"', timedate)
+            self.replaceInFileCheckpoint("hypr/hyprlock.conf", 'clock', 'cmd[update:1000]', '    text = cmd[update:1000] echo "$(date +"' + value + '")"')
             self.reloadWaybar()
 
     def on_dateformats_changed(self,widget,_):
