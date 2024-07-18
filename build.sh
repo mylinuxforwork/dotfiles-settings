@@ -11,6 +11,6 @@ rm ~/tmp/install.sh
 cd ..
 ARCH=x86_64 appimagetool tmp
 echo ":: AppImage created"
-cp ML4W_Dotfiles_Settings-x86_64.AppImage ~/dotfiles-settings/release/
+# cp ML4W_Dotfiles_Settings-x86_64.AppImage ~/dotfiles-settings/release/
 cp ML4W_Dotfiles_Settings-x86_64.AppImage ~/dotfiles-versions/dotfiles/dotfiles/apps/
 echo ":: AppImage copied to ~/dotfiles-versions/dotfiles/dotfiles/apps/"
