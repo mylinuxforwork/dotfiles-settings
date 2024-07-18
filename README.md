@@ -3,7 +3,7 @@
 You can start the ML4W Dotfile Settings App from the ML4W Welcome App, the application launcher or with SUPER + CMD + S
 
 The ML4W Dotfiles Settings App starts several scripts from the ML4W dotfiles:
-https://gitlab.com/stephan-raabe/dotfiles
+https://github.com/mylinuxforwork/dotfiles-settings
 
 ## GTK Development Resources 
 
