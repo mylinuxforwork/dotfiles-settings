@@ -342,7 +342,7 @@ class MyApp(Adw.Application):
         subprocess.Popen([self.default_editor.get_text(), self.dotfiles + "hypr/conf/custom.conf"])
 
     def on_open_timeformatspecifications(self, widget):
-        subprocess.Popen([self.default_browser.get_text(), "https://fmt.dev/latest/syntax.html#chrono-specs"])
+        subprocess.Popen([self.default_browser.get_text(), "https://fmt.dev/latest/syntax/#chrono-format-specifications"])
 
     def on_open_about_variations(self, widget, _):
         subprocess.Popen([self.default_browser.get_text(), "https://gitlab.com/stephan-raabe/dotfiles/-/blob/main/hypr/conf/README.md"])
