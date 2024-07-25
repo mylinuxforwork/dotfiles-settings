@@ -68,6 +68,7 @@ class MainWindow(Adw.PreferencesWindow):
     dd_keybindings = Gtk.Template.Child()
     dd_timeformats = Gtk.Template.Child()
     dd_dateformats = Gtk.Template.Child()
+    dd_dunstpositions = Gtk.Template.Child()
     custom_datetime = Gtk.Template.Child()
     hypridle_hyprlock = Gtk.Template.Child()
     hypridle_dpms = Gtk.Template.Child()
@@ -90,6 +91,7 @@ class MyApp(Adw.Application):
     settings = {
         "waybar_timeformat": "%H:%M",
         "waybar_dateformat": "%a",
+        "dunst_position": "top-center",
         "waybar_custom_timedateformat": "",
         "waybar_workspaces": 5,
         "rofi_bordersize": 3,
@@ -132,8 +134,15 @@ class MyApp(Adw.Application):
         "%Om/%Od/%Y"
     ]
 
+    dunstpositions = [
+        "top-center",
+        "top-right",
+        "top-left"
+    ]
+
     timeformat = ""
     dateformat = ""
+    dunstposition = ""
 
     def __init__(self, **kwargs):
         super().__init__(application_id='com.ml4w.dotfilessettings',
@@ -245,6 +254,7 @@ class MyApp(Adw.Application):
         self.dd_keybindings = win.dd_keybindings
         self.dd_timeformats = win.dd_timeformats
         self.dd_dateformats = win.dd_dateformats
+        self.dd_dunstpositions = win.dd_dunstpositions
         self.custom_datetime = win.custom_datetime
         self.blur_radius = win.blur_radius
         self.blur_sigma = win.blur_sigma
@@ -285,6 +295,8 @@ class MyApp(Adw.Application):
         self.dd_timeformats.connect("notify::selected-item", self.on_timeformats_changed)
         self.dd_dateformats.connect("notify::selected-item", self.on_dateformats_changed)
 
+        self.dd_dunstpositions.connect("notify::selected-item", self.on_dunstpositions_changed)
+
         self.loadWallpaperEffects(self.dd_wallpaper_effects)
 
         self.loadVariations(self.dd_animations,"animation")
@@ -298,6 +310,9 @@ class MyApp(Adw.Application):
 
         self.loadDropDown(self.dd_timeformats,self.timeformats,"waybar_timeformat")
         self.loadDropDown(self.dd_dateformats,self.dateformats,"waybar_dateformat")
+
+        self.loadDropDown(self.dd_dunstpositions,self.dunstpositions,"dunst_position")
+
         self.custom_datetime.set_show_apply_button(True)
         self.custom_datetime.set_text(self.settings["waybar_custom_timedateformat"])
         self.custom_datetime.connect("apply", self.on_custom_datetime)
@@ -447,6 +462,14 @@ class MyApp(Adw.Application):
             self.replaceInFileCheckpoint("waybar/modules.json", '"clock"', '"format"', timedate)
             self.replaceInFileCheckpoint("hypr/hyprlock.conf", 'clock', 'cmd[update:1000]', '    text = cmd[update:1000] echo "$(date +"' + value + '")"')
             self.reloadWaybar()
+
+    def on_dunstpositions_changed(self,widget,_):
+        if not self.block_reload:
+            value = widget.get_selected_item().get_string()
+            dunstposition = self.dd_dunstpositions.get_selected_item().get_string()
+            dunstorigin = '    origin = ' + value
+            self.updateSettings("dunst_position", value)
+            self.replaceInFile("dunst/dunstrc","origin =",dunstorigin)
 
     def on_dateformats_changed(self,widget,_):
         if not self.block_reload:
