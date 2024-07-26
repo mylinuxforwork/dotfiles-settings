@@ -144,39 +144,6 @@
 
           </object>
         </child>
-
-        <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title">Applications for Quicklinks and Modules</property>
-            <property name="description">Choose the applications for Waybar quicklinks and other modules.</property>
-
-            <child>
-              <object class="AdwEntryRow" id="default_browser">
-                <property name="title">Browser</property>
-              </object>
-            </child>
-
-            <child>
-              <object class="AdwEntryRow" id="default_filemanager">
-                <property name="title">File Manager</property>
-              </object>
-            </child>
-
-            <child>
-              <object class="AdwEntryRow" id="default_networkmanager">
-                <property name="title">Network Manager</property>
-              </object>
-            </child>
-
-            <child>
-              <object class="AdwEntryRow" id="default_softwaremanager">
-                <property name="title">Software Manager</property>
-              </object>
-            </child>
-
-          </object>
-        </child>
-
       </object>
     </child>
     <child>
@@ -479,8 +446,38 @@
 
        <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Applications for Settings App</property>
-            <property name="description">Choose the applications for the settings app.</property>
+            <property name="title">Default Applications</property>
+            <property name="description">Enter the start command for your default applications.</property>
+
+            <child>
+              <object class="AdwEntryRow" id="default_terminal">
+                <property name="title">Terminal</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_browser">
+                <property name="title">Browser</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_filemanager">
+                <property name="title">File Manager</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_networkmanager">
+                <property name="title">Network Manager</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_softwaremanager">
+                <property name="title">Software Manager</property>
+              </object>
+            </child>
 
             <child>
               <object class="AdwEntryRow" id="default_editor">
@@ -489,8 +486,8 @@
             </child>
 
             <child>
-              <object class="AdwEntryRow" id="default_terminal">
-                <property name="title">Terminal</property>
+              <object class="AdwEntryRow" id="default_screenshoteditor">
+                <property name="title">Screenshot Editor</property>
               </object>
             </child>
 

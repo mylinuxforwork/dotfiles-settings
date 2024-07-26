@@ -54,6 +54,7 @@ class MainWindow(Adw.PreferencesWindow):
     default_networkmanager = Gtk.Template.Child()
     default_softwaremanager = Gtk.Template.Child()
     default_terminal = Gtk.Template.Child()
+    default_screenshoteditor = Gtk.Template.Child()
     open_customconf = Gtk.Template.Child()
     open_wallpaper_effects = Gtk.Template.Child()
     open_timeformatspecifications = Gtk.Template.Child()
@@ -238,6 +239,7 @@ class MyApp(Adw.Application):
         self.default_networkmanager = win.default_networkmanager
         self.default_softwaremanager = win.default_softwaremanager
         self.default_terminal = win.default_terminal
+        self.default_screenshoteditor = win.default_screenshoteditor
         self.open_customconf = win.open_customconf
 
         self.open_wallpaper_effects = win.open_wallpaper_effects
@@ -280,6 +282,7 @@ class MyApp(Adw.Application):
         self.default_networkmanager.connect("apply", self.on_default_networkmanager)
         self.default_softwaremanager.connect("apply", self.on_default_softwaremanager)
         self.default_terminal.connect("apply", self.on_default_terminal)
+        self.default_screenshoteditor.connect("apply", self.on_default_screenshoteditor)
 
         self.open_wallpaper_effects.connect("clicked", self.on_open_wallpaper_effects_folder)
         self.dd_wallpaper_effects.connect("notify::selected-item", self.on_wallpaper_effects_changed)
@@ -340,6 +343,7 @@ class MyApp(Adw.Application):
         self.loadDefaultApp(".settings/networkmanager.sh",self.default_networkmanager)
         self.loadDefaultApp(".settings/software.sh",self.default_softwaremanager)
         self.loadDefaultApp(".settings/terminal.sh",self.default_terminal)
+        self.loadDefaultApp(".settings/screenshot-editor.sh",self.default_screenshoteditor)
 
         self.loadRofiFont()
         self.loadBlurValues()
@@ -602,6 +606,9 @@ class MyApp(Adw.Application):
 
     def on_default_terminal(self, widget):
         self.overwriteFile(".settings/terminal.sh",widget.get_text())
+
+    def on_default_screenshoteditor(self, widget):
+        self.overwriteFile(".settings/screenshot-editor.sh",widget.get_text())
 
     def on_rofi_font(self, widget):
         value = 'configuration { font: "' + widget.get_text() + '"; }'
