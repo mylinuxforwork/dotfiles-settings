@@ -408,7 +408,7 @@ class MyApp(Adw.Application):
     def on_variation_changed(self,widget,*data):
         if not self.block_reload:
             value = widget.get_selected_item().get_string()
-            self.overwriteFile("hypr/conf/" + data[1] + ".conf", "source = ~/dotfiles/hypr/conf/" + data[1] + "s/" + value)
+            self.overwriteFile("hypr/conf/" + data[1] + ".conf", "source = ~/.config/hypr/conf/" + data[1] + "s/" + value)
 
     def loadDropDown(self,dd,d,v):
         store = Gtk.StringList()
