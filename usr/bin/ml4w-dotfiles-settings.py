@@ -587,7 +587,8 @@ class MyApp(Adw.Application):
         self.on_open(widget, self.default_editor.get_text(), "hypr/conf/keybindings/" + f)
 
     def on_open(self, widget, a, u):
-        subprocess.Popen([a, self.dotfiles + u])
+        a = shlex.split(a, posix=False)
+        subprocess.Popen([*a, self.dotfiles + u])        
 
     def on_default_browser(self, widget):
         self.overwriteFile(".settings/browser.sh",widget.get_text())
