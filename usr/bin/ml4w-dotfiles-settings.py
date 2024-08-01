@@ -750,22 +750,20 @@ class MyApp(Adw.Application):
     def on_waybar_show_screenlock(self, widget, _):
         if not self.block_reload:
             if self.waybar_show_screenlock.get_active():
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"idle_inhibitor"','        "idle_inhibitor",')
+                self.replaceInFileCheckpoint("waybar/modules.json", 'group/tools', '"custom/hypridle"', '      "custom/hypridle",')
                 self.updateSettings("waybar_screenlock", True)
             else:
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"idle_inhibitor"','        //"idle_inhibitor",')
+                self.replaceInFileCheckpoint("waybar/modules.json", 'group/tools', '"custom/hypridle"', '//      "custom/hypridle",')
                 self.updateSettings("waybar_screenlock", False)
             self.reloadWaybar()
 
     def on_waybar_show_chatgpt(self, widget, _):
         if not self.block_reload:
             if self.waybar_show_chatgpt.get_active():
-                self.replaceInFileCheckpoint("waybar/modules.json", 'group/links', '"custom/chatgpt"', '            "custom/chatgpt",')
+                self.replaceInFileCheckpoint("waybar/modules.json", 'group/links', '"custom/chatgpt"', '      "custom/chatgpt",')
                 self.updateSettings("waybar_chatgpt", True)
             else:
-                self.replaceInFileCheckpoint("waybar/modules.json", 'group/links', '"custom/chatgpt"', '//            "custom/chatgpt",')
+                self.replaceInFileCheckpoint("waybar/modules.json", 'group/links', '"custom/chatgpt"', '//      "custom/chatgpt",')
                 self.updateSettings("waybar_chatgpt", False)
             self.reloadWaybar()
 
