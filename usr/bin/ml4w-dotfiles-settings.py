@@ -87,7 +87,7 @@ class MyApp(Adw.Application):
     win = Adw.ApplicationWindow() # Application Window
     path_name = pathname # Path of Application
     homeFolder = os.path.expanduser('~') # Path to home folder
-    dotfiles = homeFolder + "/dotfiles/"
+    dotfiles = homeFolder + "/.config/"
     block_reload = True
     settings = {
         "waybar_timeformat": "%H:%M",
@@ -203,14 +203,14 @@ class MyApp(Adw.Application):
             win = MainWindow(application=self)
 
         # Setup settings
-        if not os.path.exists(self.dotfiles + ".settings/settings.json"):
+        if not os.path.exists(self.dotfiles + "ml4w/settings/settings.json"):
             result = []
             for k, v in self.settings.items():
                 result.append({'key': k, 'value': v})
             self.writeToSettings(result)
 
         # Load settings
-        settings_file = open(self.dotfiles + ".settings/settings.json")
+        settings_file = open(self.dotfiles + "ml4w/settings/settings.json")
         settings_arr = json.load(settings_file)
         for row in settings_arr:
             self.settings[row["key"]] = row["value"]
@@ -337,13 +337,13 @@ class MyApp(Adw.Application):
         self.hypridle_dpms.get_adjustment().set_value(self.settings["hypridle_dpms_timeout"])   
         self.hypridle_suspend.get_adjustment().set_value(self.settings["hypridle_suspend_timeout"])   
 
-        self.loadDefaultApp(".settings/browser.sh",self.default_browser)
-        self.loadDefaultApp(".settings/filemanager.sh",self.default_filemanager)
-        self.loadDefaultApp(".settings/editor.sh",self.default_editor)
-        self.loadDefaultApp(".settings/networkmanager.sh",self.default_networkmanager)
-        self.loadDefaultApp(".settings/software.sh",self.default_softwaremanager)
-        self.loadDefaultApp(".settings/terminal.sh",self.default_terminal)
-        self.loadDefaultApp(".settings/screenshot-editor.sh",self.default_screenshoteditor)
+        self.loadDefaultApp("ml4w/settings/browser.sh",self.default_browser)
+        self.loadDefaultApp("ml4w/settings/filemanager.sh",self.default_filemanager)
+        self.loadDefaultApp("ml4w/settings/editor.sh",self.default_editor)
+        self.loadDefaultApp("ml4w/settings/networkmanager.sh",self.default_networkmanager)
+        self.loadDefaultApp("ml4w/settings/software.sh",self.default_softwaremanager)
+        self.loadDefaultApp("ml4w/settings/terminal.sh",self.default_terminal)
+        self.loadDefaultApp("ml4w/settings/screenshot-editor.sh",self.default_screenshoteditor)
 
         self.loadRofiFont()
         self.loadBlurValues()
@@ -373,7 +373,7 @@ class MyApp(Adw.Application):
             self.gamemode_toggle.set_active(False)
 
     def loadWallpaperCache(self):
-        if os.path.isfile(self.dotfiles + ".settings/wallpaper_cache"):
+        if os.path.isfile(self.dotfiles + "ml4w/settings/wallpaper_cache"):
             self.wallpaper_cache_toggle.set_active(True)
         else:
             self.wallpaper_cache_toggle.set_active(False)
@@ -386,14 +386,14 @@ class MyApp(Adw.Application):
                 d.set_active(False)
 
     def loadBlurValues(self):
-        with open(self.dotfiles + ".settings/blur.sh", 'r') as file:
+        with open(self.dotfiles + "ml4w/settings/blur.sh", 'r') as file:
             value = file.read().strip()
         value = value.split("x")
         self.blur_radius.get_adjustment().set_value(int(value[0]))        
         self.blur_sigma.get_adjustment().set_value(int(value[1]))        
 
     def loadRofiFont(self):
-        with open(self.dotfiles + ".settings/rofi-font.rasi", 'r') as file:
+        with open(self.dotfiles + "ml4w/settings/rofi-font.rasi", 'r') as file:
             value = file.read().strip()
         value = value.split('"')
         self.rofi_font.set_text(value[1])
@@ -426,7 +426,7 @@ class MyApp(Adw.Application):
     def loadWallpaperEffects(self,dd):
         files_arr = os.listdir(self.dotfiles + "hypr/effects/wallpaper/")
         store = Gtk.StringList()
-        with open(self.dotfiles + ".settings/wallpaper-effect.sh", 'r') as file:
+        with open(self.dotfiles + "ml4w/settings/wallpaper-effect.sh", 'r') as file:
             value = file.read()
         selected = 0
         counter = 1            
@@ -591,29 +591,29 @@ class MyApp(Adw.Application):
         subprocess.Popen([*a, self.dotfiles + u])        
 
     def on_default_browser(self, widget):
-        self.overwriteFile(".settings/browser.sh",widget.get_text())
+        self.overwriteFile("ml4w/settings/browser.sh",widget.get_text())
 
     def on_default_filemanager(self, widget):
-        self.overwriteFile(".settings/filemanager.sh",widget.get_text())
+        self.overwriteFile("ml4w/settings/filemanager.sh",widget.get_text())
 
     def on_default_editor(self, widget):
-        self.overwriteFile(".settings/editor.sh",widget.get_text())
+        self.overwriteFile("ml4w/settings/editor.sh",widget.get_text())
 
     def on_default_networkmanager(self, widget):
-        self.overwriteFile(".settings/networkmanager.sh",widget.get_text())
+        self.overwriteFile("ml4w/settings/networkmanager.sh",widget.get_text())
 
     def on_default_softwaremanager(self, widget):
-        self.overwriteFile(".settings/software.sh",widget.get_text())
+        self.overwriteFile("ml4w/settings/software.sh",widget.get_text())
 
     def on_default_terminal(self, widget):
-        self.overwriteFile(".settings/terminal.sh",widget.get_text())
+        self.overwriteFile("ml4w/settings/terminal.sh",widget.get_text())
 
     def on_default_screenshoteditor(self, widget):
-        self.overwriteFile(".settings/screenshot-editor.sh",widget.get_text())
+        self.overwriteFile("ml4w/settings/screenshot-editor.sh",widget.get_text())
 
     def on_rofi_font(self, widget):
         value = 'configuration { font: "' + widget.get_text() + '"; }'
-        self.overwriteFile(".settings/rofi-font.rasi",value)
+        self.overwriteFile("ml4w/settings/rofi-font.rasi",value)
 
     def on_hypridle_hyprlock(self, widget):
         if not self.block_reload:
@@ -664,10 +664,10 @@ class MyApp(Adw.Application):
 
     def on_wallpaper_cache_toggle(self, widget, _):
         if not self.block_reload:
-            if (os.path.exists(self.dotfiles + ".settings/wallpaper_cache")):
-                os.remove(self.dotfiles + ".settings/wallpaper_cache")
+            if (os.path.exists(self.dotfiles + "ml4w/settings/wallpaper_cache")):
+                os.remove(self.dotfiles + "ml4w/settings/wallpaper_cache")
             else:
-                file = open(self.dotfiles + ".settings/wallpaper_cache", "w+")
+                file = open(self.dotfiles + "ml4w/settings/wallpaper_cache", "w+")
 
     def on_waybar_toggle(self, widget, _):
         if not self.block_reload:
@@ -776,7 +776,7 @@ class MyApp(Adw.Application):
         self.writeToSettings(result)
 
     def writeToSettings(self,result):
-        with open(self.dotfiles + '.settings/settings.json', 'w+', encoding='utf-8') as f:
+        with open(self.dotfiles + 'ml4w/settings/settings.json', 'w+', encoding='utf-8') as f:
             json.dump(result, f, ensure_ascii=False, indent=4)
 
     def searchInFile(self, f, search):
