@@ -13,6 +13,7 @@ import threading
 import json
 import pathlib
 import shutil
+import shlex
 
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
@@ -588,6 +589,7 @@ class MyApp(Adw.Application):
 
     def on_open(self, widget, a, u):
         a = shlex.split(a, posix=False)
+        print(self.dotfiles + u)
         subprocess.Popen([*a, self.dotfiles + u])        
 
     def on_default_browser(self, widget):
