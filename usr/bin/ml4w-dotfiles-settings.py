@@ -504,7 +504,7 @@ class MyApp(Adw.Application):
     def on_wallpaper_effects_changed(self, widget, _):
         if not self.block_reload:
             value = widget.get_selected_item().get_string()
-            self.overwriteFile(".settings/wallpaper-effect.sh", value)
+            self.overwriteFile("ml4w/settings/wallpaper-effect.sh", value)
 
     def on_open_wallpaper_effects_folder(self, widget):
         print("drin")
@@ -682,7 +682,7 @@ class MyApp(Adw.Application):
     def on_rofi_bordersize(self, widget):
         value = int(widget.get_value())
         text = "* { border-width: " + str(value) + "px; }"
-        self.overwriteFile(".settings/rofi-border.rasi",text)
+        self.overwriteFile("ml4w/settings/rofi-border.rasi",text)
         self.updateSettings("rofi_bordersize", value)
 
     def on_blur_radius(self, widget):
@@ -690,14 +690,14 @@ class MyApp(Adw.Application):
             radius = str(int(widget.get_value()))
             sigma = str(int(self.blur_sigma.get_adjustment().get_value()))
             text = radius + "x" + sigma
-            self.overwriteFile(".settings/blur.sh",text)
+            self.overwriteFile("ml4w/settings/blur.sh",text)
 
     def on_blur_sigma(self, widget):
         if not self.block_reload:
             sigma = str(int(widget.get_value()))
             radius = str(int(self.blur_radius.get_adjustment().get_value()))
             text = radius + "x" + sigma
-            self.overwriteFile(".settings/blur.sh",text)
+            self.overwriteFile("ml4w/settings/blur.sh",text)
 
     def on_waybar_show_taskbar(self, widget, _):
         if not self.block_reload:
