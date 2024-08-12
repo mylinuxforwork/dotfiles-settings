@@ -491,6 +491,18 @@
               </object>
             </child>
 
+            <child>
+              <object class="AdwEntryRow" id="default_calculator">
+                <property name="title">Calculator</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_emojipicker">
+                <property name="title">Emoji Picker</property>
+              </object>
+            </child>
+
           </object>
         </child>
 
