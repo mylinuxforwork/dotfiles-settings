@@ -9,7 +9,7 @@
 
     <child>
       <object class="AdwPreferencesPage" id="waybar_page">
-        <property name="title">Waybar</property>
+        <property name="title">Status Bar</property>
         <property name="icon-name">settings-symbolic</property>
 
         <child>
