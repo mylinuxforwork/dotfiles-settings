@@ -498,6 +498,12 @@
             </child>
 
             <child>
+              <object class="AdwEntryRow" id="default_systemmonitor">
+                <property name="title">System Monitor</property>
+              </object>
+            </child>
+
+            <child>
               <object class="AdwEntryRow" id="default_emojipicker">
                 <property name="title">Emoji Picker</property>
               </object>

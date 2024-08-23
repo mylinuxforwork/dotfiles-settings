@@ -57,6 +57,7 @@ class MainWindow(Adw.PreferencesWindow):
     default_terminal = Gtk.Template.Child()
     default_screenshoteditor = Gtk.Template.Child()
     default_calculator = Gtk.Template.Child()
+    default_systemmonitor = Gtk.Template.Child()
     default_emojipicker = Gtk.Template.Child()
     open_customconf = Gtk.Template.Child()
     open_wallpaper_effects = Gtk.Template.Child()
@@ -244,6 +245,7 @@ class MyApp(Adw.Application):
         self.default_terminal = win.default_terminal
         self.default_screenshoteditor = win.default_screenshoteditor
         self.default_calculator = win.default_calculator
+        self.default_systemmonitor = win.default_systemmonitor
         self.default_emojipicker = win.default_emojipicker
 
         self.open_customconf = win.open_customconf
@@ -290,6 +292,7 @@ class MyApp(Adw.Application):
         self.default_terminal.connect("apply", self.on_default_terminal)
         self.default_screenshoteditor.connect("apply", self.on_default_screenshoteditor)
         self.default_calculator.connect("apply", self.on_default_calculator)
+        self.default_systemmonitor.connect("apply", self.on_default_systemmonitor)
         self.default_emojipicker.connect("apply", self.on_default_emojipicker)
 
         self.open_wallpaper_effects.connect("clicked", self.on_open_wallpaper_effects_folder)
@@ -353,6 +356,7 @@ class MyApp(Adw.Application):
         self.loadDefaultApp("ml4w/settings/terminal.sh",self.default_terminal)
         self.loadDefaultApp("ml4w/settings/screenshot-editor.sh",self.default_screenshoteditor)
         self.loadDefaultApp("ml4w/settings/calculator.sh",self.default_calculator)
+        self.loadDefaultApp("ml4w/settings/system-monitor.sh",self.default_systemmonitor)
         self.loadDefaultApp("ml4w/settings/emojipicker.sh",self.default_emojipicker)
 
         self.loadRofiFont()
@@ -624,6 +628,9 @@ class MyApp(Adw.Application):
 
     def on_default_calculator(self, widget):
         self.overwriteFile("ml4w/settings/calculator.sh",widget.get_text())
+
+    def on_default_systemmonitor(self, widget):
+        self.overwriteFile("ml4w/settings/system-monitor.sh",widget.get_text())
 
     def on_default_emojipicker(self, widget):
         self.overwriteFile("ml4w/settings/emojipicker.sh",widget.get_text())
