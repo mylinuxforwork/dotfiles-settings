@@ -480,6 +480,12 @@
             </child>
 
             <child>
+              <object class="AdwEntryRow" id="default_aurhelper">
+                <property name="title">AUR Helper</property>
+              </object>
+            </child>
+
+            <child>
               <object class="AdwEntryRow" id="default_editor">
                 <property name="title">Editor</property>
               </object>

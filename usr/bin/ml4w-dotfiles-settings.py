@@ -59,6 +59,7 @@ class MainWindow(Adw.PreferencesWindow):
     default_calculator = Gtk.Template.Child()
     default_systemmonitor = Gtk.Template.Child()
     default_emojipicker = Gtk.Template.Child()
+    default_aurhelper = Gtk.Template.Child()
     open_customconf = Gtk.Template.Child()
     open_wallpaper_effects = Gtk.Template.Child()
     open_timeformatspecifications = Gtk.Template.Child()
@@ -247,6 +248,7 @@ class MyApp(Adw.Application):
         self.default_calculator = win.default_calculator
         self.default_systemmonitor = win.default_systemmonitor
         self.default_emojipicker = win.default_emojipicker
+        self.default_aurhelper = win.default_aurhelper
 
         self.open_customconf = win.open_customconf
 
@@ -294,6 +296,7 @@ class MyApp(Adw.Application):
         self.default_calculator.connect("apply", self.on_default_calculator)
         self.default_systemmonitor.connect("apply", self.on_default_systemmonitor)
         self.default_emojipicker.connect("apply", self.on_default_emojipicker)
+        self.default_aurhelper.connect("apply", self.on_default_aurhelper)
 
         self.open_wallpaper_effects.connect("clicked", self.on_open_wallpaper_effects_folder)
         self.dd_wallpaper_effects.connect("notify::selected-item", self.on_wallpaper_effects_changed)
@@ -358,6 +361,7 @@ class MyApp(Adw.Application):
         self.loadDefaultApp("ml4w/settings/calculator.sh",self.default_calculator)
         self.loadDefaultApp("ml4w/settings/system-monitor.sh",self.default_systemmonitor)
         self.loadDefaultApp("ml4w/settings/emojipicker.sh",self.default_emojipicker)
+        self.loadDefaultApp("ml4w/settings/aur.sh",self.default_aurhelper)
 
         self.loadRofiFont()
         self.loadBlurValues()
@@ -634,6 +638,9 @@ class MyApp(Adw.Application):
 
     def on_default_emojipicker(self, widget):
         self.overwriteFile("ml4w/settings/emojipicker.sh",widget.get_text())
+
+    def on_default_aurhelper(self, widget):
+        self.overwriteFile("ml4w/settings/aur.sh",widget.get_text())
 
     def on_rofi_font(self, widget):
         value = 'configuration { font: "' + widget.get_text() + '"; }'
