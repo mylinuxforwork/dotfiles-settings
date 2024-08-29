@@ -39,6 +39,7 @@ class MainWindow(Adw.PreferencesWindow):
     __gtype_name__ = 'Ml4wSettingsWindow'
     waybar_show_taskbar = Gtk.Template.Child()
     waybar_show_network = Gtk.Template.Child()
+    waybar_show_backlight = Gtk.Template.Child()
     waybar_show_chatgpt = Gtk.Template.Child()
     waybar_show_systray = Gtk.Template.Child()
     waybar_show_screenlock = Gtk.Template.Child()
@@ -104,6 +105,7 @@ class MyApp(Adw.Application):
         "rofi_bordersize": 3,
         "waybar_toggle": True,
         "waybar_taskbar": False,
+        "waybar_backlight": False,
         "waybar_network": True,
         "waybar_chatgpt": True,
         "waybar_systray": True,
@@ -156,6 +158,7 @@ class MyApp(Adw.Application):
                          flags=Gio.ApplicationFlags.DEFAULT_FLAGS)
         self.create_action('quit', lambda *_: self.quit(), ['<primary>q'])
         self.create_action('waybar_show_network', self.on_waybar_show_network)
+        self.create_action('waybar_show_backlight', self.on_waybar_show_backlight)
         self.create_action('waybar_show_screenlock', self.on_waybar_show_screenlock)
         self.create_action('waybar_show_chatgpt', self.on_waybar_show_chatgpt)
         self.create_action('waybar_show_systray', self.on_waybar_show_systray)
@@ -210,6 +213,7 @@ class MyApp(Adw.Application):
             self.settings[row["key"]] = row["value"]
 
         self.waybar_show_network = win.waybar_show_network
+        self.waybar_show_backlight = win.waybar_show_backlight
         self.waybar_show_chatgpt = win.waybar_show_chatgpt
         self.waybar_show_systray = win.waybar_show_systray
         self.waybar_show_screenlock = win.waybar_show_screenlock
@@ -311,6 +315,7 @@ class MyApp(Adw.Application):
         self.loadShowModule("waybar_taskbar",self.waybar_show_taskbar)
         self.loadShowModule("waybar_window",self.waybar_show_window)
         self.loadShowModule("waybar_network",self.waybar_show_network)
+        self.loadShowModule("waybar_backlight",self.waybar_show_backlight)
         self.loadShowModule("waybar_chatgpt",self.waybar_show_chatgpt)
         self.loadShowModule("waybar_systray",self.waybar_show_systray)
         self.loadShowModule("waybar_screenlock",self.waybar_show_screenlock)
@@ -731,6 +736,18 @@ class MyApp(Adw.Application):
                 for t in self.waybar_themes:
                     self.replaceInFile("waybar/themes/" + t + "/config",'"network"','        //"network",')
                 self.updateSettingsBash("waybar_network", False)
+            self.reloadWaybar()
+
+    def on_waybar_show_backlight(self, widget, _):
+        if not self.block_reload:
+            if self.waybar_show_backlight.get_active():
+                for t in self.waybar_themes:
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"backlight"','        "backlight",')
+                self.updateSettingsBash("waybar_backlight", True)
+            else:
+                for t in self.waybar_themes:
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"backlight"','        //"backlight",')
+                self.updateSettingsBash("waybar_backlight", False)
             self.reloadWaybar()
 
     def on_waybar_show_window(self, widget, _):

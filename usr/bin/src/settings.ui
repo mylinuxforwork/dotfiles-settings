@@ -122,6 +122,13 @@
             </child>
 
             <child>
+              <object class="AdwSwitchRow" id="waybar_show_backlight">
+                <property name="title">Show Backlight Module</property>
+                <property name="action-name">app.waybar_show_backlight</property>
+              </object>
+            </child>
+
+            <child>
               <object class="AdwSwitchRow" id="waybar_show_systray">
                 <property name="title">Show Systray Module</property>
                 <property name="action-name">app.waybar_show_systray</property>
