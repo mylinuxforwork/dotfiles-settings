@@ -38,6 +38,7 @@ class MainWindow(Adw.PreferencesWindow):
     # Get objects from template
     __gtype_name__ = 'Ml4wSettingsWindow'
     waybar_show_taskbar = Gtk.Template.Child()
+    waybar_show_quicklinks = Gtk.Template.Child()
     waybar_show_network = Gtk.Template.Child()
     waybar_show_backlight = Gtk.Template.Child()
     waybar_show_chatgpt = Gtk.Template.Child()
@@ -105,6 +106,7 @@ class MyApp(Adw.Application):
         "rofi_bordersize": 3,
         "waybar_toggle": True,
         "waybar_taskbar": False,
+        "waybar_quicklinks": True,
         "waybar_backlight": False,
         "waybar_network": True,
         "waybar_chatgpt": True,
@@ -164,6 +166,7 @@ class MyApp(Adw.Application):
         self.create_action('waybar_show_systray', self.on_waybar_show_systray)
         self.create_action('waybar_show_window', self.on_waybar_show_window)
         self.create_action('waybar_show_taskbar', self.on_waybar_show_taskbar)
+        self.create_action('waybar_show_quicklinks', self.on_waybar_show_quicklinks)
         self.create_action('waybar_toggle', self.on_waybar_toggle)
         self.create_action('wallpaper_cache_toggle', self.on_wallpaper_cache_toggle)
         self.create_action('gamemode_toggle', self.on_gamemode_toggle)
@@ -219,6 +222,7 @@ class MyApp(Adw.Application):
         self.waybar_show_screenlock = win.waybar_show_screenlock
         self.waybar_show_window = win.waybar_show_window
         self.waybar_show_taskbar = win.waybar_show_taskbar
+        self.waybar_show_quicklinks = win.waybar_show_quicklinks
         self.waybar_toggle = win.waybar_toggle
         self.wallpaper_cache_toggle = win.wallpaper_cache_toggle
         self.waybar_workspaces = win.waybar_workspaces
@@ -313,6 +317,7 @@ class MyApp(Adw.Application):
         self.loadDropDown(self.dd_dunstpositions,self.dunstpositions,"dunst_position")
         self.loadShowModule("waybar_toggle",self.waybar_toggle)
         self.loadShowModule("waybar_taskbar",self.waybar_show_taskbar)
+        self.loadShowModule("waybar_quicklinks",self.waybar_show_quicklinks)
         self.loadShowModule("waybar_window",self.waybar_show_window)
         self.loadShowModule("waybar_network",self.waybar_show_network)
         self.loadShowModule("waybar_backlight",self.waybar_show_backlight)
@@ -715,15 +720,25 @@ class MyApp(Adw.Application):
     def on_waybar_show_taskbar(self, widget, _):
         if not self.block_reload:
             if self.waybar_show_taskbar.get_active():
-                print("Taskbar True")
                 for t in self.waybar_themes:
                     self.replaceInFile("waybar/themes/" + t + "/config",'"wlr/taskbar"','        "wlr/taskbar",')
                 self.updateSettingsBash("waybar_taskbar", True)
             else:
-                print("Taskbar False")
                 for t in self.waybar_themes:
                     self.replaceInFile("waybar/themes/" + t + "/config",'"wlr/taskbar"','        //"wlr/taskbar",')
                 self.updateSettingsBash("waybar_taskbar", False)
+            self.reloadWaybar()
+
+    def on_waybar_show_quicklinks(self, widget, _):
+        if not self.block_reload:
+            if self.waybar_show_quicklinks.get_active():
+                for t in self.waybar_themes:
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"group/quicklinks"','        "group/quicklinks",')
+                self.updateSettingsBash("waybar_quicklinks", True)
+            else:
+                for t in self.waybar_themes:
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"group/quicklinks"','        //"group/quicklinks",')
+                self.updateSettingsBash("waybar_quicklinks", False)
             self.reloadWaybar()
 
     def on_waybar_show_network(self, widget, _):
