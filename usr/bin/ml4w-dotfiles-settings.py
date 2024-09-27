@@ -37,6 +37,7 @@ class MainWindow(Adw.PreferencesWindow):
 
     # Get objects from template
     __gtype_name__ = 'Ml4wSettingsWindow'
+    waybar_show_appmenu = Gtk.Template.Child()
     waybar_show_taskbar = Gtk.Template.Child()
     waybar_show_quicklinks = Gtk.Template.Child()
     waybar_show_network = Gtk.Template.Child()
@@ -105,6 +106,7 @@ class MyApp(Adw.Application):
         "waybar_workspaces": 5,
         "rofi_bordersize": 3,
         "waybar_toggle": True,
+        "waybar_appmenu": True,
         "waybar_taskbar": False,
         "waybar_quicklinks": True,
         "waybar_backlight": False,
@@ -165,6 +167,7 @@ class MyApp(Adw.Application):
         self.create_action('waybar_show_chatgpt', self.on_waybar_show_chatgpt)
         self.create_action('waybar_show_systray', self.on_waybar_show_systray)
         self.create_action('waybar_show_window', self.on_waybar_show_window)
+        self.create_action('waybar_show_appmenu', self.on_waybar_show_appmenu)
         self.create_action('waybar_show_taskbar', self.on_waybar_show_taskbar)
         self.create_action('waybar_show_quicklinks', self.on_waybar_show_quicklinks)
         self.create_action('waybar_toggle', self.on_waybar_toggle)
@@ -222,6 +225,7 @@ class MyApp(Adw.Application):
         self.waybar_show_screenlock = win.waybar_show_screenlock
         self.waybar_show_window = win.waybar_show_window
         self.waybar_show_taskbar = win.waybar_show_taskbar
+        self.waybar_show_appmenu = win.waybar_show_appmenu
         self.waybar_show_quicklinks = win.waybar_show_quicklinks
         self.waybar_toggle = win.waybar_toggle
         self.wallpaper_cache_toggle = win.wallpaper_cache_toggle
@@ -317,6 +321,7 @@ class MyApp(Adw.Application):
         self.loadDropDown(self.dd_dunstpositions,self.dunstpositions,"dunst_position")
         self.loadShowModule("waybar_toggle",self.waybar_toggle)
         self.loadShowModule("waybar_taskbar",self.waybar_show_taskbar)
+        self.loadShowModule("waybar_appmenu",self.waybar_show_appmenu)
         self.loadShowModule("waybar_quicklinks",self.waybar_show_quicklinks)
         self.loadShowModule("waybar_window",self.waybar_show_window)
         self.loadShowModule("waybar_network",self.waybar_show_network)
@@ -716,6 +721,22 @@ class MyApp(Adw.Application):
             radius = str(int(self.blur_radius.get_adjustment().get_value()))
             text = radius + "x" + sigma
             self.overwriteFile("ml4w/settings/blur.sh",text)
+
+    def on_waybar_show_appmenu(self, widget, _):
+        if not self.block_reload:
+            if self.waybar_show_appmenu.get_active():
+                for t in self.waybar_themes:
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"custom/appmenu"','        "custom/appmenu",')
+                for t in self.waybar_themes:
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"custom/appmenuicon"','        "custom/appmenuicon",')
+                self.updateSettingsBash("waybar_appmenu", True)
+            else:
+                for t in self.waybar_themes:
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"custom/appmenu"','        //"custom/appmenu",')
+                for t in self.waybar_themes:
+                    self.replaceInFile("waybar/themes/" + t + "/config",'"custom/appmenuicon"','        //"custom/appmenuicon",')
+                self.updateSettingsBash("waybar_appmenu", False)
+            self.reloadWaybar()
 
     def on_waybar_show_taskbar(self, widget, _):
         if not self.block_reload:

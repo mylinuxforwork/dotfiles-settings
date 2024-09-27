@@ -87,6 +87,13 @@
             <property name="description">Show or hide selected waybar modules.</property>
 
             <child>
+              <object class="AdwSwitchRow" id="waybar_show_appmenu">
+                <property name="title">Show App Menu</property>
+                <property name="action-name">app.waybar_show_appmenu</property>
+              </object>
+            </child>
+
+            <child>
               <object class="AdwSwitchRow" id="waybar_show_taskbar">
                 <property name="title">Show Taskbar Module</property>
                 <property name="action-name">app.waybar_show_taskbar</property>
