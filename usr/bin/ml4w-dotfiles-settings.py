@@ -79,6 +79,7 @@ class MainWindow(Adw.PreferencesWindow):
     dd_dateformats = Gtk.Template.Child()
     dd_dunstpositions = Gtk.Template.Child()
     custom_datetime = Gtk.Template.Child()
+    clock_interval = Gtk.Template.Child()
     hypridle_hyprlock = Gtk.Template.Child()
     hypridle_dpms = Gtk.Template.Child()
     hypridle_suspend = Gtk.Template.Child()
@@ -103,6 +104,7 @@ class MyApp(Adw.Application):
         "waybar_dateformat": "%a",
         "dunst_position": "top-center",
         "waybar_custom_timedateformat": "",
+        "waybar_clock_interval": 60,
         "waybar_workspaces": 5,
         "rofi_bordersize": 3,
         "waybar_toggle": True,
@@ -263,6 +265,7 @@ class MyApp(Adw.Application):
         self.dd_dateformats = win.dd_dateformats
         self.dd_dunstpositions = win.dd_dunstpositions
         self.custom_datetime = win.custom_datetime
+        self.clock_interval = win.clock_interval
         self.blur_radius = win.blur_radius
         self.blur_sigma = win.blur_sigma
 
@@ -293,6 +296,8 @@ class MyApp(Adw.Application):
         self.dd_dateformats.connect("notify::selected-item", self.on_dateformats_changed)
         self.dd_dunstpositions.connect("notify::selected-item", self.on_dunstpositions_changed)
         self.custom_datetime.connect("apply", self.on_custom_datetime)
+        self.clock_interval.get_adjustment().connect("value-changed", self.on_clock_interval)
+        self.clock_interval.get_adjustment().set_value(int(self.settings["waybar_clock_interval"]))
 
         self.waybar_workspaces.get_adjustment().connect("value-changed", self.on_waybar_workspaces)
         self.rofi_bordersize.get_adjustment().connect("value-changed", self.on_rofi_bordersize)
@@ -510,6 +515,14 @@ class MyApp(Adw.Application):
             self.replaceInFileCheckpoint("waybar/modules.json", '"clock"', '"format"', timedate)
             self.updateSettingsBash("waybar_custom_timedateformat", "")
         self.reloadWaybar()
+
+    def on_clock_interval(self, widget):
+        if not self.block_reload:
+            value = int(widget.get_value())
+            text = '        "interval": ' + str(value)
+            self.replaceInFileCheckpoint("waybar/modules.json", "clock",'"interval"', text)
+            self.reloadWaybar()
+            self.updateSettingsBash("waybar_clock_interval", value)
 
     def on_wallpaper_effects_changed(self, widget, _):
         if not self.block_reload:
