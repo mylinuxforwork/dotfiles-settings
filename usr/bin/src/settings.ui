@@ -77,7 +77,19 @@
                 <property name="title">Custom Date/Time Format</property>
               </object>
             </child>
-
+            <child>
+              <object class="AdwSpinRow" id="clock_interval">
+                <property name="title">Update Interval</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">1</property>
+                    <property name="upper">300</property>
+                    <property name="step-increment">1</property>
+                    <property name="value">60</property>
+                  </object>
+                </property>
+              </object>
+            </child>
           </object>
         </child>
 
