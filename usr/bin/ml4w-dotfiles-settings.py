@@ -64,6 +64,7 @@ class MainWindow(Adw.PreferencesWindow):
     default_emojipicker = Gtk.Template.Child()
     default_aurhelper = Gtk.Template.Child()
     open_customconf = Gtk.Template.Child()
+    open_shell = Gtk.Template.Child()
     open_wallpaper_effects = Gtk.Template.Child()
     open_timeformatspecifications = Gtk.Template.Child()
     restart_hypridle = Gtk.Template.Child()
@@ -97,6 +98,7 @@ class MyApp(Adw.Application):
     homeFolder = os.path.expanduser('~') # Path to home folder
     dotfiles = homeFolder + "/.config/"
     block_reload = True
+    terminal = "alacritty"
 
     settings = {
         "waybar_timeformat": "%H:%M",
@@ -248,6 +250,7 @@ class MyApp(Adw.Application):
         self.default_emojipicker = win.default_emojipicker
         self.default_aurhelper = win.default_aurhelper
         self.open_customconf = win.open_customconf
+        self.open_shell = win.open_shell
         self.open_wallpaper_effects = win.open_wallpaper_effects
         self.open_timeformatspecifications = win.open_timeformatspecifications
         self.restart_hypridle = win.restart_hypridle
@@ -267,6 +270,7 @@ class MyApp(Adw.Application):
         self.blur_sigma = win.blur_sigma
 
         self.open_customconf.connect("clicked", self.on_open_customconf)
+        self.open_shell.connect("clicked", self.on_open_shell)
         self.open_timeformatspecifications.connect("clicked", self.on_open_timeformatspecifications)
         self.restart_hypridle.connect("clicked", self.on_restart_hypridle)
         self.default_browser.connect("apply", self.on_default_browser)
@@ -346,6 +350,8 @@ class MyApp(Adw.Application):
         self.loadRofiFont()
         self.loadBlurValues()
 
+        self.getTerminal()
+
         self.custom_datetime.set_show_apply_button(True)
         self.custom_datetime.set_text(self.settings["waybar_custom_timedateformat"])
 
@@ -355,11 +361,22 @@ class MyApp(Adw.Application):
         win.present()
         print (":: Welcome to ML4W Dotfiles Settings App")
 
+    def getTerminal(self):
+        try:
+            result = subprocess.run(["cat", self.homeFolder + "/.config/ml4w/settings/terminal.sh"], capture_output=True, text=True)
+            self.terminal = result.stdout.strip()
+            print (":: Using Terminal " + self.terminal)
+        except:
+            print("ERROR: Could not read the file ~/.config/ml4w/settings/terminal.sh")
+
     def on_restart_hypridle(self, widget):
         subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/restart-hypridle.sh"])
 
     def on_open_customconf(self, widget):
         subprocess.Popen([self.default_editor.get_text(), self.dotfiles + "hypr/conf/custom.conf"])
+
+    def on_open_shell(self, widget):
+        subprocess.Popen([self.terminal, "--class", "dotfiles-floating", "-e", self.homeFolder + "/.config/ml4w/scripts/shell.sh"])
 
     def on_open_timeformatspecifications(self, widget):
         subprocess.Popen([self.default_browser.get_text(), "https://fmt.dev/latest/syntax/#chrono-format-specifications"])

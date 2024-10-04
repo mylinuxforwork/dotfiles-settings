@@ -465,6 +465,20 @@
           </object>
         </child>
 
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Shell</property>
+            <property name="description">Change your shell between several options.</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="open_shell">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">document-open-symbolic</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
        <child>
           <object class="AdwPreferencesGroup">
             <property name="title">Default Applications</property>
