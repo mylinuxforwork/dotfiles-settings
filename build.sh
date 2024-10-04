@@ -11,6 +11,5 @@ rm ~/tmp/install.sh
 cd ..
 ARCH=x86_64 appimagetool tmp
 echo ":: AppImage created"
-# cp ML4W_Dotfiles_Settings-x86_64.AppImage ~/dotfiles-settings/release/
-cp ML4W_Dotfiles_Settings-x86_64.AppImage ~/.ml4w-hyprland/dotfiles/share/dotfiles/.config/ml4w/apps/
-echo ":: AppImage copied to ~/.ml4w-hyprland/dotfiles/share/dotfiles/.config/ml4w/apps/"
+cp ML4W_Dotfiles_Settings-x86_64.AppImage ~/.ml4w-hyprland/dotfiles/share/apps/com.ml4w.dotfilessettings
+echo ":: AppImage copied to ~/.ml4w-hyprland/dotfiles/share/apps/"

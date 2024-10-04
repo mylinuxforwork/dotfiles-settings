@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=ML4W Settings App
+Name=ML4W Dotfiles Settings App
 Exec=AppRun
 Icon=ml4w-icon
 Terminal=false
