@@ -94,6 +94,13 @@
             </child>
 
             <child>
+              <object class="AdwSwitchRow" id="waybar_show_settings">
+                <property name="title">Show Settings Module</property>
+                <property name="action-name">app.waybar_show_settings</property>
+              </object>
+            </child>
+
+            <child>
               <object class="AdwSwitchRow" id="waybar_show_taskbar">
                 <property name="title">Show Taskbar Module</property>
                 <property name="action-name">app.waybar_show_taskbar</property>
