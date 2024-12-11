@@ -77,7 +77,11 @@
                 <property name="title">Custom Date/Time Format</property>
               </object>
             </child>
-
+            <child>
+              <object class="AdwEntryRow" id="custom_timezone">
+                <property name="title">Overwrite system timezone</property>
+              </object>
+            </child>
           </object>
         </child>
 
@@ -178,6 +182,19 @@
       <object class="AdwPreferencesPage">
         <property name="title">Appearance</property>
         <property name="icon-name">settings-symbolic</property>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Dock</property>
+            <property name="description">Toggle the dock at the bottom of the screen.</property>
+            <child>
+              <object class="AdwSwitchRow" id="dock_toggle">
+                <property name="title">Toggle Dock</property>
+                <property name="action-name">app.dock_toggle</property>
+              </object>
+            </child>
+          </object>
+        </child>
 
         <child>
           <object class="AdwPreferencesGroup">

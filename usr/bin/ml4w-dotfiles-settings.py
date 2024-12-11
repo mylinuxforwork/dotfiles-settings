@@ -50,6 +50,7 @@ class MainWindow(Adw.PreferencesWindow):
     waybar_toggle = Gtk.Template.Child()
     wallpaper_cache_toggle = Gtk.Template.Child()
     gamemode_toggle = Gtk.Template.Child()
+    dock_toggle = Gtk.Template.Child()
     rofi_font = Gtk.Template.Child()
     rofi_bordersize = Gtk.Template.Child()
     waybar_workspaces = Gtk.Template.Child()
@@ -81,6 +82,7 @@ class MainWindow(Adw.PreferencesWindow):
     dd_dateformats = Gtk.Template.Child()
     dd_dunstpositions = Gtk.Template.Child()
     custom_datetime = Gtk.Template.Child()
+    custom_timezone = Gtk.Template.Child()
     hypridle_hyprlock = Gtk.Template.Child()
     hypridle_dpms = Gtk.Template.Child()
     hypridle_suspend = Gtk.Template.Child()
@@ -106,6 +108,7 @@ class MyApp(Adw.Application):
         "waybar_dateformat": "%a",
         "dunst_position": "top-center",
         "waybar_custom_timedateformat": "",
+        "waybar_timezone": "",
         "waybar_workspaces": 5,
         "rofi_bordersize": 3,
         "waybar_toggle": True,
@@ -129,7 +132,8 @@ class MyApp(Adw.Application):
         "ml4w",
         "ml4w-blur",
         "ml4w-blur-bottom",
-        "ml4w-bottom"
+        "ml4w-bottom",
+        "ml4w-modern"
     ]
 
     # {: time date}
@@ -178,6 +182,7 @@ class MyApp(Adw.Application):
         self.create_action('waybar_toggle', self.on_waybar_toggle)
         self.create_action('wallpaper_cache_toggle', self.on_wallpaper_cache_toggle)
         self.create_action('gamemode_toggle', self.on_gamemode_toggle)
+        self.create_action('dock_toggle', self.on_dock_toggle)
         self.create_action('rofi_bordersize', self.on_rofi_bordersize)
         self.create_action('waybar_workspaces', self.on_waybar_workspaces)
         self.create_action('blur_radius', self.on_blur_radius)
@@ -237,6 +242,7 @@ class MyApp(Adw.Application):
         self.wallpaper_cache_toggle = win.wallpaper_cache_toggle
         self.waybar_workspaces = win.waybar_workspaces
         self.gamemode_toggle = win.gamemode_toggle
+        self.dock_toggle = win.dock_toggle
         self.hypridle_hyprlock = win.hypridle_hyprlock
         self.hypridle_dpms = win.hypridle_dpms
         self.hypridle_suspend = win.hypridle_suspend
@@ -270,6 +276,7 @@ class MyApp(Adw.Application):
         self.dd_dateformats = win.dd_dateformats
         self.dd_dunstpositions = win.dd_dunstpositions
         self.custom_datetime = win.custom_datetime
+        self.custom_timezone = win.custom_timezone
         self.blur_radius = win.blur_radius
         self.blur_sigma = win.blur_sigma
 
@@ -301,6 +308,7 @@ class MyApp(Adw.Application):
         self.dd_dateformats.connect("notify::selected-item", self.on_dateformats_changed)
         self.dd_dunstpositions.connect("notify::selected-item", self.on_dunstpositions_changed)
         self.custom_datetime.connect("apply", self.on_custom_datetime)
+        self.custom_timezone.connect("apply", self.on_custom_timezone)
 
         self.waybar_workspaces.get_adjustment().connect("value-changed", self.on_waybar_workspaces)
         self.rofi_bordersize.get_adjustment().connect("value-changed", self.on_rofi_bordersize)
@@ -351,6 +359,7 @@ class MyApp(Adw.Application):
         self.loadDefaultApp("ml4w/settings/aur.sh",self.default_aurhelper)
 
         self.loadGamemode()
+        self.loadDock()
         self.loadWallpaperCache()
         self.loadRofiFont()
         self.loadBlurValues()
@@ -359,6 +368,9 @@ class MyApp(Adw.Application):
 
         self.custom_datetime.set_show_apply_button(True)
         self.custom_datetime.set_text(self.settings["waybar_custom_timedateformat"])
+
+        self.custom_timezone.set_show_apply_button(True)
+        self.custom_timezone.set_text(self.settings["waybar_timezone"])
 
         self.block_reload = False
 
@@ -388,6 +400,12 @@ class MyApp(Adw.Application):
 
     def on_open_about_variations(self, widget, _):
         subprocess.Popen([self.default_browser.get_text(), "https://gitlab.com/stephan-raabe/dotfiles/-/blob/main/hypr/conf/README.md"])
+
+    def loadDock(self):
+        if os.path.isfile(self.homeFolder + "/.config/ml4w/settings/nwg-dock-hyprland.sh"):
+            self.gamemode_toggle.set_active(True)
+        else:
+            self.gamemode_toggle.set_active(False)
 
     def loadGamemode(self):
         if os.path.isfile(self.homeFolder + "/.cache/gamemode"):
@@ -516,6 +534,14 @@ class MyApp(Adw.Application):
             self.updateSettingsBash("waybar_dateformat", value)
             self.replaceInFileCheckpoint("waybar/modules.json", '"clock"', '"format"', timedate)
             self.reloadWaybar()
+
+    def on_custom_timezone(self, widget):
+        value = widget.get_text()
+        timezone = '    "timezone": "' + value + '",'
+        print(timezone)
+        self.replaceInFileCheckpoint("waybar/modules.json", '"clock"', '"timezone"', timezone)
+        self.updateSettingsBash("waybar_timezone", value)
+        self.reloadWaybar()
 
     def on_custom_datetime(self, widget):
         value = widget.get_text()
@@ -708,6 +734,15 @@ class MyApp(Adw.Application):
     def on_gamemode_toggle(self, widget, _):
         if not self.block_reload:
             subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/gamemode.sh"])
+
+    def on_dock_toggle(self, widget, _):
+        if not self.block_reload:
+            if (os.path.exists(self.homeFolder + "/.config/ml4w/settings/nwg-dock-hyprland.sh")):
+                os.remove(self.homeFolder + "/.config/ml4w/settings/nwg-dock-hyprland.sh")
+                subprocess.Popen(["killall", "nwg-dock-hyprland"])
+            else:
+                file = open(self.homeFolder + "/.config/ml4w/settings/nwg-dock-hyprland.sh", "w+")
+                subprocess.Popen(["bash", self.dotfiles + "nwg-dock-hyprland/launch.sh"])
 
     def on_wallpaper_cache_toggle(self, widget, _):
         if not self.block_reload:
