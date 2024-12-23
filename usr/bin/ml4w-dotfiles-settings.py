@@ -403,9 +403,9 @@ class MyApp(Adw.Application):
 
     def loadDock(self):
         if os.path.isfile(self.homeFolder + "/.config/ml4w/settings/nwg-dock-hyprland.sh"):
-            self.gamemode_toggle.set_active(True)
+            self.dock_toggle.set_active(True)
         else:
-            self.gamemode_toggle.set_active(False)
+            self.dock_toggle.set_active(False)
 
     def loadGamemode(self):
         if os.path.isfile(self.homeFolder + "/.cache/gamemode"):
@@ -491,7 +491,7 @@ class MyApp(Adw.Application):
         dd.set_selected(selected)
 
     def on_clearcache_wallpaper(self, widget, _):
-        subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/wallpaper-cache.sh", "clearcache"])
+        subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/wallpaper-cache.sh"])
 
     def loadVariations(self,dd,v):
         files_arr = os.listdir(self.dotfiles + "hypr/conf/" + v + "s")
