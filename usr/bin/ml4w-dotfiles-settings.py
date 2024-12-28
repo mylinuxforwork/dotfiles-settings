@@ -359,6 +359,7 @@ class MyApp(Adw.Application):
         self.loadDefaultApp("ml4w/settings/aur.sh",self.default_aurhelper)
 
         self.loadGamemode()
+        self.loadWaybarToggle()
         self.loadDock()
         self.loadWallpaperCache()
         self.loadRofiFont()
@@ -412,6 +413,12 @@ class MyApp(Adw.Application):
             self.gamemode_toggle.set_active(True)
         else:
             self.gamemode_toggle.set_active(False)
+
+    def loadWaybarToggle(self):
+        if os.path.isfile(self.homeFolder + "/.cache/waybar-disabled"):
+            self.waybar_toggle.set_active(False)
+        else:
+            self.waybar_toggle.set_active(True)
 
     def loadWallpaperCache(self):
         if os.path.isfile(self.dotfiles + "ml4w/settings/wallpaper_cache"):
