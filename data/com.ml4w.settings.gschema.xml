@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="dotfiles-settings">
+	<schema id="com.ml4w.settings" path="/com/ml4w/settings/">
+	</schema>
+</schemalist>

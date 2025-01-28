@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=dotfiles-settings
+Exec=dotfiles-settings
+Icon=com.ml4w.settings
+Terminal=false
+Type=Application
+Categories=Utility;
+Keywords=GTK;
+StartupNotify=true
+DBusActivatable=true

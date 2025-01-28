@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=com.ml4w.settings
+Exec=@bindir@/dotfiles-settings --gapplication-service

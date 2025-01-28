@@ -1,0 +1,959 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  <template class="Ml4wSettingsWindow" parent="AdwPreferencesWindow">
+    <property name="default-width">800</property>
+    <property name="default-height">600</property>
+    <property name="title">ML4W Dotfiles Settings</property>
+
+    <child>
+      <object class="AdwPreferencesPage" id="waybar_page">
+        <property name="title">Status Bar</property>
+        <property name="icon-name">settings-symbolic</property>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Waybar</property>
+            <property name="description">Configure the status bar waybar.</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="open_waybar_folder">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">document-open-symbolic</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="waybar_toggle">
+                <property name="title">Toggle Waybar</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwSpinRow" id="waybar_workspaces">
+                <property name="title">Workspaces</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">1</property>
+                    <property name="upper">10</property>
+                    <property name="step-increment">1</property>
+                    <property name="value">5</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Edit Quicklinks</property>
+                <child type="suffix">
+                  <object class="GtkButton" id="open_quicklinks">
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="icon-name">accessories-text-editor-symbolic</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwSwitchRow" id="waybar_show_appmenu">
+                <property name="title">Show App Menu</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwSwitchRow" id="waybar_show_taskbar">
+                <property name="title">Show Taskbar Module</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwSwitchRow" id="waybar_show_quicklinks">
+                <property name="title">Show Quicklinks Module</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwSwitchRow" id="waybar_show_window">
+                <property name="title">Show Window Module</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwSwitchRow" id="waybar_show_screenlock">
+                <property name="title">Show Screen Lock Module</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwSwitchRow" id="waybar_show_chatgpt">
+                <property name="title">Show ChatGPT Module</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwSwitchRow" id="waybar_show_network">
+                <property name="title">Show Network Module</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwSwitchRow" id="waybar_show_systray">
+                <property name="title">Show Systray Module</property>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Clock Format</property>
+            <property name="description">Choose from some default clock formats or enter your own.</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="open_timeformatspecifications">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="label">Format Specifications</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Time Format</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_timeformats">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Date Format</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_dateformats">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwEntryRow" id="custom_datetime">
+                <property name="title">Custom Date/Time Format</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwEntryRow" id="custom_timezone">
+                <property name="title">Overwrite system timezone</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title">Appearance</property>
+        <property name="icon-name">settings-symbolic</property>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Dock</property>
+            <property name="description">Toggle the dock at the bottom of the screen.</property>
+            <child>
+              <object class="AdwSwitchRow" id="dock_toggle">
+                <property name="title">Toggle Dock</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Gamemode</property>
+            <property name="description">Disable animations and blur for better performance.</property>
+            <child>
+              <object class="AdwSwitchRow" id="gamemode_toggle">
+                <property name="title">Toggle Gamemode</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Rofi</property>
+            <property name="description">Define properties for the Rofi Launcher.</property>
+
+            <child>
+              <object class="AdwSpinRow" id="rofi_bordersize">
+                <property name="title">Rofi Border Size</property>
+                <property name="action-name">app.rofi_bordersize</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">10</property>
+                    <property name="step-increment">1</property>
+                    <property name="value">3</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="rofi_font">
+                <property name="title">Font</property>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Blur effect for rofi and hyprlock background</property>
+            <property name="description">Define blur properties for rofi and hyprlock background image. Set both parameters to 0 to disable blur (Active after setting a new wallpaper). Select an effect for your selected wallpaper.</property>
+
+            <child>
+              <object class="AdwSpinRow" id="blur_radius">
+                <property name="title">Radius</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">200</property>
+                    <property name="step-increment">1</property>
+                    <property name="value">5</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwSpinRow" id="blur_sigma">
+                <property name="title">Sigma</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">200</property>
+                    <property name="step-increment">1</property>
+                    <property name="value">5</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Animation Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkMenuButton">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">animations_button_menu</property>
+                <property name="primary">true</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Animations</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_animations">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList" id="animations_list">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Decoration Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkMenuButton">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">decorations_button_menu</property>
+                <property name="primary">true</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Decorations</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_decorations">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Window Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkMenuButton">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">windows_button_menu</property>
+                <property name="primary">true</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Windows</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_windows">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Workspace Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkMenuButton">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">workspaces_button_menu</property>
+                <property name="primary">true</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Workspaces</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_workspaces">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+      </object>
+    </child>
+
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title">Wallpaper</property>
+        <property name="icon-name">settings-symbolic</property>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Wallpaper Effect</property>
+            <property name="description">Select an effect for your selected wallpaper. </property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="open_wallpaper_effects">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">document-open-symbolic</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Wallpaper Effect</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_wallpaper_effects">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList" id="wallpaper_effects_list">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Wallpaper Cache</property>
+            <property name="description">Activate or deactivate the wallpaper cache. The cache will generate different versions of the current wallpaper to speed up the change between two wallpapers.</property>
+            <child type="header-suffix">
+              <object class="GtkMenuButton">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">wallpaper_cache_button_menu</property>
+                <property name="primary">true</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="wallpaper_cache_toggle">
+                <property name="title">Wallpaper Cache</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+
+      </object>
+    </child>
+
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title">System</property>
+        <property name="icon-name">settings-symbolic</property>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Custom Configuration</property>
+            <property name="description">Add your custom configuration or additions to the custom.conf file.</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="open_customconf">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">document-open-symbolic</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+
+
+         <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Default Applications</property>
+            <property name="description">Enter the start command for your default applications.</property>
+
+            <child>
+              <object class="AdwEntryRow" id="default_terminal">
+                <property name="title">Terminal</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_browser">
+                <property name="title">Browser</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_filemanager">
+                <property name="title">File Manager</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_networkmanager">
+                <property name="title">Network Manager</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_softwaremanager">
+                <property name="title">Software Manager</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_aurhelper">
+                <property name="title">AUR Helper</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_editor">
+                <property name="title">Editor</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_screenshoteditor">
+                <property name="title">Screenshot Editor</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_calculator">
+                <property name="title">Calculator</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_systemmonitor">
+                <property name="title">System Monitor</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_emojipicker">
+                <property name="title">Emoji Picker</property>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Hypridle</property>
+            <property name="description">Edit timeouts in seconds for hypridle. 0 seconds = disabled.</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="restart_hypridle">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="label">Restart</property>
+                <property name="tooltip-text">Restart hypridle to activate your changes.</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSpinRow" id="hypridle_hyprlock">
+                <property name="title">Hyprlock Timeout</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">2000</property>
+                    <property name="step-increment">1</property>
+                    <property name="value">600</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSpinRow" id="hypridle_dpms">
+                <property name="title">DPMS Timeout</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">2000</property>
+                    <property name="step-increment">1</property>
+                    <property name="value">660</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSpinRow" id="hypridle_suspend">
+                <property name="title">Suspend Timeout</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">2000</property>
+                    <property name="step-increment">1</property>
+                    <property name="value">1800</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Monitor Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkMenuButton">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">monitors_button_menu</property>
+                <property name="primary">true</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Monitors</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_monitors">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Keybinding Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkMenuButton">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">keybindings_button_menu</property>
+                <property name="primary">true</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Keybindings</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_keybindings">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Environment Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkMenuButton">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">environments_button_menu</property>
+                <property name="primary">true</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Environments</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_environments">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Windowrule Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkMenuButton">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">windowrules_button_menu</property>
+                <property name="primary">true</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Windowrules</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_windowrules">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+      </object>
+    </child>
+
+  </template>
+
+  <menu id="animations_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_animations_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_animations</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_animations</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="decorations_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_decorations_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_decorations</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_decorations</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="windows_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_windows_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_windows</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_windows</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="workspaces_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_workspaces_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_workspaces</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_workspaces</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="monitors_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_monitors_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_monitors</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_monitors</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="keybindings_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_keybindings_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_keybindings</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_keybindings</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="environments_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_environments_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_environments</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_environments</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="windowrules_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_windowrules_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_windowrules</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_windowrules</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="wallpaper_cache_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Clear Cache Folder</attribute>
+        <attribute name="action">app.on_clearcache_wallpaper</attribute>
+      </item>
+    </section>
+  </menu>
+
+</interface>
+
+
