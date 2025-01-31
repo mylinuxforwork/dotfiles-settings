@@ -688,6 +688,42 @@
 
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title">Layout Variations</property>
+            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
+            <child type="header-suffix">
+              <object class="GtkMenuButton">
+                <property name="halign">3</property>
+                <property name="valign">3</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">layouts_button_menu</property>
+                <property name="primary">true</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Layouts</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_layouts">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title">Environment Variations</property>
             <property name="description">Choose from the available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
@@ -889,6 +925,29 @@
       <item>
         <attribute name="label">Reload Variations</attribute>
         <attribute name="action">app.on_reload_keybindings</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="layouts_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_layouts_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_layouts</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_layouts</attribute>
       </item>
     </section>
     <section>

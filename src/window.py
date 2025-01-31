@@ -59,6 +59,7 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
     dd_wallpaper_effects = Gtk.Template.Child()
     dd_animations = Gtk.Template.Child()
     dd_environments = Gtk.Template.Child()
+    dd_layouts = Gtk.Template.Child()
     dd_monitors = Gtk.Template.Child()
     dd_decorations = Gtk.Template.Child()
     dd_windows = Gtk.Template.Child()

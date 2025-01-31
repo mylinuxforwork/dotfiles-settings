@@ -52,7 +52,6 @@ class DotfilesSettingsApplication(Adw.Application):
         "waybar_timezone": "",
         "waybar_workspaces": 5,
         "rofi_bordersize": 3,
-        "waybar_toggle": True,
         "waybar_appmenu": True,
         "waybar_taskbar": False,
         "waybar_quicklinks": True,
@@ -131,6 +130,9 @@ class DotfilesSettingsApplication(Adw.Application):
         self.create_action('on_open_environments_folder', self.on_open_environments)
         self.create_action('on_edit_environments', self.on_edit_environments)
         self.create_action('on_reload_environments', self.on_reload_environments)
+        self.create_action('on_open_layouts_folder', self.on_open_layouts)
+        self.create_action('on_edit_layouts', self.on_edit_layouts)
+        self.create_action('on_reload_layouts', self.on_reload_layouts)
         self.create_action('on_open_windowrules_folder', self.on_open_windowrules)
         self.create_action('on_edit_windowrules', self.on_edit_windowrules)
         self.create_action('on_reload_windowrules', self.on_reload_windowrules)
@@ -156,6 +158,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.hypridle_dpms = win.hypridle_dpms
         self.hypridle_suspend = win.hypridle_suspend
         self.rofi_bordersize = win.rofi_bordersize
+        self.waybar_toggle = win.waybar_toggle
         self.rofi_font = win.rofi_font
         self.dock_toggle = win.dock_toggle
         self.gamemode_toggle = win.gamemode_toggle
@@ -173,6 +176,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.dd_wallpaper_effects = win.dd_wallpaper_effects
         self.dd_animations = win.dd_animations
         self.dd_environments = win.dd_environments
+        self.dd_layouts = win.dd_layouts
         self.dd_monitors = win.dd_monitors
         self.dd_decorations = win.dd_decorations
         self.dd_windows = win.dd_windows
@@ -222,6 +226,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.dd_animations.connect("notify::selected-item", self.on_variation_changed,"animation")
         self.dd_monitors.connect("notify::selected-item", self.on_variation_changed,"monitor")
         self.dd_environments.connect("notify::selected-item", self.on_variation_changed,"environment")
+        self.dd_layouts.connect("notify::selected-item", self.on_variation_changed,"layout")
         self.dd_decorations.connect("notify::selected-item", self.on_variation_changed,"decoration")
         self.dd_windows.connect("notify::selected-item", self.on_variation_changed,"window")
         self.dd_workspaces.connect("notify::selected-item", self.on_variation_changed,"workspace")
@@ -249,6 +254,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.loadWallpaperEffects(self.dd_wallpaper_effects)
         self.loadVariations(self.dd_animations,"animation")
         self.loadVariations(self.dd_environments,"environment")
+        self.loadVariations(self.dd_layouts,"layout")
         self.loadVariations(self.dd_monitors,"monitor")
         self.loadVariations(self.dd_decorations,"decoration")
         self.loadVariations(self.dd_windows,"window")
@@ -258,7 +264,6 @@ class DotfilesSettingsApplication(Adw.Application):
         self.loadDropDown(self.dd_timeformats,self.timeformats,"waybar_timeformat")
         self.loadDropDown(self.dd_dateformats,self.dateformats,"waybar_dateformat")
 
-        self.loadShowModule("waybar_toggle",win.waybar_toggle)
         self.loadShowModule("waybar_taskbar",win.waybar_show_taskbar)
         self.loadShowModule("waybar_appmenu",win.waybar_show_appmenu)
         self.loadShowModule("waybar_quicklinks",win.waybar_show_quicklinks)
@@ -282,6 +287,7 @@ class DotfilesSettingsApplication(Adw.Application):
 
         self.loadGamemode()
         self.loadDock()
+        self.loadWaybar()
         self.loadWallpaperCache()
         self.loadRofiFont()
         self.loadBlurValues()
@@ -334,6 +340,12 @@ class DotfilesSettingsApplication(Adw.Application):
             self.gamemode_toggle.set_active(True)
         else:
             self.gamemode_toggle.set_active(False)
+
+    def loadWaybar(self):
+        if os.path.isfile(self.homeFolder + "/.cache/waybar-disabled"):
+            self.waybar_toggle.set_active(False)
+        else:
+            self.waybar_toggle.set_active(True)
 
     def loadWallpaperCache(self):
         if os.path.isfile(self.dotfiles + "ml4w/settings/wallpaper_cache"):
@@ -477,6 +489,7 @@ class DotfilesSettingsApplication(Adw.Application):
         if not self.block_reload:
             value = widget.get_selected_item().get_string()
             self.overwriteFile("ml4w/settings/wallpaper-effect.sh", value)
+            subprocess.Popen(["flatpak-spawn", "--host", "bash", self.dotfiles + "hypr/scripts/wallpaper-effects.sh", "reload"])
 
     def on_open_wallpaper_effects_folder(self, widget):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/effects/wallpaper")
@@ -511,6 +524,18 @@ class DotfilesSettingsApplication(Adw.Application):
         i = self.dd_environments.get_selected()
         f = self.dd_environments.get_model()[i].get_string()
         self.on_open(widget, self.default_editor.get_text(), "hypr/conf/environments/" + f)
+
+    # Layouts
+    def on_open_layouts(self, widget, _):
+        self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/layouts")
+
+    def on_reload_layouts(self, widget, _):
+        self.loadVariations(self.dd_layouts,"layout")
+
+    def on_edit_layouts(self, widget, _):
+        i = self.dd_layouts.get_selected()
+        f = self.dd_layouts.get_model()[i].get_string()
+        self.on_open(widget, self.default_editor.get_text(), "hypr/conf/layouts/" + f)
 
     # Monitors
     def on_open_monitors(self, widget, _):

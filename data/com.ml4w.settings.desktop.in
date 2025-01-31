@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=dotfiles-settings
+Name=ML4W Setting App
 Exec=dotfiles-settings
 Icon=com.ml4w.settings
 Terminal=false
