@@ -40,6 +40,7 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
     rofi_bordersize = Gtk.Template.Child()
     waybar_workspaces = Gtk.Template.Child()
     default_browser = Gtk.Template.Child()
+    default_email = Gtk.Template.Child()
     default_filemanager = Gtk.Template.Child()
     default_editor = Gtk.Template.Child()
     default_networkmanager = Gtk.Template.Child()

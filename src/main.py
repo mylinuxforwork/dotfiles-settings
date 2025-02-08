@@ -163,6 +163,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.dock_toggle = win.dock_toggle
         self.gamemode_toggle = win.gamemode_toggle
         self.default_browser = win.default_browser
+        self.default_email = win.default_email
         self.default_filemanager = win.default_filemanager
         self.default_editor = win.default_editor
         self.default_networkmanager = win.default_networkmanager
@@ -211,6 +212,7 @@ class DotfilesSettingsApplication(Adw.Application):
         win.open_timeformatspecifications.connect("clicked", self.on_open_timeformatspecifications)
         win.restart_hypridle.connect("clicked", self.on_restart_hypridle)
         win.default_browser.connect("apply", self.on_default_browser)
+        win.default_email.connect("apply", self.on_default_email)
         win.default_filemanager.connect("apply", self.on_default_filemanager)
         win.default_editor.connect("apply", self.on_default_editor)
         win.default_networkmanager.connect("apply", self.on_default_networkmanager)
@@ -274,6 +276,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.loadShowModule("waybar_screenlock",win.waybar_show_screenlock)
 
         self.loadDefaultApp("ml4w/settings/browser.sh",self.default_browser)
+        self.loadDefaultApp("ml4w/settings/email.sh",self.default_email)
         self.loadDefaultApp("ml4w/settings/filemanager.sh",self.default_filemanager)
         self.loadDefaultApp("ml4w/settings/editor.sh",self.default_editor)
         self.loadDefaultApp("ml4w/settings/networkmanager.sh",self.default_networkmanager)
@@ -330,19 +333,19 @@ class DotfilesSettingsApplication(Adw.Application):
         subprocess.Popen(["flatpak-spawn", "--host", self.default_browser.get_text(), "-new-window", "https://github.com/mylinuxforwork/dotfiles/wiki/Configuration-Variations"])
 
     def loadDock(self):
-        if os.path.isfile(self.homeFolder + "/.config/ml4w/settings/nwg-dock-hyprland.sh"):
-            self.dock_toggle.set_active(True)
-        else:
+        if os.path.isfile(self.homeFolder + "/.config/ml4w/settings/dock-disabled"):
             self.dock_toggle.set_active(False)
+        else:
+            self.dock_toggle.set_active(True)
 
     def loadGamemode(self):
-        if os.path.isfile(self.homeFolder + "/.cache/gamemode"):
+        if os.path.isfile(self.homeFolder + "/.config/ml4w/settings/gamemode-enabled"):
             self.gamemode_toggle.set_active(True)
         else:
             self.gamemode_toggle.set_active(False)
 
     def loadWaybar(self):
-        if os.path.isfile(self.homeFolder + "/.cache/waybar-disabled"):
+        if os.path.isfile(self.homeFolder + "/.config/ml4w/settings/waybar-disabled"):
             self.waybar_toggle.set_active(False)
         else:
             self.waybar_toggle.set_active(True)
@@ -621,6 +624,9 @@ class DotfilesSettingsApplication(Adw.Application):
     def on_default_browser(self, widget):
         self.overwriteFile("ml4w/settings/browser.sh",widget.get_text())
 
+    def on_default_email(self, widget):
+        self.overwriteFile("ml4w/settings/email.sh",widget.get_text())
+
     def on_default_filemanager(self, widget):
         self.overwriteFile("ml4w/settings/filemanager.sh",widget.get_text())
 
@@ -709,12 +715,12 @@ class DotfilesSettingsApplication(Adw.Application):
 
     def on_dock_toggle(self, widget, _):
         if not self.block_reload:
-            if (os.path.exists(self.homeFolder + "/.config/ml4w/settings/nwg-dock-hyprland.sh")):
-                os.remove(self.homeFolder + "/.config/ml4w/settings/nwg-dock-hyprland.sh")
-                subprocess.Popen(["flatpak-spawn", "--host", "killall", "nwg-dock-hyprland"])
-            else:
-                file = open(self.homeFolder + "/.config/ml4w/settings/nwg-dock-hyprland.sh", "w+")
+            if (os.path.exists(self.homeFolder + "/.config/ml4w/settings/dock-disabled")):
+                os.remove(self.homeFolder + "/.config/ml4w/settings/dock-disabled")
                 subprocess.Popen(["flatpak-spawn", "--host", "bash", self.dotfiles + "nwg-dock-hyprland/launch.sh"])
+            else:
+                file = open(self.homeFolder + "/.config/ml4w/settings/dock-disabled", "w+")
+                subprocess.Popen(["flatpak-spawn", "--host", "killall", "nwg-dock-hyprland"])
 
     def on_wallpaper_cache_toggle(self, widget, _):
         if not self.block_reload:
@@ -725,10 +731,10 @@ class DotfilesSettingsApplication(Adw.Application):
 
     def on_waybar_toggle(self, widget, _):
         if not self.block_reload:
-            if (os.path.exists(self.homeFolder + "/.cache/waybar-disabled")):
-                os.remove(self.homeFolder + "/.cache/waybar-disabled")
+            if (os.path.exists(self.homeFolder + "/.config/ml4w/settings/waybar-disabled")):
+                os.remove(self.homeFolder + "/.config/ml4w/settings/waybar-disabled")
             else:
-                file = open(self.homeFolder + "/.cache/waybar-disabled", "w+")
+                file = open(self.homeFolder + "/.config/ml4w/settings/waybar-disabled", "w+")
             self.reloadWaybar()
 
     def on_rofi_bordersize(self, widget):

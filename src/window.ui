@@ -506,6 +506,12 @@
             </child>
 
             <child>
+              <object class="AdwEntryRow" id="default_email">
+                <property name="title">Email Client</property>
+              </object>
+            </child>
+
+            <child>
               <object class="AdwEntryRow" id="default_filemanager">
                 <property name="title">File Manager</property>
               </object>
