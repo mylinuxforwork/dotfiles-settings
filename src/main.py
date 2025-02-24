@@ -26,6 +26,7 @@ import json
 import pathlib
 import shutil
 import shlex
+import time
 
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
@@ -42,29 +43,7 @@ class DotfilesSettingsApplication(Adw.Application):
     path_name = pathname # Path of Application
     homeFolder = os.path.expanduser('~') # Path to home folder
     dotfiles = homeFolder + "/.config/"
-    block_reload = True
     terminal = "alacritty"
-
-    settings = {
-        "waybar_timeformat": "%H:%M",
-        "waybar_dateformat": "%a",
-        "waybar_custom_timedateformat": "",
-        "waybar_timezone": "",
-        "waybar_workspaces": 5,
-        "rofi_bordersize": 3,
-        "waybar_appmenu": True,
-        "waybar_taskbar": False,
-        "waybar_quicklinks": True,
-        "waybar_network": True,
-        "waybar_chatgpt": True,
-        "waybar_systray": True,
-        "waybar_screenlock": True,
-        "waybar_window": True,
-        "waybar_settings": True,
-        "hypridle_hyprlock_timeout": 600,
-        "hypridle_dpms_timeout": 660,
-        "hypridle_suspend_timeout": 1800
-    }
 
     waybar_themes = [
         "ml4w-minimal",
@@ -74,28 +53,6 @@ class DotfilesSettingsApplication(Adw.Application):
         "ml4w-bottom",
         "ml4w-modern"
     ]
-
-    # {: time date}
-    timeformats = [
-        "%H:%M",
-        "%I:%M",
-        "%I:%M %p"
-    ]
-
-    dateformats = [
-        "%a",
-        "%A",
-        "%a %Od",
-        "%Od.%Om.%y",
-        "%Od.%Om.%Y",
-        "%a %Od.%Om.%y",
-        "%a %Od.%Om.%Y",
-        "%Om/%Od/%y",
-        "%Om/%Od/%Y"
-    ]
-
-    timeformat = ""
-    dateformat = ""
 
     def __init__(self):
         super().__init__(application_id='com.ml4w.settings',
@@ -143,15 +100,7 @@ class DotfilesSettingsApplication(Adw.Application):
         if not win:
             win = DotfilesSettingsWindow(application=self)
 
-        # Load Settings
-        result = []
-        for k, v in self.settings.items():
-            v = self.loadSettingBash(k + ".sh")
-            result.append({'key': k, 'value': v})
-
-        for row in result:
-            self.settings[row["key"]] = row["value"]
-
+        self.waybar_toggle = win.waybar_toggle
         self.wallpaper_cache_toggle = win.wallpaper_cache_toggle
         self.waybar_workspaces = win.waybar_workspaces
         self.hypridle_hyprlock = win.hypridle_hyprlock
@@ -247,73 +196,8 @@ class DotfilesSettingsApplication(Adw.Application):
         self.hypridle_hyprlock.get_adjustment().connect("value-changed", self.on_hypridle_hyprlock)
         self.hypridle_dpms.get_adjustment().connect("value-changed", self.on_hypridle_dpms)
         self.hypridle_suspend.get_adjustment().connect("value-changed", self.on_hypridle_suspend)
-        self.waybar_workspaces.get_adjustment().set_value(int(self.settings["waybar_workspaces"]))
-        self.rofi_bordersize.get_adjustment().set_value(int(self.settings["rofi_bordersize"]))
-        self.hypridle_hyprlock.get_adjustment().set_value(int(self.settings["hypridle_hyprlock_timeout"]))
-        self.hypridle_dpms.get_adjustment().set_value(int(self.settings["hypridle_dpms_timeout"]))
-        self.hypridle_suspend.get_adjustment().set_value(int(self.settings["hypridle_suspend_timeout"]))
-
-        self.loadWallpaperEffects(self.dd_wallpaper_effects)
-        self.loadVariations(self.dd_animations,"animation")
-        self.loadVariations(self.dd_environments,"environment")
-        self.loadVariations(self.dd_layouts,"layout")
-        self.loadVariations(self.dd_monitors,"monitor")
-        self.loadVariations(self.dd_decorations,"decoration")
-        self.loadVariations(self.dd_windows,"window")
-        self.loadVariations(self.dd_workspaces,"workspace")
-        self.loadVariations(self.dd_windowrules,"windowrule")
-        self.loadVariations(self.dd_keybindings,"keybinding")
-        self.loadDropDown(self.dd_timeformats,self.timeformats,"waybar_timeformat")
-        self.loadDropDown(self.dd_dateformats,self.dateformats,"waybar_dateformat")
-
-        self.loadShowModule("waybar_taskbar",win.waybar_show_taskbar)
-        self.loadShowModule("waybar_appmenu",win.waybar_show_appmenu)
-        self.loadShowModule("waybar_quicklinks",win.waybar_show_quicklinks)
-        self.loadShowModule("waybar_window",win.waybar_show_window)
-        self.loadShowModule("waybar_network",win.waybar_show_network)
-        self.loadShowModule("waybar_chatgpt",win.waybar_show_chatgpt)
-        self.loadShowModule("waybar_systray",win.waybar_show_systray)
-        self.loadShowModule("waybar_screenlock",win.waybar_show_screenlock)
-
-        self.loadDefaultApp("ml4w/settings/browser.sh",self.default_browser)
-        self.loadDefaultApp("ml4w/settings/email.sh",self.default_email)
-        self.loadDefaultApp("ml4w/settings/filemanager.sh",self.default_filemanager)
-        self.loadDefaultApp("ml4w/settings/editor.sh",self.default_editor)
-        self.loadDefaultApp("ml4w/settings/networkmanager.sh",self.default_networkmanager)
-        self.loadDefaultApp("ml4w/settings/software.sh",self.default_softwaremanager)
-        self.loadDefaultApp("ml4w/settings/terminal.sh",self.default_terminal)
-        self.loadDefaultApp("ml4w/settings/screenshot-editor.sh",self.default_screenshoteditor)
-        self.loadDefaultApp("ml4w/settings/calculator.sh",self.default_calculator)
-        self.loadDefaultApp("ml4w/settings/system-monitor.sh",self.default_systemmonitor)
-        self.loadDefaultApp("ml4w/settings/emojipicker.sh",self.default_emojipicker)
-        self.loadDefaultApp("ml4w/settings/aur.sh",self.default_aurhelper)
-
-        self.loadGamemode()
-        self.loadDock()
-        self.loadWaybar()
-        self.loadWallpaperCache()
-        self.loadRofiFont()
-        self.loadBlurValues()
-
-        self.getTerminal()
-
-        self.custom_datetime.set_show_apply_button(True)
-        self.custom_datetime.set_text(self.settings["waybar_custom_timedateformat"])
-
-        self.custom_timezone.set_show_apply_button(True)
-        self.custom_timezone.set_text(self.settings["waybar_timezone"])
-
-        self.block_reload = False
 
         win.present()
-
-    def getTerminal(self):
-        try:
-            result = subprocess.run(["cat", self.homeFolder + "/.config/ml4w/settings/terminal.sh"], capture_output=True, text=True)
-            self.terminal = result.stdout.strip()
-            # print (":: Using Terminal " + self.terminal)
-        except:
-            print("ERROR: Could not read the file ~/.config/ml4w/settings/terminal.sh")
 
     def on_restart_hypridle(self, widget):
         subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/restart-hypridle.sh"])
@@ -332,60 +216,6 @@ class DotfilesSettingsApplication(Adw.Application):
     def on_open_about_variations(self, widget, _):
         subprocess.Popen(["flatpak-spawn", "--host", self.default_browser.get_text(), "-new-window", "https://github.com/mylinuxforwork/dotfiles/wiki/Configuration-Variations"])
 
-    def loadDock(self):
-        if os.path.isfile(self.homeFolder + "/.config/ml4w/settings/dock-disabled"):
-            self.dock_toggle.set_active(False)
-        else:
-            self.dock_toggle.set_active(True)
-
-    def loadGamemode(self):
-        if os.path.isfile(self.homeFolder + "/.config/ml4w/settings/gamemode-enabled"):
-            self.gamemode_toggle.set_active(True)
-        else:
-            self.gamemode_toggle.set_active(False)
-
-    def loadWaybar(self):
-        if os.path.isfile(self.homeFolder + "/.config/ml4w/settings/waybar-disabled"):
-            self.waybar_toggle.set_active(False)
-        else:
-            self.waybar_toggle.set_active(True)
-
-    def loadWallpaperCache(self):
-        if os.path.isfile(self.dotfiles + "ml4w/settings/wallpaper_cache"):
-            self.wallpaper_cache_toggle.set_active(True)
-        else:
-            self.wallpaper_cache_toggle.set_active(False)
-
-    # Load Show Module
-    def loadShowModule(self,f,d):
-       if f in self.settings:
-            if self.settings[f] == "True":
-                d.set_active(True)
-            else:
-                d.set_active(False)
-
-    # Load Blur Values
-    def loadBlurValues(self):
-        with open(self.dotfiles + "ml4w/settings/blur.sh", 'r') as file:
-            value = file.read().strip()
-        value = value.split("x")
-        self.blur_radius.get_adjustment().set_value(int(value[0]))
-        self.blur_sigma.get_adjustment().set_value(int(value[1]))
-
-    # Load Rofi Font
-    def loadRofiFont(self):
-        with open(self.dotfiles + "ml4w/settings/rofi-font.rasi", 'r') as file:
-            value = file.read().strip()
-        value = value.split('"')
-        self.rofi_font.set_text(value[1])
-        self.rofi_font.set_show_apply_button(True)
-
-    # Load setting from bash file
-    def loadSettingBash(self,f):
-        with open(self.dotfiles + "ml4w/settings/" + f, 'r') as file:
-            value = file.read()
-        return value.strip()
-
     # Load default app
     def loadDefaultApp(self,f,d):
         with open(self.dotfiles + f, 'r') as file:
@@ -394,75 +224,28 @@ class DotfilesSettingsApplication(Adw.Application):
         d.set_show_apply_button(True)
 
     def on_variation_changed(self,widget,*data):
-        if not self.block_reload:
-            value = widget.get_selected_item().get_string()
-            self.overwriteFile("hypr/conf/" + data[1] + ".conf", "source = ~/.config/hypr/conf/" + data[1] + "s/" + value)
-
-    def loadDropDown(self,dd,d,v):
-        store = Gtk.StringList()
-        selected = 0
-        counter = 0
-        value = self.settings[v]
-        for f in d:
-            store.append(f)
-            if f == value:
-                selected = counter
-            counter+=1
-        dd.set_model(store)
-        dd.set_selected(selected)
-
-    def loadWallpaperEffects(self,dd):
-        files_arr = os.listdir(self.dotfiles + "hypr/effects/wallpaper/")
-        store = Gtk.StringList()
-        with open(self.dotfiles + "ml4w/settings/wallpaper-effect.sh", 'r') as file:
-            value = file.read()
-        selected = 0
-        counter = 1
-        store.append("off")
-        for f in files_arr:
-            store.append(f)
-            if f in value:
-                selected = counter
-            counter+=1
-        dd.set_model(store)
-        dd.set_selected(selected)
+        value = widget.get_selected_item().get_string()
+        self.overwriteFile("hypr/conf/" + data[1] + ".conf", "source = ~/.config/hypr/conf/" + data[1] + "s/" + value)
 
     def on_clearcache_wallpaper(self, widget, _):
         subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/wallpaper-cache.sh"])
 
-    def loadVariations(self,dd,v):
-        files_arr = os.listdir(self.dotfiles + "hypr/conf/" + v + "s")
-        store = Gtk.StringList()
-        with open(self.dotfiles + "hypr/conf/" + v + ".conf", 'r') as file:
-            value = file.read()
-        selected = 0
-        counter = 0
-        for f in files_arr:
-            store.append(f)
-            if f in value:
-                selected = counter
-            counter+=1
-        dd.set_model(store)
-        dd.set_selected(selected)
-
     def on_timeformats_changed(self,widget,_):
-        if not self.block_reload:
-            value = widget.get_selected_item().get_string()
-            dateformat = self.dd_dateformats.get_selected_item().get_string()
-            timedate = '        "format": "{:' + value + ' - ' + dateformat + '}",'
-            self.updateSettingsBash("waybar_timeformat", value)
-            self.replaceInFileCheckpoint("waybar/modules.json", '"clock"', '"format"', timedate)
-            self.replaceInFileCheckpoint("hypr/hyprlock.conf", 'clock', 'cmd[update:1000]', '    text = cmd[update:1000] echo "$(date +"' + value + '")"')
-            self.reloadWaybar()
+        value = widget.get_selected_item().get_string()
+        dateformat = self.dd_dateformats.get_selected_item().get_string()
+        timedate = '        "format": "{:' + value + ' - ' + dateformat + '}",'
+        self.updateSettingsBash("waybar_timeformat", value)
+        self.replaceInFileCheckpoint("waybar/modules.json", '"clock"', '"format"', timedate)
+        self.replaceInFileCheckpoint("hypr/hyprlock.conf", 'clock', 'cmd[update:1000]', '    text = cmd[update:1000] echo "$(date +"' + value + '")"')
+        self.reloadWaybar()
 
     def on_dateformats_changed(self,widget,_):
-        if not self.block_reload:
-            value = widget.get_selected_item().get_string()
-            timeformat = self.dd_timeformats.get_selected_item().get_string()
-            timedate = '        "format": "{:' + timeformat + ' - ' + value + '}",'
-            self.updateSettingsBash("waybar_dateformat", value)
-            self.replaceInFileCheckpoint("waybar/modules.json", '"clock"', '"format"', timedate)
-            self.reloadWaybar()
+        value = widget.get_selected_item().get_string()
+        timeformat = self.dd_timeformats.get_selected_item().get_string()
+        timedate = '        "format": "{:' + timeformat + ' - ' + value + '}",'
+        self.updateSettingsBash("waybar_dateformat", value)
+        self.replaceInFileCheckpoint("waybar/modules.json", '"clock"', '"format"', timedate)
+        self.reloadWaybar()
 
     def on_custom_timezone(self, widget):
         value = widget.get_text()
@@ -489,10 +272,9 @@ class DotfilesSettingsApplication(Adw.Application):
         self.reloadWaybar()
 
     def on_wallpaper_effects_changed(self, widget, _):
-        if not self.block_reload:
-            value = widget.get_selected_item().get_string()
-            self.overwriteFile("ml4w/settings/wallpaper-effect.sh", value)
-            subprocess.Popen(["flatpak-spawn", "--host", "bash", self.dotfiles + "hypr/scripts/wallpaper-effects.sh", "reload"])
+        value = widget.get_selected_item().get_string()
+        self.overwriteFile("ml4w/settings/wallpaper-effect.sh", value)
+        subprocess.Popen(["flatpak-spawn", "--host", "bash", self.dotfiles + "hypr/scripts/wallpaper-effects.sh", "reload"])
 
     def on_open_wallpaper_effects_folder(self, widget):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/effects/wallpaper")
@@ -666,76 +448,68 @@ class DotfilesSettingsApplication(Adw.Application):
     # --------------------------------------------------------------
 
     def on_hypridle_hyprlock(self, widget):
-        if not self.block_reload:
-            value = int(widget.get_value())
-            text = '    timeout = ' + str(value)
-            self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK TIMEOUT", text)
-            if int(widget.get_value()) == 0:
-                self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK ONTIMEOUT", "    # on-timeout = loginctl lock-session")
-            else:
-                self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK ONTIMEOUT", "    on-timeout = loginctl lock-session")
-            self.updateSettingsBash("hypridle_hyprlock_timeout", value)
+        value = int(widget.get_value())
+        text = '    timeout = ' + str(value)
+        self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK TIMEOUT", text)
+        if int(widget.get_value()) == 0:
+            self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK ONTIMEOUT", "    # on-timeout = loginctl lock-session")
+        else:
+            self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK ONTIMEOUT", "    on-timeout = loginctl lock-session")
+        self.updateSettingsBash("hypridle_hyprlock_timeout", value)
 
     def on_hypridle_dpms(self, widget):
-        if not self.block_reload:
-            value = int(widget.get_value())
-            text = '    timeout = ' + str(value)
-            self.replaceInFileNext("hypr/hypridle.conf", "DPMS TIMEOUT", text)
-            if int(widget.get_value()) == 0:
-                self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONTIMEOUT", "    # on-timeout = hyprctl dispatch dpms off")
-                self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONRESUME", "    # on-resume = hyprctl dispatch dpms on")
-            else:
-                self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONTIMEOUT", "    on-timeout = hyprctl dispatch dpms off")
-                self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONRESUME", "    on-resume = hyprctl dispatch dpms on")
-            self.updateSettingsBash("hypridle_dpms_timeout", value)
+        value = int(widget.get_value())
+        text = '    timeout = ' + str(value)
+        self.replaceInFileNext("hypr/hypridle.conf", "DPMS TIMEOUT", text)
+        if int(widget.get_value()) == 0:
+            self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONTIMEOUT", "    # on-timeout = hyprctl dispatch dpms off")
+            self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONRESUME", "    # on-resume = hyprctl dispatch dpms on")
+        else:
+            self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONTIMEOUT", "    on-timeout = hyprctl dispatch dpms off")
+            self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONRESUME", "    on-resume = hyprctl dispatch dpms on")
+        self.updateSettingsBash("hypridle_dpms_timeout", value)
 
     def on_hypridle_suspend(self, widget):
-        if not self.block_reload:
-            value = int(widget.get_value())
-            text = '    timeout = ' + str(value)
-            self.replaceInFileNext("hypr/hypridle.conf", "SUSPEND TIMEOUT", text)
-            if int(widget.get_value()) == 0:
-                self.replaceInFileNext("hypr/hypridle.conf", "SUSPEND ONTIMEOUT", "    # on-timeout = systemctl suspend")
-            else:
-                self.replaceInFileNext("hypr/hypridle.conf", "SUSPEND ONTIMEOUT", "    on-timeout = systemctl suspend")
-            self.updateSettingsBash("hypridle_suspend_timeout", value)
+        value = int(widget.get_value())
+        text = '    timeout = ' + str(value)
+        self.replaceInFileNext("hypr/hypridle.conf", "SUSPEND TIMEOUT", text)
+        if int(widget.get_value()) == 0:
+            self.replaceInFileNext("hypr/hypridle.conf", "SUSPEND ONTIMEOUT", "    # on-timeout = systemctl suspend")
+        else:
+            self.replaceInFileNext("hypr/hypridle.conf", "SUSPEND ONTIMEOUT", "    on-timeout = systemctl suspend")
+        self.updateSettingsBash("hypridle_suspend_timeout", value)
 
     def on_waybar_workspaces(self, widget):
-        if not self.block_reload:
-            value = int(widget.get_value())
-            text = '            "*": ' + str(value)
-            self.replaceInFileCheckpoint("waybar/modules.json", "persistent-workspaces",'"*"', text)
-            self.reloadWaybar()
-            print(value)
-            self.updateSettingsBash("waybar_workspaces", value)
+        value = int(widget.get_value())
+        text = '            "*": ' + str(value)
+        self.replaceInFileCheckpoint("waybar/modules.json", "persistent-workspaces",'"*"', text)
+        self.reloadWaybar()
+        print(value)
+        self.updateSettingsBash("waybar_workspaces", value)
 
     def on_gamemode_toggle(self, widget, _):
-        if not self.block_reload:
-            subprocess.Popen(["flatpak-spawn", "--host", "bash", self.dotfiles + "hypr/scripts/gamemode.sh"])
+        subprocess.Popen(["flatpak-spawn", "--host", "bash", self.dotfiles + "hypr/scripts/gamemode.sh"])
 
     def on_dock_toggle(self, widget, _):
-        if not self.block_reload:
-            if (os.path.exists(self.homeFolder + "/.config/ml4w/settings/dock-disabled")):
-                os.remove(self.homeFolder + "/.config/ml4w/settings/dock-disabled")
-                subprocess.Popen(["flatpak-spawn", "--host", "bash", self.dotfiles + "nwg-dock-hyprland/launch.sh"])
-            else:
-                file = open(self.homeFolder + "/.config/ml4w/settings/dock-disabled", "w+")
-                subprocess.Popen(["flatpak-spawn", "--host", "killall", "nwg-dock-hyprland"])
+        if (os.path.exists(self.homeFolder + "/.config/ml4w/settings/dock-disabled")):
+            os.remove(self.homeFolder + "/.config/ml4w/settings/dock-disabled")
+            subprocess.Popen(["flatpak-spawn", "--host", "bash", self.dotfiles + "nwg-dock-hyprland/launch.sh"])
+        else:
+            file = open(self.homeFolder + "/.config/ml4w/settings/dock-disabled", "w+")
+            subprocess.Popen(["flatpak-spawn", "--host", "killall", "nwg-dock-hyprland"])
 
     def on_wallpaper_cache_toggle(self, widget, _):
-        if not self.block_reload:
-            if (os.path.exists(self.dotfiles + "ml4w/settings/wallpaper_cache")):
-                os.remove(self.dotfiles + "ml4w/settings/wallpaper_cache")
-            else:
-                file = open(self.dotfiles + "ml4w/settings/wallpaper_cache", "w+")
+        if (os.path.exists(self.dotfiles + "ml4w/settings/wallpaper_cache")):
+            os.remove(self.dotfiles + "ml4w/settings/wallpaper_cache")
+        else:
+            file = open(self.dotfiles + "ml4w/settings/wallpaper_cache", "w+")
 
     def on_waybar_toggle(self, widget, _):
-        if not self.block_reload:
-            if (os.path.exists(self.homeFolder + "/.config/ml4w/settings/waybar-disabled")):
-                os.remove(self.homeFolder + "/.config/ml4w/settings/waybar-disabled")
-            else:
-                file = open(self.homeFolder + "/.config/ml4w/settings/waybar-disabled", "w+")
-            self.reloadWaybar()
+        if (os.path.exists(self.homeFolder + "/.config/ml4w/settings/waybar-disabled")):
+            os.remove(self.homeFolder + "/.config/ml4w/settings/waybar-disabled")
+        else:
+            file = open(self.homeFolder + "/.config/ml4w/settings/waybar-disabled", "w+")
+        self.reloadWaybar()
 
     def on_rofi_bordersize(self, widget):
         value = int(widget.get_value())
@@ -744,115 +518,104 @@ class DotfilesSettingsApplication(Adw.Application):
         self.updateSettingsBash("rofi_bordersize", value)
 
     def on_blur_radius(self, widget):
-        if not self.block_reload:
-            radius = str(int(widget.get_value()))
-            sigma = str(int(self.blur_sigma.get_adjustment().get_value()))
-            text = radius + "x" + sigma
-            self.overwriteFile("ml4w/settings/blur.sh",text)
+        radius = str(int(widget.get_value()))
+        sigma = str(int(self.blur_sigma.get_adjustment().get_value()))
+        text = radius + "x" + sigma
+        self.overwriteFile("ml4w/settings/blur.sh",text)
 
     def on_blur_sigma(self, widget):
-        if not self.block_reload:
-            sigma = str(int(widget.get_value()))
-            radius = str(int(self.blur_radius.get_adjustment().get_value()))
-            text = radius + "x" + sigma
-            self.overwriteFile("ml4w/settings/blur.sh",text)
+        sigma = str(int(widget.get_value()))
+        radius = str(int(self.blur_radius.get_adjustment().get_value()))
+        text = radius + "x" + sigma
+        self.overwriteFile("ml4w/settings/blur.sh",text)
 
     def on_waybar_show_appmenu(self, widget, _):
-        if not self.block_reload:
-            if widget.get_active():
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"custom/appmenu"','        "custom/appmenu",')
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"custom/appmenuicon"','        "custom/appmenuicon",')
-                self.updateSettingsBash("waybar_appmenu", True)
-            else:
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"custom/appmenu"','        //"custom/appmenu",')
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"custom/appmenuicon"','        //"custom/appmenuicon",')
-                self.updateSettingsBash("waybar_appmenu", False)
-            self.reloadWaybar()
+        if widget.get_active():
+            for t in self.waybar_themes:
+                self.replaceInFile("waybar/themes/" + t + "/config",'"custom/appmenu"','        "custom/appmenu",')
+            for t in self.waybar_themes:
+                self.replaceInFile("waybar/themes/" + t + "/config",'"custom/appmenuicon"','        "custom/appmenuicon",')
+            self.updateSettingsBash("waybar_appmenu", True)
+        else:
+            for t in self.waybar_themes:
+                self.replaceInFile("waybar/themes/" + t + "/config",'"custom/appmenu"','        //"custom/appmenu",')
+            for t in self.waybar_themes:
+                self.replaceInFile("waybar/themes/" + t + "/config",'"custom/appmenuicon"','        //"custom/appmenuicon",')
+            self.updateSettingsBash("waybar_appmenu", False)
+        self.reloadWaybar()
 
     def on_waybar_show_taskbar(self, widget, _):
-        if not self.block_reload:
-            if widget.get_active():
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"wlr/taskbar"','        "wlr/taskbar",')
-                self.updateSettingsBash("waybar_taskbar", True)
-            else:
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"wlr/taskbar"','        //"wlr/taskbar",')
-                self.updateSettingsBash("waybar_taskbar", False)
-            self.reloadWaybar()
+        if widget.get_active():
+            for t in self.waybar_themes:
+                self.replaceInFile("waybar/themes/" + t + "/config",'"wlr/taskbar"','        "wlr/taskbar",')
+            self.updateSettingsBash("waybar_taskbar", True)
+        else:
+            for t in self.waybar_themes:
+                self.replaceInFile("waybar/themes/" + t + "/config",'"wlr/taskbar"','        //"wlr/taskbar",')
+            self.updateSettingsBash("waybar_taskbar", False)
+        self.reloadWaybar()
 
     def on_waybar_show_quicklinks(self, widget, _):
-        if not self.block_reload:
-            if widget.get_active():
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"group/quicklinks"','        "group/quicklinks",')
-                self.updateSettingsBash("waybar_quicklinks", True)
-            else:
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"group/quicklinks"','        //"group/quicklinks",')
-                self.updateSettingsBash("waybar_quicklinks", False)
-            self.reloadWaybar()
+        if widget.get_active():
+            for t in self.waybar_themes:
+                self.replaceInFile("waybar/themes/" + t + "/config",'"group/quicklinks"','        "group/quicklinks",')
+            self.updateSettingsBash("waybar_quicklinks", True)
+        else:
+            for t in self.waybar_themes:
+                self.replaceInFile("waybar/themes/" + t + "/config",'"group/quicklinks"','        //"group/quicklinks",')
+            self.updateSettingsBash("waybar_quicklinks", False)
+        self.reloadWaybar()
 
     def on_waybar_show_network(self, widget, _):
-        if not self.block_reload:
-            if widget.get_active():
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"network"','        "network",')
-                self.updateSettingsBash("waybar_network", True)
-            else:
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"network"','        //"network",')
-                self.updateSettingsBash("waybar_network", False)
-            self.reloadWaybar()
+        if widget.get_active():
+            for t in self.waybar_themes:
+                self.replaceInFile("waybar/themes/" + t + "/config",'"network"','        "network",')
+            self.updateSettingsBash("waybar_network", True)
+        else:
+            for t in self.waybar_themes:
+                self.replaceInFile("waybar/themes/" + t + "/config",'"network"','        //"network",')
+            self.updateSettingsBash("waybar_network", False)
+        self.reloadWaybar()
 
     def on_waybar_show_window(self, widget, _):
-        if not self.block_reload:
-            if widget.get_active():
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"hyprland/window"','        "hyprland/window",')
-                self.updateSettingsBash("waybar_window", True)
-            else:
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"hyprland/window"','        //"hyprland/window",')
-                self.updateSettingsBash("waybar_window", False)
-            self.reloadWaybar()
+        if widget.get_active():
+            for t in self.waybar_themes:
+                self.replaceInFile("waybar/themes/" + t + "/config",'"hyprland/window"','        "hyprland/window",')
+            self.updateSettingsBash("waybar_window", True)
+        else:
+            for t in self.waybar_themes:
+                self.replaceInFile("waybar/themes/" + t + "/config",'"hyprland/window"','        //"hyprland/window",')
+            self.updateSettingsBash("waybar_window", False)
+        self.reloadWaybar()
 
     def on_waybar_show_systray(self, widget, _):
-        if not self.block_reload:
-            if widget.get_active():
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"tray"','        "tray",')
-                self.updateSettingsBash("waybar_systray", True)
-            else:
-                for t in self.waybar_themes:
-                    self.replaceInFile("waybar/themes/" + t + "/config",'"tray"','        //"tray",')
-                self.updateSettingsBash("waybar_systray", False)
-            self.reloadWaybar()
+        if widget.get_active():
+            for t in self.waybar_themes:
+                self.replaceInFile("waybar/themes/" + t + "/config",'"tray"','        "tray",')
+            self.updateSettingsBash("waybar_systray", True)
+        else:
+            for t in self.waybar_themes:
+                self.replaceInFile("waybar/themes/" + t + "/config",'"tray"','        //"tray",')
+            self.updateSettingsBash("waybar_systray", False)
+        self.reloadWaybar()
 
     def on_waybar_show_screenlock(self, widget, _):
-        if not self.block_reload:
-            if widget.get_active():
-                self.replaceInFileCheckpoint("waybar/modules.json", 'group/tools', '"custom/hypridle"', '      "custom/hypridle",')
-                self.updateSettingsBash("waybar_screenlock", True)
-            else:
-                self.replaceInFileCheckpoint("waybar/modules.json", 'group/tools', '"custom/hypridle"', '//      "custom/hypridle",')
-                self.updateSettingsBash("waybar_screenlock", False)
-            self.reloadWaybar()
+        if widget.get_active():
+            self.replaceInFileCheckpoint("waybar/modules.json", 'group/tools', '"custom/hypridle"', '      "custom/hypridle",')
+            self.updateSettingsBash("waybar_screenlock", True)
+        else:
+            self.replaceInFileCheckpoint("waybar/modules.json", 'group/tools', '"custom/hypridle"', '//      "custom/hypridle",')
+            self.updateSettingsBash("waybar_screenlock", False)
+        self.reloadWaybar()
 
     def on_waybar_show_chatgpt(self, widget, _):
-        if not self.block_reload:
-            if widget.get_active():
-                self.replaceInFileCheckpoint("waybar/modules.json", 'group/links', '"custom/chatgpt"', '      "custom/chatgpt",')
-                self.updateSettingsBash("waybar_chatgpt", True)
-            else:
-                self.replaceInFileCheckpoint("waybar/modules.json", 'group/links', '"custom/chatgpt"', '//      "custom/chatgpt",')
-                self.updateSettingsBash("waybar_chatgpt", False)
-            self.reloadWaybar()
-
+        if widget.get_active():
+            self.replaceInFileCheckpoint("waybar/modules.json", 'group/links', '"custom/chatgpt"', '      "custom/chatgpt",')
+            self.updateSettingsBash("waybar_chatgpt", True)
+        else:
+            self.replaceInFileCheckpoint("waybar/modules.json", 'group/links', '"custom/chatgpt"', '//      "custom/chatgpt",')
+            self.updateSettingsBash("waybar_chatgpt", False)
+        self.reloadWaybar()
 
     def updateSettingsBash(self,keyword,value):
         self.overwriteFile("ml4w/settings/" + keyword + ".sh",value)
@@ -937,7 +700,7 @@ class DotfilesSettingsApplication(Adw.Application):
         about = Adw.AboutDialog(
             application_name="ML4W Settings App",
             developer_name="Stephan Raabe",
-            version="2.9.8",
+            version="2.9.8.2",
             website="https://github.com/mylinuxforwork/dotfiles-settings",
             issue_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",
             support_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",
