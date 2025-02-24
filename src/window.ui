@@ -10,7 +10,7 @@
     <child>
       <object class="AdwPreferencesPage" id="waybar_page">
         <property name="title">Status Bar</property>
-        <property name="icon-name">settings-symbolic</property>
+        <property name="icon-name">zoom-in-symbolic</property>
 
         <child>
           <object class="AdwPreferencesGroup">
@@ -172,7 +172,7 @@
     <child>
       <object class="AdwPreferencesPage">
         <property name="title">Appearance</property>
-        <property name="icon-name">settings-symbolic</property>
+        <property name="icon-name">zoom-in-symbolic</property>
 
         <child>
           <object class="AdwPreferencesGroup">
@@ -406,7 +406,7 @@
     <child>
       <object class="AdwPreferencesPage">
         <property name="title">Wallpaper</property>
-        <property name="icon-name">settings-symbolic</property>
+        <property name="icon-name">zoom-in-symbolic</property>
 
         <child>
           <object class="AdwPreferencesGroup">
@@ -470,7 +470,7 @@
     <child>
       <object class="AdwPreferencesPage">
         <property name="title">System</property>
-        <property name="icon-name">settings-symbolic</property>
+        <property name="icon-name">zoom-in-symbolic</property>
 
         <child>
           <object class="AdwPreferencesGroup">
@@ -526,6 +526,12 @@
             <child>
               <object class="AdwEntryRow" id="default_softwaremanager">
                 <property name="title">Software Manager</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwEntryRow" id="default_installupdates">
+                <property name="title">Install Updates Script</property>
               </object>
             </child>
 

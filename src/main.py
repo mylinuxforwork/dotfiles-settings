@@ -123,6 +123,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.default_systemmonitor = win.default_systemmonitor
         self.default_emojipicker = win.default_emojipicker
         self.default_aurhelper = win.default_aurhelper
+        self.default_installupdates = win.default_installupdates
         self.dd_wallpaper_effects = win.dd_wallpaper_effects
         self.dd_animations = win.dd_animations
         self.dd_environments = win.dd_environments
@@ -157,8 +158,8 @@ class DotfilesSettingsApplication(Adw.Application):
         win.open_quicklinks.connect("clicked", self.on_open_quicklinks)
         win.open_wallpaper_effects.connect("clicked", self.on_open_wallpaper_effects_folder)
         win.open_waybar_folder.connect("clicked", self.on_open_waybar_folder)
-
         win.open_timeformatspecifications.connect("clicked", self.on_open_timeformatspecifications)
+
         win.restart_hypridle.connect("clicked", self.on_restart_hypridle)
         win.default_browser.connect("apply", self.on_default_browser)
         win.default_email.connect("apply", self.on_default_email)
@@ -172,6 +173,7 @@ class DotfilesSettingsApplication(Adw.Application):
         win.default_systemmonitor.connect("apply", self.on_default_systemmonitor)
         win.default_emojipicker.connect("apply", self.on_default_emojipicker)
         win.default_aurhelper.connect("apply", self.on_default_aurhelper)
+        win.default_installupdates.connect("apply", self.on_default_installupdates)
 
         self.dd_wallpaper_effects.connect("notify::selected-item", self.on_wallpaper_effects_changed)
         self.dd_animations.connect("notify::selected-item", self.on_variation_changed,"animation")
@@ -408,6 +410,9 @@ class DotfilesSettingsApplication(Adw.Application):
 
     def on_default_email(self, widget):
         self.overwriteFile("ml4w/settings/email.sh",widget.get_text())
+
+    def on_default_installupdates(self, widget):
+        self.overwriteFile("ml4w/settings/installupdates.sh",widget.get_text())
 
     def on_default_filemanager(self, widget):
         self.overwriteFile("ml4w/settings/filemanager.sh",widget.get_text())

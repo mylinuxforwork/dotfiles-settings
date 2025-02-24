@@ -111,6 +111,7 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
     default_systemmonitor = Gtk.Template.Child()
     default_emojipicker = Gtk.Template.Child()
     default_aurhelper = Gtk.Template.Child()
+    default_installupdates = Gtk.Template.Child()
     open_customconf = Gtk.Template.Child()
     open_quicklinks = Gtk.Template.Child()
     open_wallpaper_effects = Gtk.Template.Child()
@@ -161,6 +162,7 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
         self.loadDefaultApp("ml4w/settings/system-monitor.sh",self.default_systemmonitor)
         self.loadDefaultApp("ml4w/settings/emojipicker.sh",self.default_emojipicker)
         self.loadDefaultApp("ml4w/settings/aur.sh",self.default_aurhelper)
+        self.loadDefaultApp("ml4w/settings/installupdates.sh",self.default_installupdates)
 
         self.loadWallpaperEffects(self.dd_wallpaper_effects)
         self.loadVariations(self.dd_animations,"animation")
