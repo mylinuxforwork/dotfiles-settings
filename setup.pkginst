@@ -1,0 +1,17 @@
+{
+    "title": "Setup ML4W Dotfiles Settings",
+    "description": "Remote Installation of Flatpak",
+    "successmessage": "DONE!",
+    "scriptname": "setup.sh",
+    "variables": [],
+    "packages": [
+        {
+            "name": "https://github.com/mylinuxforwork/dotfiles-settings/releases/latest/download/com.ml4w.settings.flatpak",
+            "description": "",
+            "command": "",
+            "isinstalled": true,
+            "type": "flatpak-remote",
+            "packagenames": []
+        }
+    ]
+}
