@@ -6,6 +6,14 @@
     "variables": [],
     "packages": [
         {
+            "name": "org.gnome.Platform/x86_64/47",
+            "description": "",
+            "command": "",
+            "isinstalled": true,
+            "type": "flatpak-app",
+            "packagenames": []
+        },
+        {
             "name": "https://github.com/mylinuxforwork/dotfiles-settings/releases/latest/download/com.ml4w.settings.flatpak",
             "description": "",
             "command": "",
