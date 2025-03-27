@@ -11,7 +11,7 @@
     <child>
       <object class="AdwPreferencesPage" id="waybar_page">
         <property name="title">Status Bar</property>
-        <property name="icon-name">zoom-in-symbolic</property>
+        <property name="icon-name">settings-symbolic</property>
 
         <child>
           <object class="AdwPreferencesGroup">
@@ -49,9 +49,9 @@
                 <property name="title">Edit Quicklinks</property>
                 <child type="suffix">
                   <object class="GtkButton" id="open_quicklinks">
+                    <property name="label">Edit</property>
                     <property name="halign">3</property>
                     <property name="valign">3</property>
-                    <property name="icon-name">accessories-text-editor-symbolic</property>
                   </object>
                 </child>
               </object>
@@ -173,7 +173,7 @@
     <child>
       <object class="AdwPreferencesPage">
         <property name="title">Appearance</property>
-        <property name="icon-name">zoom-in-symbolic</property>
+        <property name="icon-name">settings-symbolic</property>
 
         <child>
           <object class="AdwPreferencesGroup">
@@ -407,7 +407,7 @@
     <child>
       <object class="AdwPreferencesPage">
         <property name="title">Wallpaper</property>
-        <property name="icon-name">zoom-in-symbolic</property>
+        <property name="icon-name">settings-symbolic</property>
 
         <child>
           <object class="AdwPreferencesGroup">
@@ -471,7 +471,7 @@
     <child>
       <object class="AdwPreferencesPage">
         <property name="title">System</property>
-        <property name="icon-name">zoom-in-symbolic</property>
+        <property name="icon-name">settings-symbolic</property>
 
         <child>
           <object class="AdwPreferencesGroup">
