@@ -56,10 +56,7 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
         "waybar_systray": True,
         "waybar_screenlock": True,
         "waybar_window": True,
-        "waybar_settings": True,
-        "hypridle_hyprlock_timeout": 600,
-        "hypridle_dpms_timeout": 660,
-        "hypridle_suspend_timeout": 1800
+        "waybar_settings": True
     }
 
     # {: time date}
@@ -117,12 +114,12 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
     open_wallpaper_effects = Gtk.Template.Child()
     open_waybar_folder = Gtk.Template.Child()
     open_timeformatspecifications = Gtk.Template.Child()
-    restart_hypridle = Gtk.Template.Child()
     dd_wallpaper_effects = Gtk.Template.Child()
     dd_animations = Gtk.Template.Child()
     dd_environments = Gtk.Template.Child()
     dd_layouts = Gtk.Template.Child()
     dd_monitors = Gtk.Template.Child()
+    dd_hypridle = Gtk.Template.Child()
     dd_decorations = Gtk.Template.Child()
     dd_windows = Gtk.Template.Child()
     dd_workspaces = Gtk.Template.Child()
@@ -132,9 +129,6 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
     dd_dateformats = Gtk.Template.Child()
     custom_datetime = Gtk.Template.Child()
     custom_timezone = Gtk.Template.Child()
-    hypridle_hyprlock = Gtk.Template.Child()
-    hypridle_dpms = Gtk.Template.Child()
-    hypridle_suspend = Gtk.Template.Child()
     blur_radius = Gtk.Template.Child()
     blur_sigma = Gtk.Template.Child()
 
@@ -171,6 +165,7 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
         self.loadVariations(self.dd_monitors,"monitor")
         self.loadVariations(self.dd_decorations,"decoration")
         self.loadVariations(self.dd_windows,"window")
+        self.loadVariations(self.dd_hypridle,"hypridle")
         self.loadVariations(self.dd_workspaces,"workspace")
         self.loadVariations(self.dd_windowrules,"windowrule")
         self.loadVariations(self.dd_keybindings,"keybinding")
@@ -204,9 +199,6 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
         # Settings
         self.waybar_workspaces.get_adjustment().set_value(int(self.settings["waybar_workspaces"]))
         self.rofi_bordersize.get_adjustment().set_value(int(self.settings["rofi_bordersize"]))
-        self.hypridle_hyprlock.get_adjustment().set_value(int(self.settings["hypridle_hyprlock_timeout"]))
-        self.hypridle_dpms.get_adjustment().set_value(int(self.settings["hypridle_dpms_timeout"]))
-        self.hypridle_suspend.get_adjustment().set_value(int(self.settings["hypridle_suspend_timeout"]))
 
     # Load default app
     def loadDefaultApp(self,f,d):

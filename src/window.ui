@@ -575,56 +575,35 @@
           </object>
         </child>
 
-
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Hypridle</property>
-            <property name="description">Edit timeouts in seconds for hypridle. 0 seconds = disabled.</property>
+            <property name="title">Hypridle Variations</property>
+            <property name="description">Choose from available variations for hypridle.</property>
             <child type="header-suffix">
-              <object class="GtkButton" id="restart_hypridle">
+              <object class="GtkMenuButton">
                 <property name="halign">3</property>
                 <property name="valign">3</property>
-                <property name="label">Restart</property>
-                <property name="tooltip-text">Restart hypridle to activate your changes.</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">hypridle_button_menu</property>
+                <property name="primary">true</property>
               </object>
             </child>
             <child>
-              <object class="AdwSpinRow" id="hypridle_hyprlock">
-                <property name="title">Hyprlock Timeout</property>
-                <property name="adjustment">
-                  <object class="GtkAdjustment">
-                    <property name="lower">0</property>
-                    <property name="upper">2000</property>
-                    <property name="step-increment">1</property>
-                    <property name="value">600</property>
+              <object class="AdwActionRow">
+                <property name="title">Hypridle</property>
+                <child type="suffix">
+                  <object class="GtkDropDown" id="dd_hypridle">
+                    <property name="enable-search">false</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                        </items>
+                      </object>
+                    </property>
                   </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwSpinRow" id="hypridle_dpms">
-                <property name="title">DPMS Timeout</property>
-                <property name="adjustment">
-                  <object class="GtkAdjustment">
-                    <property name="lower">0</property>
-                    <property name="upper">2000</property>
-                    <property name="step-increment">1</property>
-                    <property name="value">660</property>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwSpinRow" id="hypridle_suspend">
-                <property name="title">Suspend Timeout</property>
-                <property name="adjustment">
-                  <object class="GtkAdjustment">
-                    <property name="lower">0</property>
-                    <property name="upper">2000</property>
-                    <property name="step-increment">1</property>
-                    <property name="value">1800</property>
-                  </object>
-                </property>
+                </child>
               </object>
             </child>
           </object>
@@ -633,7 +612,7 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title">Monitor Variations</property>
-            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
+            <property name="description">Choose from available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
               <object class="GtkMenuButton">
                 <property name="halign">3</property>
@@ -667,7 +646,7 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title">Keybinding Variations</property>
-            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
+            <property name="description">Choose from available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
               <object class="GtkMenuButton">
                 <property name="halign">3</property>
@@ -702,7 +681,7 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title">Layout Variations</property>
-            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
+            <property name="description">Choose from available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
               <object class="GtkMenuButton">
                 <property name="halign">3</property>
@@ -738,7 +717,7 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title">Environment Variations</property>
-            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
+            <property name="description">Choose from available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
               <object class="GtkMenuButton">
                 <property name="halign">3</property>
@@ -774,7 +753,7 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title">Windowrule Variations</property>
-            <property name="description">Choose from the available variations of your Hyprland configuration.</property>
+            <property name="description">Choose from available variations of your Hyprland configuration.</property>
             <child type="header-suffix">
               <object class="GtkMenuButton">
                 <property name="halign">3</property>
@@ -823,6 +802,35 @@
       <item>
         <attribute name="label">Reload Variations</attribute>
         <attribute name="action">app.on_reload_animations</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="true">About Variations</attribute>
+        <attribute name="action">app.open_about_variations</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="hypridle_button_menu">
+    <section>
+      <item>
+        <attribute name="label">Open Variation Folder</attribute>
+        <attribute name="action">app.on_open_hypridle_folder</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Current Variation</attribute>
+        <attribute name="action">app.on_edit_hypridle</attribute>
+      </item>
+      <item>
+        <attribute name="label">Reload Variations</attribute>
+        <attribute name="action">app.on_reload_hypridle</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label">Restart Hypridle</attribute>
+        <attribute name="action">app.on_restart_hypridle</attribute>
       </item>
     </section>
     <section>

@@ -66,6 +66,10 @@ class DotfilesSettingsApplication(Adw.Application):
         self.create_action('open_about_variations', self.on_open_about_variations)
         self.create_action('on_edit_wallpaper_effects', self.on_edit_animations)
         self.create_action('on_clearcache_wallpaper', self.on_clearcache_wallpaper)
+        self.create_action('on_open_hypridle_folder', self.on_open_hypridle)
+        self.create_action('on_edit_hypridle', self.on_edit_hypridle)
+        self.create_action('on_reload_hypridle', self.on_reload_hypridle)
+        self.create_action('on_restart_hypridle', self.on_restart_hypridle)
         self.create_action('on_open_animations_folder', self.on_open_animations)
         self.create_action('on_edit_animations', self.on_edit_animations)
         self.create_action('on_reload_animations', self.on_reload_animations)
@@ -96,89 +100,87 @@ class DotfilesSettingsApplication(Adw.Application):
 
     # Called when the application is activated.
     def do_activate(self):
-        win = self.props.active_window
-        if not win:
-            win = DotfilesSettingsWindow(application=self)
+        self.win = self.props.active_window
+        if not self.win:
+            self.win = DotfilesSettingsWindow(application=self)
 
-        self.waybar_toggle = win.waybar_toggle
-        self.wallpaper_cache_toggle = win.wallpaper_cache_toggle
-        self.waybar_workspaces = win.waybar_workspaces
-        self.hypridle_hyprlock = win.hypridle_hyprlock
-        self.hypridle_dpms = win.hypridle_dpms
-        self.hypridle_suspend = win.hypridle_suspend
-        self.rofi_bordersize = win.rofi_bordersize
-        self.waybar_toggle = win.waybar_toggle
-        self.rofi_font = win.rofi_font
-        self.dock_toggle = win.dock_toggle
-        self.gamemode_toggle = win.gamemode_toggle
-        self.default_browser = win.default_browser
-        self.default_email = win.default_email
-        self.default_filemanager = win.default_filemanager
-        self.default_editor = win.default_editor
-        self.default_networkmanager = win.default_networkmanager
-        self.default_softwaremanager = win.default_softwaremanager
-        self.default_terminal = win.default_terminal
-        self.default_screenshoteditor = win.default_screenshoteditor
-        self.default_calculator = win.default_calculator
-        self.default_systemmonitor = win.default_systemmonitor
-        self.default_emojipicker = win.default_emojipicker
-        self.default_aurhelper = win.default_aurhelper
-        self.default_installupdates = win.default_installupdates
-        self.dd_wallpaper_effects = win.dd_wallpaper_effects
-        self.dd_animations = win.dd_animations
-        self.dd_environments = win.dd_environments
-        self.dd_layouts = win.dd_layouts
-        self.dd_monitors = win.dd_monitors
-        self.dd_decorations = win.dd_decorations
-        self.dd_windows = win.dd_windows
-        self.dd_workspaces = win.dd_workspaces
-        self.dd_windowrules = win.dd_windowrules
-        self.dd_keybindings = win.dd_keybindings
-        self.dd_timeformats = win.dd_timeformats
-        self.dd_dateformats = win.dd_dateformats
-        self.custom_datetime = win.custom_datetime
-        self.custom_timezone = win.custom_timezone
-        self.blur_radius = win.blur_radius
-        self.blur_sigma = win.blur_sigma
+        self.waybar_toggle = self.win.waybar_toggle
+        self.wallpaper_cache_toggle = self.win.wallpaper_cache_toggle
+        self.waybar_workspaces = self.win.waybar_workspaces
+        self.rofi_bordersize = self.win.rofi_bordersize
+        self.waybar_toggle = self.win.waybar_toggle
+        self.rofi_font = self.win.rofi_font
+        self.dock_toggle = self.win.dock_toggle
+        self.gamemode_toggle = self.win.gamemode_toggle
+        self.default_browser = self.win.default_browser
+        self.default_email = self.win.default_email
+        self.default_filemanager = self.win.default_filemanager
+        self.default_editor = self.win.default_editor
+        self.default_networkmanager = self.win.default_networkmanager
+        self.default_softwaremanager = self.win.default_softwaremanager
+        self.default_terminal = self.win.default_terminal
+        self.default_screenshoteditor = self.win.default_screenshoteditor
+        self.default_calculator = self.win.default_calculator
+        self.default_systemmonitor = self.win.default_systemmonitor
+        self.default_emojipicker = self.win.default_emojipicker
+        self.default_aurhelper = self.win.default_aurhelper
+        self.default_installupdates = self.win.default_installupdates
+        self.dd_wallpaper_effects = self.win.dd_wallpaper_effects
+        self.dd_animations = self.win.dd_animations
+        self.dd_environments = self.win.dd_environments
+        self.dd_layouts = self.win.dd_layouts
+        self.dd_monitors = self.win.dd_monitors
+        self.dd_hypridle = self.win.dd_hypridle
+        self.dd_decorations = self.win.dd_decorations
+        self.dd_windows = self.win.dd_windows
+        self.dd_workspaces = self.win.dd_workspaces
+        self.dd_windowrules = self.win.dd_windowrules
+        self.dd_keybindings = self.win.dd_keybindings
+        self.dd_timeformats = self.win.dd_timeformats
+        self.dd_dateformats = self.win.dd_dateformats
+        self.custom_datetime = self.win.custom_datetime
+        self.custom_timezone = self.win.custom_timezone
+        self.blur_radius = self.win.blur_radius
+        self.blur_sigma = self.win.blur_sigma
 
-        win.waybar_toggle.connect("notify::active",self.on_waybar_toggle)
-        win.waybar_show_appmenu.connect("notify::active",self.on_waybar_show_appmenu)
-        win.waybar_show_taskbar.connect("notify::active",self.on_waybar_show_taskbar)
-        win.waybar_show_quicklinks.connect("notify::active",self.on_waybar_show_quicklinks)
-        win.waybar_show_network.connect("notify::active",self.on_waybar_show_network)
-        win.waybar_show_screenlock.connect("notify::active",self.on_waybar_show_screenlock)
-        win.waybar_show_chatgpt.connect("notify::active",self.on_waybar_show_chatgpt)
-        win.waybar_show_systray.connect("notify::active",self.on_waybar_show_systray)
-        win.waybar_show_window.connect("notify::active",self.on_waybar_show_window)
-        win.dock_toggle.connect("notify::active",self.on_dock_toggle)
-        win.gamemode_toggle.connect("notify::active",self.on_gamemode_toggle)
-        win.wallpaper_cache_toggle.connect("notify::active",self.on_wallpaper_cache_toggle)
+        self.win.waybar_toggle.connect("notify::active",self.on_waybar_toggle)
+        self.win.waybar_show_appmenu.connect("notify::active",self.on_waybar_show_appmenu)
+        self.win.waybar_show_taskbar.connect("notify::active",self.on_waybar_show_taskbar)
+        self.win.waybar_show_quicklinks.connect("notify::active",self.on_waybar_show_quicklinks)
+        self.win.waybar_show_network.connect("notify::active",self.on_waybar_show_network)
+        self.win.waybar_show_screenlock.connect("notify::active",self.on_waybar_show_screenlock)
+        self.win.waybar_show_chatgpt.connect("notify::active",self.on_waybar_show_chatgpt)
+        self.win.waybar_show_systray.connect("notify::active",self.on_waybar_show_systray)
+        self.win.waybar_show_window.connect("notify::active",self.on_waybar_show_window)
+        self.win.dock_toggle.connect("notify::active",self.on_dock_toggle)
+        self.win.gamemode_toggle.connect("notify::active",self.on_gamemode_toggle)
+        self.win.wallpaper_cache_toggle.connect("notify::active",self.on_wallpaper_cache_toggle)
 
-        win.open_customconf.connect("clicked", self.on_open_customconf)
-        win.open_quicklinks.connect("clicked", self.on_open_quicklinks)
-        win.open_wallpaper_effects.connect("clicked", self.on_open_wallpaper_effects_folder)
-        win.open_waybar_folder.connect("clicked", self.on_open_waybar_folder)
-        win.open_timeformatspecifications.connect("clicked", self.on_open_timeformatspecifications)
+        self.win.open_customconf.connect("clicked", self.on_open_customconf)
+        self.win.open_quicklinks.connect("clicked", self.on_open_quicklinks)
+        self.win.open_wallpaper_effects.connect("clicked", self.on_open_wallpaper_effects_folder)
+        self.win.open_waybar_folder.connect("clicked", self.on_open_waybar_folder)
+        self.win.open_timeformatspecifications.connect("clicked", self.on_open_timeformatspecifications)
 
-        win.restart_hypridle.connect("clicked", self.on_restart_hypridle)
-        win.default_browser.connect("apply", self.on_default_browser)
-        win.default_email.connect("apply", self.on_default_email)
-        win.default_filemanager.connect("apply", self.on_default_filemanager)
-        win.default_editor.connect("apply", self.on_default_editor)
-        win.default_networkmanager.connect("apply", self.on_default_networkmanager)
-        win.default_softwaremanager.connect("apply", self.on_default_softwaremanager)
-        win.default_terminal.connect("apply", self.on_default_terminal)
-        win.default_screenshoteditor.connect("apply", self.on_default_screenshoteditor)
-        win.default_calculator.connect("apply", self.on_default_calculator)
-        win.default_systemmonitor.connect("apply", self.on_default_systemmonitor)
-        win.default_emojipicker.connect("apply", self.on_default_emojipicker)
-        win.default_aurhelper.connect("apply", self.on_default_aurhelper)
-        win.default_installupdates.connect("apply", self.on_default_installupdates)
+        self.win.default_browser.connect("apply", self.on_default_browser)
+        self.win.default_email.connect("apply", self.on_default_email)
+        self.win.default_filemanager.connect("apply", self.on_default_filemanager)
+        self.win.default_editor.connect("apply", self.on_default_editor)
+        self.win.default_networkmanager.connect("apply", self.on_default_networkmanager)
+        self.win.default_softwaremanager.connect("apply", self.on_default_softwaremanager)
+        self.win.default_terminal.connect("apply", self.on_default_terminal)
+        self.win.default_screenshoteditor.connect("apply", self.on_default_screenshoteditor)
+        self.win.default_calculator.connect("apply", self.on_default_calculator)
+        self.win.default_systemmonitor.connect("apply", self.on_default_systemmonitor)
+        self.win.default_emojipicker.connect("apply", self.on_default_emojipicker)
+        self.win.default_aurhelper.connect("apply", self.on_default_aurhelper)
+        self.win.default_installupdates.connect("apply", self.on_default_installupdates)
 
         self.dd_wallpaper_effects.connect("notify::selected-item", self.on_wallpaper_effects_changed)
         self.dd_animations.connect("notify::selected-item", self.on_variation_changed,"animation")
         self.dd_monitors.connect("notify::selected-item", self.on_variation_changed,"monitor")
         self.dd_environments.connect("notify::selected-item", self.on_variation_changed,"environment")
+        self.dd_hypridle.connect("notify::selected-item", self.on_variation_changed,"hypridle")
         self.dd_layouts.connect("notify::selected-item", self.on_variation_changed,"layout")
         self.dd_decorations.connect("notify::selected-item", self.on_variation_changed,"decoration")
         self.dd_windows.connect("notify::selected-item", self.on_variation_changed,"window")
@@ -195,13 +197,10 @@ class DotfilesSettingsApplication(Adw.Application):
         self.blur_radius.get_adjustment().connect("value-changed", self.on_blur_radius)
         self.blur_sigma.get_adjustment().connect("value-changed", self.on_blur_sigma)
         self.rofi_font.connect("apply", self.on_rofi_font)
-        self.hypridle_hyprlock.get_adjustment().connect("value-changed", self.on_hypridle_hyprlock)
-        self.hypridle_dpms.get_adjustment().connect("value-changed", self.on_hypridle_dpms)
-        self.hypridle_suspend.get_adjustment().connect("value-changed", self.on_hypridle_suspend)
 
-        win.present()
+        self.win.present()
 
-    def on_restart_hypridle(self, widget):
+    def on_restart_hypridle(self, widget, _):
         subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/restart-hypridle.sh"])
 
     # Open editor with custom.conf
@@ -288,12 +287,24 @@ class DotfilesSettingsApplication(Adw.Application):
     # VARIATIONS
     # --------------------------------------------------------------
 
+    # Hypridle
+    def on_open_hypridle(self, widget, _):
+        self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/hypridles")
+
+    def on_reload_hypridle(self, widget, _):
+        self.win.loadVariations(self.dd_hypridle,"hypridle")
+
+    def on_edit_hypridle(self, widget, _):
+        i = self.dd_hypridle.get_selected()
+        f = self.dd_hypridle.get_model()[i].get_string()
+        self.on_open(widget, self.default_editor.get_text(), "hypr/conf/hypridles/" + f)
+
     # Animation
     def on_open_animations(self, widget, _):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/animations")
 
     def on_reload_animations(self, widget, _):
-        self.loadVariations(self.dd_animations,"animation")
+        self.win.loadVariations(self.dd_animations,"animation")
 
     def on_edit_animations(self, widget, _):
         i = self.dd_animations.get_selected()
@@ -305,7 +316,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/environments")
 
     def on_reload_environments(self, widget, _):
-        self.loadVariations(self.dd_environments,"environment")
+        self.win.loadVariations(self.dd_environments,"environment")
 
     def on_edit_environments(self, widget, _):
         i = self.dd_environments.get_selected()
@@ -317,7 +328,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/layouts")
 
     def on_reload_layouts(self, widget, _):
-        self.loadVariations(self.dd_layouts,"layout")
+        self.win.loadVariations(self.dd_layouts,"layout")
 
     def on_edit_layouts(self, widget, _):
         i = self.dd_layouts.get_selected()
@@ -329,7 +340,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/monitors")
 
     def on_reload_monitors(self, widget, _):
-        self.loadVariations(self.dd_monitors,"monitor")
+        self.win.loadVariations(self.dd_monitors,"monitor")
 
     def on_edit_monitors(self, widget, _):
         i = self.dd_monitors.get_selected()
@@ -341,7 +352,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/decorations")
 
     def on_reload_decorations(self, widget, _):
-        self.loadVariations(self.dd_decorations,"decoration")
+        self.win.loadVariations(self.dd_decorations,"decoration")
 
     def on_edit_decorations(self, widget, _):
         i = self.dd_decorations.get_selected()
@@ -353,7 +364,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/workspaces")
 
     def on_reload_workspaces(self, widget, _):
-        self.loadVariations(self.dd_windows,"workspace")
+        self.win.loadVariations(self.dd_windows,"workspace")
 
     def on_edit_workspaces(self, widget, _):
         i = self.dd_workspaces.get_selected()
@@ -366,7 +377,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/windows")
 
     def on_reload_windows(self, widget, _):
-        self.loadVariations(self.dd_windows,"window")
+        self.win.loadVariations(self.dd_windows,"window")
 
     def on_edit_windows(self, widget, _):
         i = self.dd_windows.get_selected()
@@ -378,7 +389,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/windowrules")
 
     def on_reload_windowrules(self, widget, _):
-        self.loadVariations(self.dd_windowrules,"windowrule")
+        self.win.loadVariations(self.dd_windowrules,"windowrule")
 
     def on_edit_windowrules(self, widget, _):
         i = self.dd_windowrules.get_selected()
@@ -390,7 +401,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/keybindings")
 
     def on_reload_keybindings(self, widget, _):
-        self.loadVariations(self.dd_keybindings,"keybinding")
+        self.win.loadVariations(self.dd_keybindings,"keybinding")
 
     def on_edit_keybindings(self, widget, _):
         i = self.dd_keybindings.get_selected()
@@ -447,42 +458,6 @@ class DotfilesSettingsApplication(Adw.Application):
     def on_rofi_font(self, widget):
         value = 'configuration { font: "' + widget.get_text() + '"; }'
         self.overwriteFile("ml4w/settings/rofi-font.rasi",value)
-
-    # --------------------------------------------------------------
-    # Hypridle
-    # --------------------------------------------------------------
-
-    def on_hypridle_hyprlock(self, widget):
-        value = int(widget.get_value())
-        text = '    timeout = ' + str(value)
-        self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK TIMEOUT", text)
-        if int(widget.get_value()) == 0:
-            self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK ONTIMEOUT", "    # on-timeout = loginctl lock-session")
-        else:
-            self.replaceInFileNext("hypr/hypridle.conf", "HYPRLOCK ONTIMEOUT", "    on-timeout = loginctl lock-session")
-        self.updateSettingsBash("hypridle_hyprlock_timeout", value)
-
-    def on_hypridle_dpms(self, widget):
-        value = int(widget.get_value())
-        text = '    timeout = ' + str(value)
-        self.replaceInFileNext("hypr/hypridle.conf", "DPMS TIMEOUT", text)
-        if int(widget.get_value()) == 0:
-            self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONTIMEOUT", "    # on-timeout = hyprctl dispatch dpms off")
-            self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONRESUME", "    # on-resume = hyprctl dispatch dpms on")
-        else:
-            self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONTIMEOUT", "    on-timeout = hyprctl dispatch dpms off")
-            self.replaceInFileNext("hypr/hypridle.conf", "DPMS ONRESUME", "    on-resume = hyprctl dispatch dpms on")
-        self.updateSettingsBash("hypridle_dpms_timeout", value)
-
-    def on_hypridle_suspend(self, widget):
-        value = int(widget.get_value())
-        text = '    timeout = ' + str(value)
-        self.replaceInFileNext("hypr/hypridle.conf", "SUSPEND TIMEOUT", text)
-        if int(widget.get_value()) == 0:
-            self.replaceInFileNext("hypr/hypridle.conf", "SUSPEND ONTIMEOUT", "    # on-timeout = systemctl suspend")
-        else:
-            self.replaceInFileNext("hypr/hypridle.conf", "SUSPEND ONTIMEOUT", "    on-timeout = systemctl suspend")
-        self.updateSettingsBash("hypridle_suspend_timeout", value)
 
     def on_waybar_workspaces(self, widget):
         value = int(widget.get_value())
@@ -705,7 +680,7 @@ class DotfilesSettingsApplication(Adw.Application):
         about = Adw.AboutDialog(
             application_name="ML4W Settings App",
             developer_name="Stephan Raabe",
-            version="2.9.8.2",
+            version="2.9.8.4",
             website="https://github.com/mylinuxforwork/dotfiles-settings",
             issue_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",
             support_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",
