@@ -5,7 +5,7 @@
   <template class="Ml4wSettingsWindow" parent="AdwPreferencesWindow">
     <property name="default-width">800</property>
     <property name="default-height">600</property>
-    <property name="resizable">false</property>
+    <property name="resizable">true</property>
     <property name="title">ML4W Dotfiles Settings</property>
 
     <child>
@@ -572,40 +572,6 @@
               </object>
             </child>
 
-          </object>
-        </child>
-
-        <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title">Hypridle Variations</property>
-            <property name="description">Choose from available variations for hypridle.</property>
-            <child type="header-suffix">
-              <object class="GtkMenuButton">
-                <property name="halign">3</property>
-                <property name="valign">3</property>
-                <property name="icon-name">open-menu-symbolic</property>
-                <property name="menu-model">hypridle_button_menu</property>
-                <property name="primary">true</property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwActionRow">
-                <property name="title">Hypridle</property>
-                <child type="suffix">
-                  <object class="GtkDropDown" id="dd_hypridle">
-                    <property name="enable-search">false</property>
-                    <property name="halign">3</property>
-                    <property name="valign">3</property>
-                    <property name="model">
-                      <object class="GtkStringList">
-                        <items>
-                        </items>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-              </object>
-            </child>
           </object>
         </child>
 

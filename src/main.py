@@ -66,10 +66,6 @@ class DotfilesSettingsApplication(Adw.Application):
         self.create_action('open_about_variations', self.on_open_about_variations)
         self.create_action('on_edit_wallpaper_effects', self.on_edit_animations)
         self.create_action('on_clearcache_wallpaper', self.on_clearcache_wallpaper)
-        self.create_action('on_open_hypridle_folder', self.on_open_hypridle)
-        self.create_action('on_edit_hypridle', self.on_edit_hypridle)
-        self.create_action('on_reload_hypridle', self.on_reload_hypridle)
-        self.create_action('on_restart_hypridle', self.on_restart_hypridle)
         self.create_action('on_open_animations_folder', self.on_open_animations)
         self.create_action('on_edit_animations', self.on_edit_animations)
         self.create_action('on_reload_animations', self.on_reload_animations)
@@ -130,7 +126,6 @@ class DotfilesSettingsApplication(Adw.Application):
         self.dd_environments = self.win.dd_environments
         self.dd_layouts = self.win.dd_layouts
         self.dd_monitors = self.win.dd_monitors
-        self.dd_hypridle = self.win.dd_hypridle
         self.dd_decorations = self.win.dd_decorations
         self.dd_windows = self.win.dd_windows
         self.dd_workspaces = self.win.dd_workspaces
@@ -180,7 +175,6 @@ class DotfilesSettingsApplication(Adw.Application):
         self.dd_animations.connect("notify::selected-item", self.on_variation_changed,"animation")
         self.dd_monitors.connect("notify::selected-item", self.on_variation_changed,"monitor")
         self.dd_environments.connect("notify::selected-item", self.on_variation_changed,"environment")
-        self.dd_hypridle.connect("notify::selected-item", self.on_variation_changed,"hypridle")
         self.dd_layouts.connect("notify::selected-item", self.on_variation_changed,"layout")
         self.dd_decorations.connect("notify::selected-item", self.on_variation_changed,"decoration")
         self.dd_windows.connect("notify::selected-item", self.on_variation_changed,"window")
@@ -199,9 +193,6 @@ class DotfilesSettingsApplication(Adw.Application):
         self.rofi_font.connect("apply", self.on_rofi_font)
 
         self.win.present()
-
-    def on_restart_hypridle(self, widget, _):
-        subprocess.Popen(["bash", self.dotfiles + "hypr/scripts/restart-hypridle.sh"])
 
     # Open editor with custom.conf
     def on_open_customconf(self, widget):
@@ -286,18 +277,6 @@ class DotfilesSettingsApplication(Adw.Application):
     # --------------------------------------------------------------
     # VARIATIONS
     # --------------------------------------------------------------
-
-    # Hypridle
-    def on_open_hypridle(self, widget, _):
-        self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/hypridles")
-
-    def on_reload_hypridle(self, widget, _):
-        self.win.loadVariations(self.dd_hypridle,"hypridle")
-
-    def on_edit_hypridle(self, widget, _):
-        i = self.dd_hypridle.get_selected()
-        f = self.dd_hypridle.get_model()[i].get_string()
-        self.on_open(widget, self.default_editor.get_text(), "hypr/conf/hypridles/" + f)
 
     # Animation
     def on_open_animations(self, widget, _):
