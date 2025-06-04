@@ -15,7 +15,7 @@ The ML4W Settings App will be installed with the Dotfiles as Flatpak.
 Copy the following command into your terminal.
 
 ```
-curl -s https://raw.githubusercontent.com/mylinuxforwork/packages-installer/main/setup.sh | bash -s -- -p flatpak -s https://raw.githubusercontent.com/mylinuxforwork/dotfiles-settings/master/com.ml4w.settings.pkginst com.ml4w.settings
+bash -c "$(curl -s https://raw.githubusercontent.com/mylinuxforwork/dotfiles-settings/master/setup.sh)"
 ```
 > The installation is build with ML4W Packages Installer. https://github.com/mylinuxforwork/packages-installer
 
