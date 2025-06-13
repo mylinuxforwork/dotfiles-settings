@@ -1,5 +1,5 @@
 project('dotfiles-settings',
-          version: '0.1.0',
+          version: '2.9.8.6',
     meson_version: '>= 1.0.0',
   default_options: [ 'warning_level=2', 'werror=false', ],
 )
