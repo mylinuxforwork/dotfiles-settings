@@ -88,12 +88,6 @@
             </child>
 
             <child>
-              <object class="AdwSwitchRow" id="waybar_show_chatgpt">
-                <property name="title">Show ChatGPT Module</property>
-              </object>
-            </child>
-
-            <child>
               <object class="AdwSwitchRow" id="waybar_show_network">
                 <property name="title">Show Network Module</property>
               </object>

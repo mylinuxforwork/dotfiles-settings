@@ -144,7 +144,6 @@ class DotfilesSettingsApplication(Adw.Application):
         self.win.waybar_show_quicklinks.connect("notify::active",self.on_waybar_show_quicklinks)
         self.win.waybar_show_network.connect("notify::active",self.on_waybar_show_network)
         self.win.waybar_show_screenlock.connect("notify::active",self.on_waybar_show_screenlock)
-        self.win.waybar_show_chatgpt.connect("notify::active",self.on_waybar_show_chatgpt)
         self.win.waybar_show_systray.connect("notify::active",self.on_waybar_show_systray)
         self.win.waybar_show_window.connect("notify::active",self.on_waybar_show_window)
         self.win.dock_toggle.connect("notify::active",self.on_dock_toggle)
@@ -565,15 +564,6 @@ class DotfilesSettingsApplication(Adw.Application):
         else:
             self.replaceInFileCheckpoint("waybar/modules.json", 'group/tools', '"custom/hypridle"', '//      "custom/hypridle",')
             self.updateSettingsBash("waybar_screenlock", False)
-        self.reloadWaybar()
-
-    def on_waybar_show_chatgpt(self, widget, _):
-        if widget.get_active():
-            self.replaceInFileCheckpoint("waybar/modules.json", 'group/links', '"custom/chatgpt"', '      "custom/chatgpt",')
-            self.updateSettingsBash("waybar_chatgpt", True)
-        else:
-            self.replaceInFileCheckpoint("waybar/modules.json", 'group/links', '"custom/chatgpt"', '//      "custom/chatgpt",')
-            self.updateSettingsBash("waybar_chatgpt", False)
         self.reloadWaybar()
 
     def updateSettingsBash(self,keyword,value):

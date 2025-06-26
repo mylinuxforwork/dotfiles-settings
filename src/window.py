@@ -52,7 +52,6 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
         "waybar_taskbar": False,
         "waybar_quicklinks": True,
         "waybar_network": True,
-        "waybar_chatgpt": True,
         "waybar_systray": True,
         "waybar_screenlock": True,
         "waybar_window": True,
@@ -85,7 +84,6 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
     waybar_show_taskbar = Gtk.Template.Child()
     waybar_show_quicklinks = Gtk.Template.Child()
     waybar_show_network = Gtk.Template.Child()
-    waybar_show_chatgpt = Gtk.Template.Child()
     waybar_show_systray = Gtk.Template.Child()
     waybar_show_screenlock = Gtk.Template.Child()
     waybar_show_window = Gtk.Template.Child()
@@ -175,7 +173,6 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
         self.loadShowModule("waybar_quicklinks",self.waybar_show_quicklinks)
         self.loadShowModule("waybar_window",self.waybar_show_window)
         self.loadShowModule("waybar_network",self.waybar_show_network)
-        self.loadShowModule("waybar_chatgpt",self.waybar_show_chatgpt)
         self.loadShowModule("waybar_systray",self.waybar_show_systray)
         self.loadShowModule("waybar_screenlock",self.waybar_show_screenlock)
 
