@@ -49,8 +49,6 @@ class DotfilesSettingsApplication(Adw.Application):
         "ml4w-minimal",
         "ml4w",
         "ml4w-blur",
-        "ml4w-blur-bottom",
-        "ml4w-bottom",
         "ml4w-modern"
     ]
 
