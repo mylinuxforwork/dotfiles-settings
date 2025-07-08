@@ -6,7 +6,9 @@
 
   <name>ML4W Dotfiles Settings App</name>
   <summary>Settings app of the ML4W Dotfiles for Hyprland</summary>
-  
+  <description>
+    <p>Settings app of the ML4W Dotfiles for Hyprland</p>
+  </description>  
   <developer id="tld.vendor">
     <name>Stephan Raabe (ML4W)</name>
   </developer>
