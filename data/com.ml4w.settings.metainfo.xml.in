@@ -4,14 +4,11 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
 
-  <name>Dotfiles-settings</name>
-  <summary>Keep the summary shorter, between 10 and 35 characters</summary>
-  <description>
-    <p>No description</p>
-  </description>
-
+  <name>ML4W Dotfiles Settings App</name>
+  <summary>Settings app of the ML4W Dotfiles for Hyprland</summary>
+  
   <developer id="tld.vendor">
-    <name>Developer name</name>
+    <name>Stephan Raabe (ML4W)</name>
   </developer>
 
   <!-- Requered: Should be a link to the upstream homepage for the component -->
@@ -58,7 +55,7 @@
   </screenshots>
 
   <releases>
-    <release version="1.0.1" date="2024-01-18">
+    <release version="2.9.8.7" date="2025-07-08">
       <url type="details">https://example.org/changelog.html#version_1.0.1</url>
       <description translate="no">
         <p>Release description</p>
