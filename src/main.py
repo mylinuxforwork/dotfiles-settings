@@ -647,8 +647,8 @@ class DotfilesSettingsApplication(Adw.Application):
         about = Adw.AboutDialog(
             application_name="ML4W Settings App",
             developer_name="Stephan Raabe",
-            version="2.9.8.7",
-            website="https://github.com/mylinuxforwork/dotfiles-settings",
+            version="2.9.8.8",
+            website="https://mylinuxforwork.github.io/dotfiles/ml4w-apps/dotfiles-app",
             issue_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",
             support_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",
             copyright="© 2025 Stephan Raabe",
