@@ -48,7 +48,6 @@ class DotfilesSettingsApplication(Adw.Application):
     waybar_themes = [
         "ml4w-minimal",
         "ml4w",
-        "ml4w-blur",
         "ml4w-modern"
     ]
 
@@ -647,7 +646,7 @@ class DotfilesSettingsApplication(Adw.Application):
         about = Adw.AboutDialog(
             application_name="ML4W Settings App",
             developer_name="Stephan Raabe",
-            version="2.9.8.8",
+            version="2.9.9",
             website="https://mylinuxforwork.github.io/dotfiles/ml4w-apps/dotfiles-app",
             issue_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",
             support_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",
