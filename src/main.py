@@ -110,6 +110,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.default_filemanager = self.win.default_filemanager
         self.default_editor = self.win.default_editor
         self.default_networkmanager = self.win.default_networkmanager
+        self.default_bluetooth = self.win.default_bluetooth
         self.default_softwaremanager = self.win.default_softwaremanager
         self.default_terminal = self.win.default_terminal
         self.default_screenshoteditor = self.win.default_screenshoteditor
@@ -158,6 +159,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.win.default_filemanager.connect("apply", self.on_default_filemanager)
         self.win.default_editor.connect("apply", self.on_default_editor)
         self.win.default_networkmanager.connect("apply", self.on_default_networkmanager)
+        self.win.default_bluetooth.connect("apply", self.on_default_bluetooth)
         self.win.default_softwaremanager.connect("apply", self.on_default_softwaremanager)
         self.win.default_terminal.connect("apply", self.on_default_terminal)
         self.win.default_screenshoteditor.connect("apply", self.on_default_screenshoteditor)
@@ -409,6 +411,9 @@ class DotfilesSettingsApplication(Adw.Application):
     def on_default_networkmanager(self, widget):
         self.overwriteFile("ml4w/settings/networkmanager.sh",widget.get_text())
 
+    def on_default_bluetooth(self, widget):
+        self.overwriteFile("ml4w/settings/bluetooth.sh",widget.get_text())
+
     def on_default_softwaremanager(self, widget):
         self.overwriteFile("ml4w/settings/software.sh",widget.get_text())
 
@@ -575,9 +580,12 @@ class DotfilesSettingsApplication(Adw.Application):
                 return False
 
     def overwriteFile(self, f, text):
-        file=open(self.dotfiles + f,"w+")
-        file.write(str(text))
-        file.close()
+        if os.path.exists(self.dotfiles + f):
+            file=open(self.dotfiles + f,"w+")
+            file.write(str(text))
+            file.close()
+        else:
+            print("ERROR: File not found " + self.dotfiles + f)
 
     def replaceInFile(self, f, search, replace):
         file = open(self.dotfiles + f, 'r')

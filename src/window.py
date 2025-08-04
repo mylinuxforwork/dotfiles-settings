@@ -99,6 +99,7 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
     default_filemanager = Gtk.Template.Child()
     default_editor = Gtk.Template.Child()
     default_networkmanager = Gtk.Template.Child()
+    default_bluetooth = Gtk.Template.Child()
     default_softwaremanager = Gtk.Template.Child()
     default_terminal = Gtk.Template.Child()
     default_screenshoteditor = Gtk.Template.Child()
@@ -146,6 +147,7 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
         self.loadDefaultApp("ml4w/settings/filemanager.sh",self.default_filemanager)
         self.loadDefaultApp("ml4w/settings/editor.sh",self.default_editor)
         self.loadDefaultApp("ml4w/settings/networkmanager.sh",self.default_networkmanager)
+        self.loadDefaultApp("ml4w/settings/bluetooth.sh",self.default_bluetooth)
         self.loadDefaultApp("ml4w/settings/software.sh",self.default_softwaremanager)
         self.loadDefaultApp("ml4w/settings/terminal.sh",self.default_terminal)
         self.loadDefaultApp("ml4w/settings/screenshot-editor.sh",self.default_screenshoteditor)
@@ -197,10 +199,15 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
 
     # Load default app
     def loadDefaultApp(self,f,d):
-        with open(self.dotfiles + f, 'r') as file:
-            value = file.read()
-        d.set_text(value.strip())
-        d.set_show_apply_button(True)
+        if os.path.exists(self.dotfiles + f):
+            with open(self.dotfiles + f, 'r') as file:
+                value = file.read()
+            d.set_text(value.strip())
+            d.set_show_apply_button(True)
+        else:
+            d.set_text("")
+            d.set_editable(False)
+            print("ERROR: File not found " + self.dotfiles + f)
 
     # Load setting from bash file
     def loadSettingBash(self,f):

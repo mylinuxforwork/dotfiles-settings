@@ -519,6 +519,12 @@
             </child>
 
             <child>
+              <object class="AdwEntryRow" id="default_bluetooth">
+                <property name="title">Bluetooth Manager</property>
+              </object>
+            </child>
+
+            <child>
               <object class="AdwEntryRow" id="default_softwaremanager">
                 <property name="title">Software Manager</property>
               </object>
