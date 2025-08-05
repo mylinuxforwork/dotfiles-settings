@@ -87,10 +87,7 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
     waybar_show_systray = Gtk.Template.Child()
     waybar_show_screenlock = Gtk.Template.Child()
     waybar_show_window = Gtk.Template.Child()
-    waybar_toggle = Gtk.Template.Child()
     wallpaper_cache_toggle = Gtk.Template.Child()
-    gamemode_toggle = Gtk.Template.Child()
-    dock_toggle = Gtk.Template.Child()
     rofi_font = Gtk.Template.Child()
     rofi_bordersize = Gtk.Template.Child()
     waybar_workspaces = Gtk.Template.Child()
@@ -178,9 +175,6 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
         self.loadShowModule("waybar_systray",self.waybar_show_systray)
         self.loadShowModule("waybar_screenlock",self.waybar_show_screenlock)
 
-        self.loadGamemode()
-        self.loadDock()
-        self.loadWaybar()
         self.loadWallpaperCache()
         self.loadRofiFont()
         self.loadBlurValues()
@@ -269,25 +263,6 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
                 d.set_active(True)
             else:
                 d.set_active(False)
-
-    # Load Gamemode
-    def loadGamemode(self):
-        if os.path.isfile(self.homeFolder + "/.config/ml4w/settings/gamemode-enabled"):
-            self.gamemode_toggle.set_active(True)
-        else:
-            self.gamemode_toggle.set_active(False)
-
-    def loadDock(self):
-        if os.path.isfile(self.homeFolder + "/.config/ml4w/settings/dock-disabled"):
-            self.dock_toggle.set_active(False)
-        else:
-            self.dock_toggle.set_active(True)
-
-    def loadWaybar(self):
-        if os.path.isfile(self.homeFolder + "/.config/ml4w/settings/waybar-disabled"):
-            self.waybar_toggle.set_active(False)
-        else:
-            self.waybar_toggle.set_active(True)
 
     def loadWallpaperCache(self):
         if os.path.isfile(self.dotfiles + "ml4w/settings/wallpaper_cache"):

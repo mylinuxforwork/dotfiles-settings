@@ -97,14 +97,10 @@ class DotfilesSettingsApplication(Adw.Application):
         if not self.win:
             self.win = DotfilesSettingsWindow(application=self)
 
-        self.waybar_toggle = self.win.waybar_toggle
         self.wallpaper_cache_toggle = self.win.wallpaper_cache_toggle
         self.waybar_workspaces = self.win.waybar_workspaces
         self.rofi_bordersize = self.win.rofi_bordersize
-        self.waybar_toggle = self.win.waybar_toggle
         self.rofi_font = self.win.rofi_font
-        self.dock_toggle = self.win.dock_toggle
-        self.gamemode_toggle = self.win.gamemode_toggle
         self.default_browser = self.win.default_browser
         self.default_email = self.win.default_email
         self.default_filemanager = self.win.default_filemanager
@@ -136,7 +132,6 @@ class DotfilesSettingsApplication(Adw.Application):
         self.blur_radius = self.win.blur_radius
         self.blur_sigma = self.win.blur_sigma
 
-        self.win.waybar_toggle.connect("notify::active",self.on_waybar_toggle)
         self.win.waybar_show_appmenu.connect("notify::active",self.on_waybar_show_appmenu)
         self.win.waybar_show_taskbar.connect("notify::active",self.on_waybar_show_taskbar)
         self.win.waybar_show_quicklinks.connect("notify::active",self.on_waybar_show_quicklinks)
@@ -144,8 +139,6 @@ class DotfilesSettingsApplication(Adw.Application):
         self.win.waybar_show_screenlock.connect("notify::active",self.on_waybar_show_screenlock)
         self.win.waybar_show_systray.connect("notify::active",self.on_waybar_show_systray)
         self.win.waybar_show_window.connect("notify::active",self.on_waybar_show_window)
-        self.win.dock_toggle.connect("notify::active",self.on_dock_toggle)
-        self.win.gamemode_toggle.connect("notify::active",self.on_gamemode_toggle)
         self.win.wallpaper_cache_toggle.connect("notify::active",self.on_wallpaper_cache_toggle)
 
         self.win.open_customconf.connect("clicked", self.on_open_customconf)
@@ -447,29 +440,11 @@ class DotfilesSettingsApplication(Adw.Application):
         print(value)
         self.updateSettingsBash("waybar_workspaces", value)
 
-    def on_gamemode_toggle(self, widget, _):
-        subprocess.Popen(["flatpak-spawn", "--host", "bash", self.dotfiles + "hypr/scripts/gamemode.sh"])
-
-    def on_dock_toggle(self, widget, _):
-        if (os.path.exists(self.homeFolder + "/.config/ml4w/settings/dock-disabled")):
-            os.remove(self.homeFolder + "/.config/ml4w/settings/dock-disabled")
-            subprocess.Popen(["flatpak-spawn", "--host", "bash", self.dotfiles + "nwg-dock-hyprland/launch.sh"])
-        else:
-            file = open(self.homeFolder + "/.config/ml4w/settings/dock-disabled", "w+")
-            subprocess.Popen(["flatpak-spawn", "--host", "killall", "nwg-dock-hyprland"])
-
     def on_wallpaper_cache_toggle(self, widget, _):
         if (os.path.exists(self.dotfiles + "ml4w/settings/wallpaper_cache")):
             os.remove(self.dotfiles + "ml4w/settings/wallpaper_cache")
         else:
             file = open(self.dotfiles + "ml4w/settings/wallpaper_cache", "w+")
-
-    def on_waybar_toggle(self, widget, _):
-        if (os.path.exists(self.homeFolder + "/.config/ml4w/settings/waybar-disabled")):
-            os.remove(self.homeFolder + "/.config/ml4w/settings/waybar-disabled")
-        else:
-            file = open(self.homeFolder + "/.config/ml4w/settings/waybar-disabled", "w+")
-        self.reloadWaybar()
 
     def on_rofi_bordersize(self, widget):
         value = int(widget.get_value())

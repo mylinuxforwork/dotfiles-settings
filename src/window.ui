@@ -24,11 +24,6 @@
                 <property name="icon-name">document-open-symbolic</property>
               </object>
             </child>
-            <child>
-              <object class="AdwSwitchRow" id="waybar_toggle">
-                <property name="title">Toggle Waybar</property>
-              </object>
-            </child>
 
             <child>
               <object class="AdwSpinRow" id="waybar_workspaces">
@@ -168,30 +163,6 @@
       <object class="AdwPreferencesPage">
         <property name="title">Appearance</property>
         <property name="icon-name">settings-symbolic</property>
-
-        <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title">Dock</property>
-            <property name="description">Toggle the dock at the bottom of the screen.</property>
-            <child>
-              <object class="AdwSwitchRow" id="dock_toggle">
-                <property name="title">Toggle Dock</property>
-              </object>
-            </child>
-          </object>
-        </child>
-
-        <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title">Gamemode</property>
-            <property name="description">Disable animations and blur for better performance.</property>
-            <child>
-              <object class="AdwSwitchRow" id="gamemode_toggle">
-                <property name="title">Toggle Gamemode</property>
-              </object>
-            </child>
-          </object>
-        </child>
 
         <child>
           <object class="AdwPreferencesGroup">
