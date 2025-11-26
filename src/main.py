@@ -48,7 +48,8 @@ class DotfilesSettingsApplication(Adw.Application):
     waybar_themes = [
         "ml4w-minimal",
         "ml4w",
-        "ml4w-modern"
+        "ml4w-modern",
+        "ml4w-glass"
     ]
 
     def __init__(self):
@@ -342,7 +343,7 @@ class DotfilesSettingsApplication(Adw.Application):
         print(f)
         self.on_open(widget, self.default_editor.get_text(), "hypr/conf/workspaces/" + f)
 
-    # Monitors
+    # Windows
     def on_open_windows(self, widget, _):
         self.on_open(widget, self.default_filemanager.get_text(), "hypr/conf/windows")
 
@@ -629,7 +630,7 @@ class DotfilesSettingsApplication(Adw.Application):
         about = Adw.AboutDialog(
             application_name="ML4W Settings App",
             developer_name="Stephan Raabe",
-            version="2.9.9",
+            version="2.9.9.4",
             website="https://mylinuxforwork.github.io/dotfiles/ml4w-apps/dotfiles-app",
             issue_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",
             support_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",
