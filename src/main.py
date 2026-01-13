@@ -43,13 +43,16 @@ class DotfilesSettingsApplication(Adw.Application):
     path_name = pathname # Path of Application
     homeFolder = os.path.expanduser('~') # Path to home folder
     dotfiles = homeFolder + "/.config/"
-    terminal = "alacritty"
+    terminal = "kitty"
 
     waybar_themes = [
         "ml4w-minimal",
         "ml4w",
         "ml4w-modern",
-        "ml4w-glass"
+        "ml4w-glass",
+        "ml4w-glass-center",
+        "ml4w-transparent",
+        "ml4w-transparent-centered"
     ]
 
     def __init__(self):
@@ -415,7 +418,7 @@ class DotfilesSettingsApplication(Adw.Application):
         self.overwriteFile("ml4w/settings/terminal.sh",widget.get_text())
 
     def on_default_screenshoteditor(self, widget):
-        self.overwriteFile("ml4w/settings/screenshot-editor.sh",widget.get_text())
+        self.overwriteFile("ml4w/settings/screenshot-editor",widget.get_text())
 
     def on_default_calculator(self, widget):
         self.overwriteFile("ml4w/settings/calculator.sh",widget.get_text())
@@ -564,62 +567,71 @@ class DotfilesSettingsApplication(Adw.Application):
             print("ERROR: File not found " + self.dotfiles + f)
 
     def replaceInFile(self, f, search, replace):
-        file = open(self.dotfiles + f, 'r')
-        lines = file.readlines()
-        count = 0
-        found = 0
-        for l in lines:
-            count += 1
-            if search in l:
-                found = count
-                break
-        if found > 0:
-            lines[found - 1] = replace + "\n"
-            with open(self.dotfiles + f, 'w') as file:
-                file.writelines(lines)
-
-    def replaceInFileNext(self, f, search, replace):
-        file = open(self.dotfiles + f, 'r')
-        lines = file.readlines()
-        count = 0
-        found = 0
-        for l in lines:
-            count += 1
-            if search in l:
-                found = count
-                break
-        if found > 0:
-            lines[found] = replace + "\n"
-            with open(self.dotfiles + f, 'w') as file:
-                file.writelines(lines)
-
-    def replaceInFileCheckpoint(self, f, checkpoint, search, replace):
-        file = open(self.dotfiles + f, 'r')
-        lines = file.readlines()
-        count = 0
-        checkpoint_found = 0
-        found = 0
-        for l in lines:
-            count += 1
-            if checkpoint in l:
-                checkpoint_found = count
-                break
-        print("Checkpoint: " + str(checkpoint_found))
-
-        count = 0
-        if checkpoint_found > 0:
+        if os.path.exists(self.dotfiles + f):
+            file = open(self.dotfiles + f, 'r')
+            lines = file.readlines()
+            count = 0
+            found = 0
             for l in lines:
                 count += 1
-                if count > checkpoint_found:
-                    if search in l:
-                        found = count
-                        break
-        print("Found: " + str(found))
+                if search in l:
+                    found = count
+                    break
+            if found > 0:
+                lines[found - 1] = replace + "\n"
+                with open(self.dotfiles + f, 'w') as file:
+                    file.writelines(lines)
+        else:
+            print("ERROR: File not found " + self.dotfiles + f)
 
-        if found > 0:
-            lines[found-1] = replace + "\n"
-            with open(self.dotfiles + f, 'w') as file:
-                file.writelines(lines)
+    def replaceInFileNext(self, f, search, replace):
+        if os.path.exists(self.dotfiles + f):
+            file = open(self.dotfiles + f, 'r')
+            lines = file.readlines()
+            count = 0
+            found = 0
+            for l in lines:
+                count += 1
+                if search in l:
+                    found = count
+                    break
+            if found > 0:
+                lines[found] = replace + "\n"
+                with open(self.dotfiles + f, 'w') as file:
+                    file.writelines(lines)
+        else:
+            print("ERROR: File not found " + self.dotfiles + f)
+
+    def replaceInFileCheckpoint(self, f, checkpoint, search, replace):
+        if os.path.exists(self.dotfiles + f):
+            file = open(self.dotfiles + f, 'r')
+            lines = file.readlines()
+            count = 0
+            checkpoint_found = 0
+            found = 0
+            for l in lines:
+                count += 1
+                if checkpoint in l:
+                    checkpoint_found = count
+                    break
+            print("Checkpoint: " + str(checkpoint_found))
+
+            count = 0
+            if checkpoint_found > 0:
+                for l in lines:
+                    count += 1
+                    if count > checkpoint_found:
+                        if search in l:
+                            found = count
+                            break
+            print("Found: " + str(found))
+
+            if found > 0:
+                lines[found-1] = replace + "\n"
+                with open(self.dotfiles + f, 'w') as file:
+                    file.writelines(lines)
+        else:
+            print("ERROR: File not found " + self.dotfiles + f)
 
     def reloadWaybar(self):
         launch_script = self.dotfiles + "waybar/launch.sh"
@@ -630,7 +642,7 @@ class DotfilesSettingsApplication(Adw.Application):
         about = Adw.AboutDialog(
             application_name="ML4W Settings App",
             developer_name="Stephan Raabe",
-            version="2.9.9.4",
+            version="2.9.9.5",
             website="https://mylinuxforwork.github.io/dotfiles/ml4w-apps/dotfiles-app",
             issue_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",
             support_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",

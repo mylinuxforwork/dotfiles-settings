@@ -147,7 +147,7 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
         self.loadDefaultApp("ml4w/settings/bluetooth.sh",self.default_bluetooth)
         self.loadDefaultApp("ml4w/settings/software.sh",self.default_softwaremanager)
         self.loadDefaultApp("ml4w/settings/terminal.sh",self.default_terminal)
-        self.loadDefaultApp("ml4w/settings/screenshot-editor.sh",self.default_screenshoteditor)
+        self.loadDefaultApp("ml4w/settings/screenshot-editor",self.default_screenshoteditor)
         self.loadDefaultApp("ml4w/settings/calculator.sh",self.default_calculator)
         self.loadDefaultApp("ml4w/settings/system-monitor.sh",self.default_systemmonitor)
         self.loadDefaultApp("ml4w/settings/emojipicker.sh",self.default_emojipicker)
