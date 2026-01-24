@@ -87,7 +87,6 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
     waybar_show_systray = Gtk.Template.Child()
     waybar_show_screenlock = Gtk.Template.Child()
     waybar_show_window = Gtk.Template.Child()
-    wallpaper_cache_toggle = Gtk.Template.Child()
     rofi_font = Gtk.Template.Child()
     rofi_bordersize = Gtk.Template.Child()
     waybar_workspaces = Gtk.Template.Child()
@@ -107,10 +106,7 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
     default_installupdates = Gtk.Template.Child()
     open_customconf = Gtk.Template.Child()
     open_quicklinks = Gtk.Template.Child()
-    open_wallpaper_effects = Gtk.Template.Child()
-    open_waybar_folder = Gtk.Template.Child()
     open_timeformatspecifications = Gtk.Template.Child()
-    dd_wallpaper_effects = Gtk.Template.Child()
     dd_animations = Gtk.Template.Child()
     dd_environments = Gtk.Template.Child()
     dd_layouts = Gtk.Template.Child()
@@ -154,7 +150,6 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
         self.loadDefaultApp("ml4w/settings/aur.sh",self.default_aurhelper)
         self.loadDefaultApp("ml4w/settings/installupdates.sh",self.default_installupdates)
 
-        self.loadWallpaperEffects(self.dd_wallpaper_effects)
         self.loadVariations(self.dd_animations,"animation")
         self.loadVariations(self.dd_environments,"environment")
         self.loadVariations(self.dd_layouts,"layout")
@@ -175,7 +170,6 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
         self.loadShowModule("waybar_systray",self.waybar_show_systray)
         self.loadShowModule("waybar_screenlock",self.waybar_show_screenlock)
 
-        self.loadWallpaperCache()
         self.loadRofiFont()
         self.loadBlurValues()
 
@@ -208,23 +202,6 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
         with open(self.dotfiles + "ml4w/settings/" + f, 'r') as file:
             value = file.read()
         return value.strip()
-
-    # Load Wallpaper Effects from folder
-    def loadWallpaperEffects(self,dd):
-        files_arr = os.listdir(self.dotfiles + "hypr/effects/wallpaper/")
-        store = Gtk.StringList()
-        with open(self.dotfiles + "ml4w/settings/wallpaper-effect.sh", 'r') as file:
-            value = file.read()
-        selected = 0
-        counter = 1
-        store.append("off")
-        for f in files_arr:
-            store.append(f)
-            if f in value:
-                selected = counter
-            counter+=1
-        dd.set_model(store)
-        dd.set_selected(selected)
 
     # Load variations
     def loadVariations(self,dd,v):
@@ -263,12 +240,6 @@ class DotfilesSettingsWindow(Adw.PreferencesWindow):
                 d.set_active(True)
             else:
                 d.set_active(False)
-
-    def loadWallpaperCache(self):
-        if os.path.isfile(self.dotfiles + "ml4w/settings/wallpaper_cache"):
-            self.wallpaper_cache_toggle.set_active(True)
-        else:
-            self.wallpaper_cache_toggle.set_active(False)
 
     # Load Blur Values
     def loadBlurValues(self):

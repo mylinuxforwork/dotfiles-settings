@@ -17,13 +17,6 @@
           <object class="AdwPreferencesGroup">
             <property name="title">Waybar</property>
             <property name="description">Configure the status bar waybar.</property>
-            <child type="header-suffix">
-              <object class="GtkButton" id="open_waybar_folder">
-                <property name="halign">3</property>
-                <property name="valign">3</property>
-                <property name="icon-name">document-open-symbolic</property>
-              </object>
-            </child>
 
             <child>
               <object class="AdwSpinRow" id="waybar_workspaces">
@@ -365,70 +358,6 @@
             </child>
           </object>
         </child>
-
-      </object>
-    </child>
-
-    <child>
-      <object class="AdwPreferencesPage">
-        <property name="title">Wallpaper</property>
-        <property name="icon-name">settings-symbolic</property>
-
-        <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title">Wallpaper Effect</property>
-            <property name="description">Select an effect for your selected wallpaper. </property>
-            <child type="header-suffix">
-              <object class="GtkButton" id="open_wallpaper_effects">
-                <property name="halign">3</property>
-                <property name="valign">3</property>
-                <property name="icon-name">document-open-symbolic</property>
-              </object>
-            </child>
-
-            <child>
-              <object class="AdwActionRow">
-                <property name="title">Wallpaper Effect</property>
-                <child type="suffix">
-                  <object class="GtkDropDown" id="dd_wallpaper_effects">
-                    <property name="enable-search">false</property>
-                    <property name="halign">3</property>
-                    <property name="valign">3</property>
-                    <property name="model">
-                      <object class="GtkStringList" id="wallpaper_effects_list">
-                        <items>
-                        </items>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-              </object>
-            </child>
-
-          </object>
-        </child>
-
-        <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title">Wallpaper Cache</property>
-            <property name="description">Activate or deactivate the wallpaper cache. The cache will generate different versions of the current wallpaper to speed up the change between two wallpapers.</property>
-            <child type="header-suffix">
-              <object class="GtkMenuButton">
-                <property name="halign">3</property>
-                <property name="valign">3</property>
-                <property name="icon-name">open-menu-symbolic</property>
-                <property name="menu-model">wallpaper_cache_button_menu</property>
-                <property name="primary">true</property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwSwitchRow" id="wallpaper_cache_toggle">
-                <property name="title">Wallpaper Cache</property>
-              </object>
-            </child>
-          </object>
-        </child>
-
 
       </object>
     </child>

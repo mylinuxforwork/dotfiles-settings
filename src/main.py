@@ -65,7 +65,6 @@ class DotfilesSettingsApplication(Adw.Application):
         self.create_action('blur_radius', self.on_blur_radius)
         self.create_action('blur_sigma', self.on_blur_sigma)
         self.create_action('open_about_variations', self.on_open_about_variations)
-        self.create_action('on_edit_wallpaper_effects', self.on_edit_animations)
         self.create_action('on_clearcache_wallpaper', self.on_clearcache_wallpaper)
         self.create_action('on_open_animations_folder', self.on_open_animations)
         self.create_action('on_edit_animations', self.on_edit_animations)
@@ -101,7 +100,6 @@ class DotfilesSettingsApplication(Adw.Application):
         if not self.win:
             self.win = DotfilesSettingsWindow(application=self)
 
-        self.wallpaper_cache_toggle = self.win.wallpaper_cache_toggle
         self.waybar_workspaces = self.win.waybar_workspaces
         self.rofi_bordersize = self.win.rofi_bordersize
         self.rofi_font = self.win.rofi_font
@@ -119,7 +117,6 @@ class DotfilesSettingsApplication(Adw.Application):
         self.default_emojipicker = self.win.default_emojipicker
         self.default_aurhelper = self.win.default_aurhelper
         self.default_installupdates = self.win.default_installupdates
-        self.dd_wallpaper_effects = self.win.dd_wallpaper_effects
         self.dd_animations = self.win.dd_animations
         self.dd_environments = self.win.dd_environments
         self.dd_layouts = self.win.dd_layouts
@@ -143,12 +140,9 @@ class DotfilesSettingsApplication(Adw.Application):
         self.win.waybar_show_screenlock.connect("notify::active",self.on_waybar_show_screenlock)
         self.win.waybar_show_systray.connect("notify::active",self.on_waybar_show_systray)
         self.win.waybar_show_window.connect("notify::active",self.on_waybar_show_window)
-        self.win.wallpaper_cache_toggle.connect("notify::active",self.on_wallpaper_cache_toggle)
 
         self.win.open_customconf.connect("clicked", self.on_open_customconf)
         self.win.open_quicklinks.connect("clicked", self.on_open_quicklinks)
-        self.win.open_wallpaper_effects.connect("clicked", self.on_open_wallpaper_effects_folder)
-        self.win.open_waybar_folder.connect("clicked", self.on_open_waybar_folder)
         self.win.open_timeformatspecifications.connect("clicked", self.on_open_timeformatspecifications)
 
         self.win.default_browser.connect("apply", self.on_default_browser)
@@ -166,7 +160,6 @@ class DotfilesSettingsApplication(Adw.Application):
         self.win.default_aurhelper.connect("apply", self.on_default_aurhelper)
         self.win.default_installupdates.connect("apply", self.on_default_installupdates)
 
-        self.dd_wallpaper_effects.connect("notify::selected-item", self.on_wallpaper_effects_changed)
         self.dd_animations.connect("notify::selected-item", self.on_variation_changed,"animation")
         self.dd_monitors.connect("notify::selected-item", self.on_variation_changed,"monitor")
         self.dd_environments.connect("notify::selected-item", self.on_variation_changed,"environment")
@@ -257,14 +250,6 @@ class DotfilesSettingsApplication(Adw.Application):
             self.replaceInFileCheckpoint("waybar/modules.json", '"clock"', '"format"', timedate)
             self.updateSettingsBash("waybar_custom_timedateformat", "")
         self.reloadWaybar()
-
-    def on_wallpaper_effects_changed(self, widget, _):
-        value = widget.get_selected_item().get_string()
-        self.overwriteFile("ml4w/settings/wallpaper-effect.sh", value)
-        subprocess.Popen(["flatpak-spawn", "--host", "bash", self.dotfiles + "hypr/scripts/wallpaper-effects.sh", "reload"])
-
-    def on_open_wallpaper_effects_folder(self, widget):
-        self.on_open(widget, self.default_filemanager.get_text(), "hypr/effects/wallpaper")
 
     def on_open_waybar_folder(self, widget):
         self.on_open(widget, self.default_filemanager.get_text(), "waybar")
@@ -642,11 +627,11 @@ class DotfilesSettingsApplication(Adw.Application):
         about = Adw.AboutDialog(
             application_name="ML4W Settings App",
             developer_name="Stephan Raabe",
-            version="2.9.9.5",
+            version="2.9.9.7",
             website="https://mylinuxforwork.github.io/dotfiles/ml4w-apps/dotfiles-app",
             issue_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",
             support_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",
-            copyright="© 2025 Stephan Raabe",
+            copyright="© 2026 Stephan Raabe",
             license_type=Gtk.License.GPL_3_0_ONLY
         )
         about.present(self.props.active_window)
