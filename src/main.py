@@ -628,7 +628,7 @@ class DotfilesSettingsApplication(Adw.Application):
             application_name="ML4W Settings App",
             developer_name="Stephan Raabe",
             version="2.10.1",
-            website="https://mylinuxforwork.github.io/dotfiles/ml4w-apps/dotfiles-app",
+            website="https://ml4w.com/os/ml4w-apps/dotfiles-app",
             issue_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",
             support_url="https://github.com/mylinuxforwork/dotfiles-settings/issues",
             copyright="© 2026 Stephan Raabe",
